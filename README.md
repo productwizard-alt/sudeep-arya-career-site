@@ -32,3 +32,4 @@ Then visit `http://localhost:8080`.
 - `/case-studies/` - structured commerce case studies
 - `/skills/` - recruiter and search keyword index
 - `/recruiters/` - quick recruiter brief
+- `/audit/` - free Digital Acceleration Audit landing page
