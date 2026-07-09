@@ -24,6 +24,8 @@ zip -qr "$REPO_ZIP" . \
   -x "./.git" \
   -x "./artifacts/*" \
   -x "./artifacts" \
+  -x "./source-assets/private/*" \
+  -x "./source-assets/private" \
   -x "./node_modules/*" \
   -x "*/node_modules/*" \
   -x "./.DS_Store" \

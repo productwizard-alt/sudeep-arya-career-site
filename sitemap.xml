@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://rococo-speculoos-7d6380.netlify.app/</loc>
+    <loc>https://sudeeparya.com/</loc>
   </url>
   <url>
-    <loc>https://rococo-speculoos-7d6380.netlify.app/resume/</loc>
+    <loc>https://sudeeparya.com/resume/</loc>
   </url>
   <url>
-    <loc>https://rococo-speculoos-7d6380.netlify.app/case-studies/</loc>
+    <loc>https://sudeeparya.com/case-studies/</loc>
   </url>
   <url>
-    <loc>https://rococo-speculoos-7d6380.netlify.app/skills/</loc>
+    <loc>https://sudeeparya.com/skills/</loc>
   </url>
   <url>
-    <loc>https://rococo-speculoos-7d6380.netlify.app/recruiters/</loc>
+    <loc>https://sudeeparya.com/recruiters/</loc>
   </url>
   <url>
-    <loc>https://rococo-speculoos-7d6380.netlify.app/audit/</loc>
+    <loc>https://sudeeparya.com/audit/</loc>
+  </url>
+  <url>
+    <loc>https://sudeeparya.com/contact/</loc>
   </url>
 </urlset>

@@ -1,3 +1,6 @@
 
 # Local generated handoff ZIPs
 artifacts/
+
+# Private source files for local Codex context only
+source-assets/private/

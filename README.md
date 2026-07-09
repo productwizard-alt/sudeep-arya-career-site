@@ -30,7 +30,7 @@ The script creates a timestamped ZIP in `artifacts/` and copies it to `/mnt/c/Us
 
 ## Deployment notes
 
-- Temporary canonical domain: `https://rococo-speculoos-7d6380.netlify.app/`
+- Production canonical domain: `https://sudeeparya.com/`
 - Replace the temporary Netlify URL with the custom domain in every canonical URL, Open Graph URL, `sitemap.xml`, and `robots.txt` when the custom domain is ready.
 - Replace `resume/Sudeep-Arya-Amazon-DTC-Marketplace-AI-Commerce-Resume.pdf` with the final resume PDF using that exact filename.
 - Hard content rule: forbidden prior-employer terms from the project brief must not appear anywhere in this repository.

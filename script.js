@@ -3,6 +3,8 @@
   const navMenu = document.querySelector(".nav-menu");
   const progress = document.querySelector(".scroll-progress");
   const header = document.querySelector("[data-header]");
+  const calendlyLinks = document.querySelectorAll('a[href^="https://calendly.com/"]');
+  let calendlyLoadPromise;
 
   if (navToggle && navMenu) {
     navToggle.addEventListener("click", () => {
@@ -25,6 +27,76 @@
       link.setAttribute("aria-current", "page");
     }
   });
+
+  const loadCalendly = () => {
+    if (window.Calendly && typeof window.Calendly.initPopupWidget === "function") {
+      return Promise.resolve();
+    }
+
+    if (calendlyLoadPromise) return calendlyLoadPromise;
+
+    calendlyLoadPromise = new Promise((resolve, reject) => {
+      const existingCss = document.querySelector('link[href="https://assets.calendly.com/assets/external/widget.css"]');
+      if (!existingCss) {
+        const css = document.createElement("link");
+        css.rel = "stylesheet";
+        css.href = "https://assets.calendly.com/assets/external/widget.css";
+        document.head.appendChild(css);
+      }
+
+      const existingScript = document.querySelector('script[src="https://assets.calendly.com/assets/external/widget.js"]');
+      if (existingScript) {
+        existingScript.addEventListener("load", resolve, { once: true });
+        existingScript.addEventListener("error", reject, { once: true });
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://assets.calendly.com/assets/external/widget.js";
+      script.async = true;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+
+    return calendlyLoadPromise;
+  };
+
+  calendlyLinks.forEach((link) => {
+    const url = link.href;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.setAttribute("aria-haspopup", "dialog");
+
+    link.addEventListener("click", (event) => {
+      if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+
+      loadCalendly()
+        .then(() => {
+          if (window.Calendly && typeof window.Calendly.initPopupWidget === "function") {
+            window.Calendly.initPopupWidget({ url });
+          } else {
+            window.open(url, "_blank", "noopener");
+          }
+        })
+        .catch(() => {
+          window.open(url, "_blank", "noopener");
+        });
+    });
+  });
+
+  const contactForm = document.querySelector(".contact-form");
+  if (contactForm instanceof HTMLFormElement) {
+    contactForm.addEventListener("submit", (event) => {
+      const localHosts = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
+      if (!localHosts.has(window.location.hostname)) return;
+
+      event.preventDefault();
+      const nextUrl = new URL(contactForm.getAttribute("action") || "/contact/success/", window.location.href);
+      window.location.assign(nextUrl.pathname);
+    });
+  }
 
   const updateProgress = () => {
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
