@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://rococo-speculoos-7d6380.netlify.app/sitemap.xml
