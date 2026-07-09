@@ -4,6 +4,8 @@
   const progress = document.querySelector(".scroll-progress");
   const header = document.querySelector("[data-header]");
   const calendlyLinks = document.querySelectorAll('a[href^="https://calendly.com/"]');
+  const caseMoreButton = document.querySelector("[data-case-more]");
+  const extraCaseStudies = document.querySelectorAll("[data-case-extra]");
   let calendlyLoadPromise;
 
   if (navToggle && navMenu) {
@@ -97,6 +99,67 @@
       window.location.assign(nextUrl.pathname);
     });
   }
+
+  if (caseMoreButton && extraCaseStudies.length) {
+    const setCaseStudiesExpanded = (isExpanded) => {
+      caseMoreButton.setAttribute("aria-expanded", String(isExpanded));
+      caseMoreButton.textContent = isExpanded ? "Show Fewer Case Studies" : "View More Case Studies";
+
+      extraCaseStudies.forEach((study) => {
+        study.hidden = !isExpanded;
+        if (isExpanded) study.classList.add("is-visible");
+      });
+    };
+
+    const expandForHash = () => {
+      if (!window.location.hash) return;
+      const target = document.querySelector(window.location.hash);
+      if (target && target.hasAttribute("data-case-extra")) {
+        setCaseStudiesExpanded(true);
+      }
+    };
+
+    setCaseStudiesExpanded(false);
+    expandForHash();
+
+    caseMoreButton.addEventListener("click", () => {
+      const isExpanded = caseMoreButton.getAttribute("aria-expanded") === "true";
+      setCaseStudiesExpanded(!isExpanded);
+      if (isExpanded) caseMoreButton.scrollIntoView({ block: "center" });
+    });
+
+    window.addEventListener("hashchange", expandForHash);
+  }
+
+  document.querySelectorAll(".case-study").forEach((study, index) => {
+    const caseIndex = study.querySelector(".case-index");
+    const caseBody = study.querySelector(".case-body");
+    const caseTitle = study.querySelector("h2");
+    if (!caseIndex || !caseBody) return;
+
+    if (!caseBody.id) {
+      caseBody.id = `${study.id || `case-study-${index + 1}`}-body`;
+    }
+
+    const toggle = document.createElement("button");
+    toggle.className = "case-collapse-button";
+    toggle.type = "button";
+    toggle.textContent = "-";
+    toggle.setAttribute("aria-expanded", "true");
+    toggle.setAttribute("aria-controls", caseBody.id);
+    toggle.setAttribute("aria-label", `Collapse ${caseTitle ? caseTitle.textContent.trim() : "case study"}`);
+    caseIndex.appendChild(toggle);
+
+    toggle.addEventListener("click", () => {
+      const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+      const nextExpanded = !isExpanded;
+      toggle.setAttribute("aria-expanded", String(nextExpanded));
+      toggle.textContent = nextExpanded ? "-" : "+";
+      toggle.setAttribute("aria-label", `${nextExpanded ? "Collapse" : "Expand"} ${caseTitle ? caseTitle.textContent.trim() : "case study"}`);
+      caseBody.hidden = !nextExpanded;
+      study.classList.toggle("is-collapsed", !nextExpanded);
+    });
+  });
 
   const updateProgress = () => {
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
