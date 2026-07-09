@@ -18,6 +18,16 @@ Then visit `http://localhost:8080`.
 - Publish directory: `.`
 - Runtime: static HTML, CSS, and vanilla JavaScript
 
+## Artifact Packaging
+
+Generate future ZIP handoffs with:
+
+```bash
+./scripts/package-artifacts.sh
+```
+
+The script creates a timestamped ZIP in `artifacts/` and copies it to `/mnt/c/Users/sudee/Downloads/sudeep-career-site-artifacts/` for easy Windows access.
+
 ## Deployment notes
 
 - Temporary canonical domain: `https://rococo-speculoos-7d6380.netlify.app/`
