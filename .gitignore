@@ -4,3 +4,6 @@ artifacts/
 
 # Private source files for local Codex context only
 source-assets/private/
+
+# Local Netlify folder
+.netlify

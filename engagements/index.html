@@ -241,9 +241,9 @@
             <h2 id="engagement-inquiry-title">Start with the context.</h2>
             <p>Use this form for podcasts, panels, webinars, private sessions, conference discussions, advisory conversations, or general booking inquiries.</p>
           </div>
-          <form class="contact-form engagement-form reveal" name="engagement-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/thank-you/">
+          <form class="contact-form engagement-form reveal" id="engagement-inquiry-form" name="engagement-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/engagements/success/">
             <input type="hidden" name="form-name" value="engagement-inquiry">
-            <p class="visually-hidden">
+            <p class="form-honeypot" hidden>
               <label>Do not fill this out if you are human: <input name="bot-field"></label>
             </p>
             <label class="form-field">Name<input type="text" name="name" autocomplete="name" required></label>

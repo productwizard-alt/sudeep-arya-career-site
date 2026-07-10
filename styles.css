@@ -4977,3 +4977,49 @@ li {
     display: none;
   }
 }
+
+@media (max-width: 760px) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  main,
+  .page-hero,
+  .section,
+  .section-inner,
+  .page-hero-inner,
+  .contact-layout,
+  .contact-context,
+  .contact-form-card,
+  .executive-contact-card,
+  .engagement-card-grid,
+  .engagement-proof-strip,
+  .engagement-inquiry-layout,
+  .engagement-form {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .section-inner,
+  .page-hero-inner {
+    width: calc(100% - 32px);
+  }
+
+  .page-hero h1,
+  .page-hero p,
+  .section-heading h2,
+  .section-heading p,
+  .contact-context h2,
+  .contact-context p,
+  .executive-contact-card,
+  .contact-form-card,
+  .engagement-card,
+  .engagement-card p,
+  .engagement-inquiry-copy,
+  .engagement-inquiry-copy p {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+}

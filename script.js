@@ -103,14 +103,6 @@
       });
     }
 
-    contactForm.addEventListener("submit", (event) => {
-      const localHosts = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
-      if (!localHosts.has(window.location.hostname)) return;
-
-      event.preventDefault();
-      const nextUrl = new URL(contactForm.getAttribute("action") || "/contact/success/", window.location.href);
-      window.location.assign(nextUrl.pathname);
-    });
   }
 
   if (regionalToggle) {

@@ -17,6 +17,7 @@ Then visit `http://localhost:8080`.
 - Build command: leave blank
 - Publish directory: `.`
 - Runtime: static HTML, CSS, and vanilla JavaScript
+- Netlify Forms: keep form detection enabled. Validate form markup with `node scripts/validate-netlify-forms.mjs` before deploying.
 
 ## Artifact Packaging
 
