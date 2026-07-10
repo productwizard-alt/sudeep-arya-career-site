@@ -5,6 +5,7 @@
   const header = document.querySelector("[data-header]");
   const calendlyLinks = document.querySelectorAll('a[href^="https://calendly.com/"]');
   const caseMoreButton = document.querySelector("[data-case-more]");
+  const extraCaseStudyGroup = document.getElementById("additional-case-studies");
   const extraCaseStudies = document.querySelectorAll("[data-case-extra]");
   const regionalToggle = document.querySelector("[data-regional-toggle]");
   const contactFocusButton = document.querySelector("[data-contact-focus]");
@@ -127,10 +128,94 @@
     }
   }
 
+  const getHashTarget = () => {
+    if (!window.location.hash || window.location.hash.length <= 1) return null;
+
+    try {
+      return document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+    } catch (error) {
+      return null;
+    }
+  };
+
+  const scrollElementBelowHeader = (target) => {
+    if (!(target instanceof HTMLElement)) return;
+
+    window.requestAnimationFrame(() => {
+      const headerHeight = header instanceof HTMLElement ? header.getBoundingClientRect().height : 0;
+      const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - 24;
+      window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+    });
+  };
+
+  const caseDisclosureButtons = [];
+
+  document.querySelectorAll(".case-study").forEach((study, index) => {
+    const body = study.querySelector(".case-body");
+    const heading = study.querySelector(".case-heading");
+    const proofGrid = study.querySelector(".case-proof-grid");
+    const methodPanel = study.querySelector(".case-methodology");
+    const diagram = study.querySelector(".commerce-diagram");
+    if (!(body instanceof HTMLElement) || !(heading instanceof HTMLElement) || !(proofGrid instanceof HTMLElement) || !(methodPanel instanceof HTMLElement)) return;
+
+    const studyId = study.id || `case-study-${index + 1}`;
+    if (!study.id) study.id = studyId;
+
+    const drawer = document.createElement("div");
+    drawer.className = "case-study-details-drawer";
+    drawer.id = `${studyId}-details`;
+    drawer.hidden = true;
+
+    const toggle = document.createElement("button");
+    toggle.className = "case-disclosure-toggle";
+    toggle.type = "button";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", drawer.id);
+    toggle.innerHTML = '<span>View Full Case Study</span><span class="case-disclosure-icon" aria-hidden="true"></span>';
+
+    methodPanel.hidden = false;
+    drawer.appendChild(proofGrid);
+    drawer.appendChild(methodPanel);
+    if (diagram instanceof HTMLElement) drawer.appendChild(diagram);
+
+    heading.insertAdjacentElement("afterend", toggle);
+    toggle.insertAdjacentElement("afterend", drawer);
+
+    const setExpanded = (isExpanded, shouldFocus = false) => {
+      toggle.setAttribute("aria-expanded", String(isExpanded));
+      toggle.querySelector("span").textContent = isExpanded ? "Collapse Case Study" : "View Full Case Study";
+      drawer.hidden = !isExpanded;
+      study.classList.toggle("is-expanded", isExpanded);
+
+      if (!isExpanded && shouldFocus) {
+        toggle.focus({ preventScroll: true });
+      }
+    };
+
+    toggle.addEventListener("click", () => {
+      const isExpanded = toggle.getAttribute("aria-expanded") === "true";
+      setExpanded(!isExpanded, isExpanded);
+    });
+
+    caseDisclosureButtons.push({ study, toggle, drawer, setExpanded });
+  });
+
+  const expandCaseStudy = (target) => {
+    const targetStudy = target && target.closest ? target.closest(".case-study") : null;
+    if (!(targetStudy instanceof HTMLElement)) return false;
+
+    const control = caseDisclosureButtons.find((item) => item.study === targetStudy);
+    if (!control) return false;
+
+    control.setExpanded(true);
+    return true;
+  };
+
   if (caseMoreButton && extraCaseStudies.length) {
     const setCaseStudiesExpanded = (isExpanded) => {
       caseMoreButton.setAttribute("aria-expanded", String(isExpanded));
       caseMoreButton.textContent = isExpanded ? "Show Fewer Case Studies" : "View More Case Studies";
+      if (extraCaseStudyGroup) extraCaseStudyGroup.hidden = !isExpanded;
 
       extraCaseStudies.forEach((study) => {
         study.hidden = !isExpanded;
@@ -138,25 +223,14 @@
       });
     };
 
-    const scrollHashTargetBelowHeader = () => {
-      if (!window.location.hash) return;
-      const target = document.querySelector(window.location.hash);
-      if (!(target instanceof HTMLElement)) return;
-
-      window.requestAnimationFrame(() => {
-        const headerHeight = header instanceof HTMLElement ? header.getBoundingClientRect().height : 0;
-        const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - 24;
-        window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
-      });
-    };
-
     const expandForHash = () => {
-      if (!window.location.hash) return;
-      const target = document.querySelector(window.location.hash);
+      const target = getHashTarget();
+      if (!(target instanceof HTMLElement)) return;
       if (target && target.hasAttribute("data-case-extra")) {
         setCaseStudiesExpanded(true);
       }
-      scrollHashTargetBelowHeader();
+      expandCaseStudy(target);
+      scrollElementBelowHeader(target);
     };
 
     setCaseStudiesExpanded(false);
@@ -169,37 +243,14 @@
     });
 
     window.addEventListener("hashchange", expandForHash);
-    window.addEventListener("load", scrollHashTargetBelowHeader);
-  }
-
-  document.querySelectorAll(".case-study").forEach((study) => {
-    const methodPanel = study.querySelector(".case-methodology");
-    const headingContent = study.querySelector(".case-heading > div:first-child");
-    const caseTitle = study.querySelector("h2");
-    if (!methodPanel || !headingContent) return;
-
-    if (!methodPanel.id) {
-      methodPanel.id = `${study.id || "case-study"}-methodology`;
+    window.addEventListener("load", () => scrollElementBelowHeader(getHashTarget()));
+  } else if (window.location.hash) {
+    const target = getHashTarget();
+    if (target instanceof HTMLElement) {
+      expandCaseStudy(target);
+      window.addEventListener("load", () => scrollElementBelowHeader(target));
     }
-
-    const toggle = document.createElement("button");
-    toggle.className = "case-method-toggle";
-    toggle.type = "button";
-    toggle.textContent = "Details +";
-    toggle.setAttribute("aria-expanded", "false");
-    toggle.setAttribute("aria-controls", methodPanel.id);
-    toggle.setAttribute("aria-label", `Show methodology and evidence for ${caseTitle ? caseTitle.textContent.trim() : "case study"}`);
-    headingContent.appendChild(toggle);
-
-    toggle.addEventListener("click", () => {
-      const isExpanded = toggle.getAttribute("aria-expanded") === "true";
-      const nextExpanded = !isExpanded;
-      toggle.setAttribute("aria-expanded", String(nextExpanded));
-      toggle.textContent = nextExpanded ? "Details −" : "Details +";
-      toggle.setAttribute("aria-label", `${nextExpanded ? "Hide" : "Show"} methodology and evidence for ${caseTitle ? caseTitle.textContent.trim() : "case study"}`);
-      methodPanel.hidden = !nextExpanded;
-    });
-  });
+  }
 
   const updateProgress = () => {
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
