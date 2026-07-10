@@ -31,7 +31,7 @@ The script creates a timestamped ZIP in `artifacts/` and copies it to `/mnt/c/Us
 ## Deployment notes
 
 - Production canonical domain: `https://sudeeparya.com/`
-- Replace the temporary Netlify URL with the custom domain in every canonical URL, Open Graph URL, `sitemap.xml`, and `robots.txt` when the custom domain is ready.
+- Canonical URLs, Open Graph URLs, `sitemap.xml`, `robots.txt`, and `llms.txt` should stay on the custom domain above unless production hosting changes.
 - Replace `resume/Sudeep-Arya-Amazon-DTC-Marketplace-AI-Commerce-Resume.pdf` with the final resume PDF using that exact filename.
 - Hard content rule: forbidden prior-employer terms from the project brief must not appear anywhere in this repository.
 
@@ -43,3 +43,5 @@ The script creates a timestamped ZIP in `artifacts/` and copies it to `/mnt/c/Us
 - `/skills/` - recruiter and search keyword index
 - `/recruiters/` - quick recruiter brief
 - `/audit/` - free Digital Acceleration Audit landing page
+- `/engagements/` - podcast, panel, webinar, advisory, and professional discussion inquiries
+- `/contact/` - contact form and scheduling paths

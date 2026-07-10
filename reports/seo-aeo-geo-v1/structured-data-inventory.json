@@ -1,0 +1,83 @@
+[
+  {
+    "page": "/",
+    "schemaType": "WebSite, Person, ProfilePage",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/#profile",
+    "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/audit/",
+    "schemaType": "WebSite, WebPage, Service, FAQPage, Person, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/audit/#webpage, https://sudeeparya.com/audit/#service, https://sudeeparya.com/audit/#faq, https://sudeeparya.com/#person",
+    "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/case-studies/",
+    "schemaType": "WebSite, Person, CollectionPage, ItemList, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/case-studies/#collection, https://sudeeparya.com/case-studies/#case-list",
+    "primaryEntity": "https://sudeeparya.com/case-studies/#case-list",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/case-studies/banfield-subscription-commerce/",
+    "schemaType": "WebSite, Person, BreadcrumbList, CreativeWork",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/case-studies/banfield-subscription-commerce/#case-study",
+    "primaryEntity": "",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/contact/",
+    "schemaType": "WebSite, ContactPage, Person, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/contact/#webpage, https://sudeeparya.com/#person",
+    "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/engagements/",
+    "schemaType": "WebSite, Person, WebPage, Service, OfferCatalog, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/engagements/#webpage, https://sudeeparya.com/engagements/#service, https://sudeeparya.com/engagements/#offer-catalog",
+    "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/recruiters/",
+    "schemaType": "WebSite, Person, ProfilePage, FAQPage, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/recruiters/#profile, https://sudeeparya.com/recruiters/#faq",
+    "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/resume/",
+    "schemaType": "WebSite, Person, ProfilePage, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/resume/#profile",
+    "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/skills/",
+    "schemaType": "WebSite, Person, WebPage, ItemList, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/skills/#webpage, https://sudeeparya.com/skills/#capability-zones",
+    "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  }
+]

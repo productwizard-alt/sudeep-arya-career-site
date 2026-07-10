@@ -2848,6 +2848,34 @@ li {
   font-weight: 860;
 }
 
+.faq-section {
+  background: var(--soft);
+}
+
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.faq-grid article {
+  padding: 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow-soft);
+}
+
+.faq-grid h3 {
+  margin: 0 0 0.45rem;
+  font-size: 1rem;
+}
+
+.faq-grid p {
+  margin: 0;
+  color: var(--muted);
+}
+
 .skills-ledger {
   grid-template-columns: repeat(2, 1fr);
   gap: 0;
@@ -4082,7 +4110,8 @@ li {
   .outcome-grid,
   .case-columns,
   .search-fit-grid,
-  .search-fit-support {
+  .search-fit-support,
+  .faq-grid {
     grid-template-columns: 1fr;
   }
 
