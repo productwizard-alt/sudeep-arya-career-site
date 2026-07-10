@@ -4944,6 +4944,36 @@ li {
   }
 
   .commerce-diagram {
+    display: grid;
+    row-gap: 0.62rem;
+    padding: 0.82rem;
+    overflow: visible;
+  }
+
+  .commerce-diagram::before {
+    padding: 0.62rem 0.68rem;
+    font-size: 0.7rem;
+    line-height: 1.35;
+    text-align: left;
+  }
+
+  .commerce-diagram svg {
+    display: none;
+  }
+
+  .commerce-diagram figcaption {
+    grid-template-columns: 0.22rem minmax(0, 1fr);
+    gap: 0.58rem;
+    padding: 0.66rem 0.68rem;
+    font-size: 0.82rem;
+    line-height: 1.45;
+  }
+
+  .commerce-diagram figcaption span:first-child {
+    font-size: 0.62rem;
+  }
+
+  .commerce-diagram figcaption span:first-child::after {
     display: none;
   }
 }
