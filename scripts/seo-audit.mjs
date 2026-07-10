@@ -10,6 +10,9 @@ const indexableRoutes = new Set([
   "/resume/",
   "/case-studies/",
   "/case-studies/banfield-subscription-commerce/",
+  "/case-studies/running-before-crawling-whitepaper/",
+  "/insights/",
+  "/insights/running-before-crawling/",
   "/skills/",
   "/recruiters/",
   "/audit/",
@@ -18,7 +21,7 @@ const indexableRoutes = new Set([
 ]);
 const requiredOg = ["og:type", "og:title", "og:description", "og:url", "og:image", "og:image:width", "og:image:height", "og:image:alt"];
 const requiredTwitter = ["twitter:card", "twitter:title", "twitter:description", "twitter:image", "twitter:image:alt"];
-const skipDirs = new Set([".git", "reports", "artifacts", "node_modules"]);
+const skipDirs = new Set([".git", ".codex-inputs", "reports", "artifacts", "node_modules"]);
 
 function walk(dir, predicate) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {

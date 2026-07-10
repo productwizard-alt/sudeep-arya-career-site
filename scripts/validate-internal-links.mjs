@@ -4,7 +4,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const canonicalOrigin = "https://sudeeparya.com";
-const skipDirs = new Set([".git", "reports", "artifacts", "node_modules"]);
+const skipDirs = new Set([".git", ".codex-inputs", "reports", "artifacts", "node_modules"]);
 
 function walk(dir, predicate) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -69,9 +69,13 @@ for (const file of htmlFiles) {
 
     const [pathname, hash] = value.split("#");
     const base = pathname || routeForFile(file);
+    const currentRoute = routeForFile(file);
+    const currentDirectory = currentRoute.endsWith("/")
+      ? currentRoute
+      : `${path.posix.dirname(currentRoute)}/`;
     const resolvedPath = base.startsWith("/")
       ? base
-      : path.posix.normalize(`${path.posix.dirname(routeForFile(file))}/${base}`);
+      : path.posix.normalize(`${currentDirectory}${base}`);
     const candidate = fileForPath(resolvedPath);
 
     if (!existsSync(candidate)) {

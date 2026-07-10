@@ -8,7 +8,7 @@ function walk(dir) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
-      if ([".git", "reports", "artifacts", "node_modules"].includes(entry.name)) return [];
+      if ([".git", ".codex-inputs", "reports", "artifacts", "node_modules"].includes(entry.name)) return [];
       return walk(full);
     }
     return entry.isFile() && entry.name.endsWith(".html") ? [full] : [];

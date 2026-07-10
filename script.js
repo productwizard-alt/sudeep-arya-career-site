@@ -11,6 +11,24 @@
   const contactFocusButton = document.querySelector("[data-contact-focus]");
   let calendlyLoadPromise;
 
+  const trackEvent = (eventName, parameters = {}) => {
+    if (typeof window.gtag !== "function" || !eventName) return;
+    window.gtag("event", eventName, Object.fromEntries(Object.entries(parameters).filter(([, value]) => value)));
+  };
+
+  document.querySelectorAll("[data-ga-event]").forEach((element) => {
+    element.addEventListener("click", () => {
+      trackEvent(element.dataset.gaEvent, {
+        whitepaper_slug: element.dataset.whitepaperSlug,
+        case_study_slug: element.dataset.caseStudySlug,
+        asset_type: element.dataset.assetType,
+        cta_type: element.dataset.ctaType,
+        placement: element.dataset.placement,
+        destination: element.dataset.destination || element.getAttribute("href"),
+      });
+    });
+  });
+
   if (navToggle && navMenu) {
     navToggle.addEventListener("click", () => {
       const isOpen = navMenu.classList.toggle("open");
