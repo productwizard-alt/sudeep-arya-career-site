@@ -6,6 +6,8 @@
   const calendlyLinks = document.querySelectorAll('a[href^="https://calendly.com/"]');
   const caseMoreButton = document.querySelector("[data-case-more]");
   const extraCaseStudies = document.querySelectorAll("[data-case-extra]");
+  const regionalToggle = document.querySelector("[data-regional-toggle]");
+  const contactFocusButton = document.querySelector("[data-contact-focus]");
   let calendlyLoadPromise;
 
   if (navToggle && navMenu) {
@@ -90,6 +92,16 @@
 
   const contactForm = document.querySelector(".contact-form");
   if (contactForm instanceof HTMLFormElement) {
+    if (contactFocusButton) {
+      contactFocusButton.addEventListener("click", () => {
+        contactForm.scrollIntoView({ block: "start", behavior: "smooth" });
+        const firstField = contactForm.querySelector("input:not([type='hidden']):not([name='bot-field']), textarea, select");
+        if (firstField instanceof HTMLElement) {
+          window.setTimeout(() => firstField.focus({ preventScroll: true }), 220);
+        }
+      });
+    }
+
     contactForm.addEventListener("submit", (event) => {
       const localHosts = new Set(["localhost", "127.0.0.1", "0.0.0.0"]);
       if (!localHosts.has(window.location.hostname)) return;
@@ -98,6 +110,21 @@
       const nextUrl = new URL(contactForm.getAttribute("action") || "/contact/success/", window.location.href);
       window.location.assign(nextUrl.pathname);
     });
+  }
+
+  if (regionalToggle) {
+    const regionalPanelId = regionalToggle.getAttribute("aria-controls");
+    const regionalPanel = regionalPanelId ? document.getElementById(regionalPanelId) : null;
+
+    if (regionalPanel) {
+      regionalToggle.addEventListener("click", () => {
+        const isExpanded = regionalToggle.getAttribute("aria-expanded") === "true";
+        const nextExpanded = !isExpanded;
+        regionalToggle.setAttribute("aria-expanded", String(nextExpanded));
+        regionalToggle.textContent = nextExpanded ? "Hide regional availability −" : "View regional availability +";
+        regionalPanel.hidden = !nextExpanded;
+      });
+    }
   }
 
   if (caseMoreButton && extraCaseStudies.length) {
@@ -111,12 +138,25 @@
       });
     };
 
+    const scrollHashTargetBelowHeader = () => {
+      if (!window.location.hash) return;
+      const target = document.querySelector(window.location.hash);
+      if (!(target instanceof HTMLElement)) return;
+
+      window.requestAnimationFrame(() => {
+        const headerHeight = header instanceof HTMLElement ? header.getBoundingClientRect().height : 0;
+        const top = target.getBoundingClientRect().top + window.scrollY - headerHeight - 24;
+        window.scrollTo({ top: Math.max(0, top), behavior: "auto" });
+      });
+    };
+
     const expandForHash = () => {
       if (!window.location.hash) return;
       const target = document.querySelector(window.location.hash);
       if (target && target.hasAttribute("data-case-extra")) {
         setCaseStudiesExpanded(true);
       }
+      scrollHashTargetBelowHeader();
     };
 
     setCaseStudiesExpanded(false);
@@ -129,35 +169,35 @@
     });
 
     window.addEventListener("hashchange", expandForHash);
+    window.addEventListener("load", scrollHashTargetBelowHeader);
   }
 
-  document.querySelectorAll(".case-study").forEach((study, index) => {
-    const caseIndex = study.querySelector(".case-index");
-    const caseBody = study.querySelector(".case-body");
+  document.querySelectorAll(".case-study").forEach((study) => {
+    const methodPanel = study.querySelector(".case-methodology");
+    const headingContent = study.querySelector(".case-heading > div:first-child");
     const caseTitle = study.querySelector("h2");
-    if (!caseIndex || !caseBody) return;
+    if (!methodPanel || !headingContent) return;
 
-    if (!caseBody.id) {
-      caseBody.id = `${study.id || `case-study-${index + 1}`}-body`;
+    if (!methodPanel.id) {
+      methodPanel.id = `${study.id || "case-study"}-methodology`;
     }
 
     const toggle = document.createElement("button");
-    toggle.className = "case-collapse-button";
+    toggle.className = "case-method-toggle";
     toggle.type = "button";
-    toggle.textContent = "-";
-    toggle.setAttribute("aria-expanded", "true");
-    toggle.setAttribute("aria-controls", caseBody.id);
-    toggle.setAttribute("aria-label", `Collapse ${caseTitle ? caseTitle.textContent.trim() : "case study"}`);
-    caseIndex.appendChild(toggle);
+    toggle.textContent = "Details +";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", methodPanel.id);
+    toggle.setAttribute("aria-label", `Show methodology and evidence for ${caseTitle ? caseTitle.textContent.trim() : "case study"}`);
+    headingContent.appendChild(toggle);
 
     toggle.addEventListener("click", () => {
       const isExpanded = toggle.getAttribute("aria-expanded") === "true";
       const nextExpanded = !isExpanded;
       toggle.setAttribute("aria-expanded", String(nextExpanded));
-      toggle.textContent = nextExpanded ? "-" : "+";
-      toggle.setAttribute("aria-label", `${nextExpanded ? "Collapse" : "Expand"} ${caseTitle ? caseTitle.textContent.trim() : "case study"}`);
-      caseBody.hidden = !nextExpanded;
-      study.classList.toggle("is-collapsed", !nextExpanded);
+      toggle.textContent = nextExpanded ? "Details −" : "Details +";
+      toggle.setAttribute("aria-label", `${nextExpanded ? "Hide" : "Show"} methodology and evidence for ${caseTitle ? caseTitle.textContent.trim() : "case study"}`);
+      methodPanel.hidden = !nextExpanded;
     });
   });
 

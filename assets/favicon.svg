@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">SA commerce monogram</title>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M45 13H27c-8 0-13 4-13 10 0 7 7 9 17 10 10 1 16 4 16 10 0 7-6 10-16 10H17" stroke="#06101b" stroke-width="12"/>
+    <path d="M45 13H27c-8 0-13 4-13 10 0 7 7 9 17 10 10 1 16 4 16 10 0 7-6 10-16 10H17" stroke="#fff8eb" stroke-width="7"/>
+    <path d="M22 53 35 11l16 42" stroke="#06101b" stroke-width="12"/>
+    <path d="M22 53 35 11l16 42" stroke="#19d3c5" stroke-width="7"/>
+    <path d="M29 39h16" stroke="#06101b" stroke-width="10"/>
+    <path d="M29 39h16" stroke="#b7774a" stroke-width="5"/>
+    <path d="M35 11l5 7h-10z" fill="#19d3c5" stroke="#06101b" stroke-width="2"/>
+  </g>
+</svg>
