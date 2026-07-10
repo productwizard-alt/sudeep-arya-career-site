@@ -7,7 +7,7 @@
   const caseMoreButton = document.querySelector("[data-case-more]");
   const extraCaseStudyGroup = document.getElementById("additional-case-studies");
   const extraCaseStudies = document.querySelectorAll("[data-case-extra]");
-  const regionalToggle = document.querySelector("[data-regional-toggle]");
+  const regionalToggles = document.querySelectorAll("[data-regional-toggle]");
   const contactFocusButton = document.querySelector("[data-contact-focus]");
   let calendlyLoadPromise;
 
@@ -105,20 +105,23 @@
 
   }
 
-  if (regionalToggle) {
+  regionalToggles.forEach((regionalToggle) => {
     const regionalPanelId = regionalToggle.getAttribute("aria-controls");
     const regionalPanel = regionalPanelId ? document.getElementById(regionalPanelId) : null;
 
     if (regionalPanel) {
+      const closedLabel = regionalToggle.dataset.closedLabel || regionalToggle.textContent || "Show Regional Availability";
+      const openLabel = regionalToggle.dataset.openLabel || "Hide Regional Availability";
+
       regionalToggle.addEventListener("click", () => {
         const isExpanded = regionalToggle.getAttribute("aria-expanded") === "true";
         const nextExpanded = !isExpanded;
         regionalToggle.setAttribute("aria-expanded", String(nextExpanded));
-        regionalToggle.textContent = nextExpanded ? "Hide Regional Availability" : "Show Regional Availability";
+        regionalToggle.textContent = nextExpanded ? openLabel : closedLabel;
         regionalPanel.hidden = !nextExpanded;
       });
     }
-  }
+  });
 
   const getHashTarget = () => {
     if (!window.location.hash || window.location.hash.length <= 1) return null;
