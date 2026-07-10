@@ -114,7 +114,7 @@
         const isExpanded = regionalToggle.getAttribute("aria-expanded") === "true";
         const nextExpanded = !isExpanded;
         regionalToggle.setAttribute("aria-expanded", String(nextExpanded));
-        regionalToggle.textContent = nextExpanded ? "Hide regional availability −" : "View regional availability +";
+        regionalToggle.textContent = nextExpanded ? "Hide Regional Availability" : "Show Regional Availability";
         regionalPanel.hidden = !nextExpanded;
       });
     }
