@@ -46,9 +46,9 @@
   },
   {
     "page": "/engagements/",
-    "schemaType": "WebSite, Person, WebPage, Service, OfferCatalog, BreadcrumbList",
-    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/engagements/#webpage, https://sudeeparya.com/engagements/#service, https://sudeeparya.com/engagements/#offer-catalog",
-    "primaryEntity": "https://sudeeparya.com/#person",
+    "schemaType": "WebSite, Person, WebPage, Service, OfferCatalog, FAQPage, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/engagements/#webpage, https://sudeeparya.com/engagements/#service, https://sudeeparya.com/engagements/#offer-catalog, https://sudeeparya.com/engagements/#faq",
+    "primaryEntity": "https://sudeeparya.com/engagements/#service",
     "validationStatus": "valid",
     "issues": [],
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."

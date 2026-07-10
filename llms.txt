@@ -13,7 +13,7 @@ Important public pages:
 - https://sudeeparya.com/skills/ - Commerce capability map across channels, platforms, analytics, media, and operations.
 - https://sudeeparya.com/recruiters/ - Recruiter and hiring manager brief.
 - https://sudeeparya.com/audit/ - Digital Acceleration Audit overview and booking path.
-- https://sudeeparya.com/engagements/ - Speaking, panel, webinar, advisory, and professional discussion inquiries.
+- https://sudeeparya.com/engagements/ - Speaking, podcast, panel, webinar, interview, roundtable, workshop, and ecommerce media inquiries.
 - https://sudeeparya.com/contact/ - Contact form and scheduling paths.
 
 Private confirmation pages, form-success pages, and unpublished materials are excluded from this summary.
