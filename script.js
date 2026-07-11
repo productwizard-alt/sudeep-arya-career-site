@@ -19,7 +19,6 @@
   document.querySelectorAll("[data-ga-event]").forEach((element) => {
     element.addEventListener("click", () => {
       trackEvent(element.dataset.gaEvent, {
-        whitepaper_slug: element.dataset.whitepaperSlug,
         case_study_slug: element.dataset.caseStudySlug,
         asset_type: element.dataset.assetType,
         cta_type: element.dataset.ctaType,

@@ -9,16 +9,11 @@ Important public pages:
 - https://sudeeparya.com/ - Career profile and executive summary.
 - https://sudeeparya.com/resume/ - Crawlable HTML resume and resume PDF link.
 - https://sudeeparya.com/case-studies/ - Ecommerce and marketplace case-study library.
-- https://sudeeparya.com/case-studies/running-before-crawling-whitepaper/ - Thought-leadership case study about turning an operator point of view on AI economics into a board-ready publication.
-- https://sudeeparya.com/insights/ - Insights index for ecommerce, AI, marketplaces, retail media, technology, and accountable transformation.
-- https://sudeeparya.com/insights/running-before-crawling/ - 24-page Running Before Crawling white paper, responsive web edition, and eight original visuals.
 - https://sudeeparya.com/case-studies/banfield-subscription-commerce/ - Public-safe subscription commerce and payment workflow case study.
 - https://sudeeparya.com/skills/ - Commerce capability map across channels, platforms, analytics, media, and operations.
 - https://sudeeparya.com/recruiters/ - Recruiter and hiring manager brief.
 - https://sudeeparya.com/audit/ - Digital Acceleration Audit overview and booking path.
 - https://sudeeparya.com/engagements/ - Speaking, podcast, panel, webinar, interview, roundtable, workshop, and ecommerce media inquiries.
 - https://sudeeparya.com/contact/ - Contact form and scheduling paths.
-
-Running Before Crawling is a publication and thought-leadership project, not a client case study. Its public materials separate publication facts from post-launch market measurement. The final paper keeps Gartner labeled as a forecast, Klarna savings as company-reported, the Air Canada example limited to a British Columbia tribunal decision, and the Uber source limitation visible in the web edition.
 
 Private confirmation pages, form-success pages, and unpublished materials are excluded from this summary.

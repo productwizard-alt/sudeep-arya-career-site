@@ -1,2 +1,6 @@
-/whitepapers/ /insights/ 301!
-/whitepapers/running-before-crawling/ /insights/running-before-crawling/ 301!
+/insights/ /404.html 410!
+/insights/running-before-crawling/ /404.html 410!
+/assets/whitepapers/sudeep-arya-running-before-crawling.pdf /404.html 410!
+/whitepapers/ /404.html 410!
+/whitepapers/running-before-crawling/ /404.html 410!
+/case-studies/running-before-crawling-whitepaper/ /404.html 410!
