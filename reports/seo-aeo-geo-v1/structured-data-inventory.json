@@ -2,7 +2,7 @@
   {
     "page": "/",
     "schemaType": "WebSite, Person, ProfilePage",
-    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/#profile",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person",
     "primaryEntity": "https://sudeeparya.com/#person",
     "validationStatus": "valid",
     "issues": [],
@@ -22,6 +22,15 @@
     "schemaType": "WebSite, Person, CollectionPage, ItemList, BreadcrumbList",
     "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/case-studies/#collection, https://sudeeparya.com/case-studies/#case-list",
     "primaryEntity": "https://sudeeparya.com/case-studies/#case-list",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/case-studies/ai-economics-decision-framework/",
+    "schemaType": "Article,CreativeWork, WebPage, BreadcrumbList",
+    "@id": "https://sudeeparya.com/case-studies/ai-economics-decision-framework/#work, https://sudeeparya.com/case-studies/ai-economics-decision-framework/#webpage, https://sudeeparya.com/case-studies/ai-economics-decision-framework/#breadcrumb",
+    "primaryEntity": "",
     "validationStatus": "valid",
     "issues": [],
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
@@ -76,6 +85,15 @@
     "schemaType": "WebSite, Person, WebPage, ItemList, BreadcrumbList",
     "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/skills/#webpage, https://sudeeparya.com/skills/#capability-zones",
     "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/tools/ai-cost-reality-calculator/",
+    "schemaType": "WebPage, WebApplication,SoftwareApplication, BreadcrumbList, FAQPage",
+    "@id": "https://sudeeparya.com/tools/ai-cost-reality-calculator/#webpage, https://sudeeparya.com/tools/ai-cost-reality-calculator/#app, https://sudeeparya.com/tools/ai-cost-reality-calculator/#breadcrumb, https://sudeeparya.com/tools/ai-cost-reality-calculator/#faq",
+    "primaryEntity": "https://sudeeparya.com/tools/ai-cost-reality-calculator/#app",
     "validationStatus": "valid",
     "issues": [],
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
