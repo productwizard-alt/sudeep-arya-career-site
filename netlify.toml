@@ -1,6 +1,10 @@
 [build]
   publish = "."
 
+[context.staging]
+  command = "bash scripts/build-staging.sh"
+  publish = ".staging-dist"
+
 [[headers]]
   for = "/*"
   [headers.values]

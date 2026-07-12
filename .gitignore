@@ -7,3 +7,6 @@ source-assets/private/
 
 # Local Netlify folder
 .netlify
+
+# Generated staging-only Netlify publish output
+.staging-dist/
