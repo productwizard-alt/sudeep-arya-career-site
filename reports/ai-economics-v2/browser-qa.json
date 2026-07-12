@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "findings": [
+    {
+      "type": "initial",
+      "viewport": "desktop-1440",
+      "overflow": 0,
+      "requiredQuickInputs": 5,
+      "advancedCollapsed": true,
+      "resultsHidden": true,
+      "customRequired": false
+    },
+    {
+      "type": "result",
+      "viewport": "desktop-1440",
+      "scenarioButtons": 3,
+      "rangeSummaryVisible": true,
+      "comparisonText": "Available in Advanced Analysis",
+      "primaryOutputs": 6
+    },
+    {
+      "type": "advanced",
+      "viewport": "desktop-1440",
+      "quickValuePreserved": true
+    },
+    {
+      "type": "initial",
+      "viewport": "mobile-390",
+      "overflow": 0,
+      "requiredQuickInputs": 5,
+      "advancedCollapsed": true,
+      "resultsHidden": true,
+      "customRequired": false
+    },
+    {
+      "type": "result",
+      "viewport": "mobile-390",
+      "scenarioButtons": 3,
+      "rangeSummaryVisible": true,
+      "comparisonText": "Available in Advanced Analysis",
+      "primaryOutputs": 6
+    },
+    {
+      "type": "advanced",
+      "viewport": "mobile-390",
+      "quickValuePreserved": true
+    }
+  ],
+  "failures": []
+}

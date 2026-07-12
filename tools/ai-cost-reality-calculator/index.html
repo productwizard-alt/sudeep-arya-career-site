@@ -1,280 +1,103 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#06101b">
-    <title>AI Cost Reality Calculator | Sudeep Arya</title>
-    <meta name="description" content="Calculate fully loaded AI TCO, cost per verified outcome, risk-adjusted ROI, payback, NPV, and capacity without sending financial inputs anywhere.">
-    <meta name="author" content="Sudeep Arya">
-    <meta name="robots" content="index, follow">
-    <link rel="canonical" href="https://sudeeparya.com/tools/ai-cost-reality-calculator/">
-    <meta property="og:title" content="What Does Your AI Outcome Actually Cost?">
-    <meta property="og:description" content="A private, browser-based AI TCO and verified-outcome calculator for leaders.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://sudeeparya.com/tools/ai-cost-reality-calculator/">
-    <meta property="og:image" content="https://sudeeparya.com/assets/ai-economics-social-preview.png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="AI Cost Reality Calculator by Sudeep Arya">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="What Does Your AI Outcome Actually Cost?">
-    <meta name="twitter:description" content="Calculate fully loaded AI TCO and cost per verified business outcome in your browser.">
-    <meta name="twitter:image" content="https://sudeeparya.com/assets/ai-economics-social-preview.png">
-    <meta name="twitter:image:alt" content="AI Cost Reality Calculator by Sudeep Arya">
-    <link rel="icon" href="/favicon.ico" sizes="any">
-    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-    <link rel="stylesheet" href="/styles.css">
-    <link rel="stylesheet" href="calculator.css">
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "WebApplication",
-            "@id": "https://sudeeparya.com/tools/ai-cost-reality-calculator/#app",
-            "name": "AI Cost Reality Calculator",
-            "applicationCategory": "BusinessApplication",
-            "operatingSystem": "Web browser",
-            "url": "https://sudeeparya.com/tools/ai-cost-reality-calculator/",
-            "description": "A browser-based AI TCO and verified outcome calculator that separates hard financial benefit from capacity and includes risk-adjusted economics.",
-            "author": {"@id": "https://sudeeparya.com/#person"},
-            "creator": {"@id": "https://sudeeparya.com/#person"},
-            "isAccessibleForFree": true,
-            "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
-            "isPartOf": {"@id": "https://sudeeparya.com/#website"}
-          },
-          {
-            "@type": "BreadcrumbList",
-            "@id": "https://sudeeparya.com/tools/ai-cost-reality-calculator/#breadcrumb",
-            "itemListElement": [
-              {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://sudeeparya.com/"},
-              {"@type": "ListItem", "position": 2, "name": "Insights", "item": "https://sudeeparya.com/insights/"},
-              {"@type": "ListItem", "position": 3, "name": "AI Cost Reality Calculator", "item": "https://sudeeparya.com/tools/ai-cost-reality-calculator/"}
-            ]
-          }
-        ]
-      }
-    </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C65RGRMMW1"></script>
-    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-C65RGRMMW1');</script>
-  </head>
-  <body class="calculator-page">
-    <a class="skip-link" href="#calculator">Skip to calculator</a>
-    <div class="scroll-progress" aria-hidden="true"></div>
-    <header class="site-header" data-header>
-      <nav class="nav" aria-label="Primary navigation">
-        <a class="brand" href="/" aria-label="Sudeep Arya home"><span>SA</span>Sudeep Arya</a>
-        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu"><span class="sr-only">Toggle navigation</span><span></span><span></span></button>
-        <div class="nav-menu" id="nav-menu"><a href="/resume/">Resume</a><a href="/case-studies/">Case Studies</a><a href="/insights/">Insights</a><a href="/skills/">Skills</a><a href="/engagements/">Speaking &amp; Media</a><a class="nav-audit" href="/audit/">Audit</a><a class="nav-contact" href="/contact/">Contact</a></div>
-      </nav>
-    </header>
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#071521">
+  <title>AI Cost Reality Calculator | Sudeep Arya</title>
+  <meta name="description" content="Compare current and AI-assisted cost per verified business outcome using actuals, estimates, or ranges.">
+  <link rel="canonical" href="https://sudeeparya.com/tools/ai-cost-reality-calculator/">
+  <link rel="icon" href="/favicon.ico" sizes="any"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="calculator.css">
+</head>
+<body class="calculator-page">
+  <a class="skip-link" href="#calculator">Skip to calculator</a>
+  <header class="site-header" data-header><nav class="nav" aria-label="Primary navigation"><a class="brand" href="/" aria-label="Sudeep Arya home"><span>SA</span>Sudeep Arya</a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu"><span class="sr-only">Toggle navigation</span><span></span><span></span></button><div class="nav-menu" id="nav-menu"><a href="/resume/">Resume</a><a href="/case-studies/">Case Studies</a><a href="/insights/">Insights</a><a href="/skills/">Skills</a><a href="/engagements/">Speaking &amp; Media</a><a class="nav-audit" href="/audit/">Audit</a><a class="nav-contact" href="/contact/">Contact</a></div></nav></header>
 
-    <main id="main">
-      <section class="calculator-hero">
-        <div class="calculator-hero-inner reveal">
-          <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/insights/">Insights</a><span>/</span><span>AI Cost Reality Calculator</span></nav>
-          <p class="eyebrow">Private browser-based decision support · Formula 1.1.0</p>
-          <h1>What does your AI outcome actually cost?</h1>
-          <p>A practical AI TCO and verified-outcome calculator for leaders who need to separate model activity from business value.</p>
-          <div class="calculator-hero-rule" aria-label="The calculation sequence"><span>Workflow</span><i aria-hidden="true"></i><span>Full cost</span><i aria-hidden="true"></i><strong>Verified outcome</strong></div>
-        </div>
-      </section>
+  <main>
+    <section class="calculator-hero">
+      <div class="calculator-hero-inner">
+        <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/insights/">Insights</a><span>/</span><span>Calculator</span></nav>
+        <p class="eyebrow">AI Cost Reality Calculator · Formula 1.1.0</p>
+        <h1>What does one usable AI business outcome actually cost?</h1>
+        <p class="hero-subhead">Compare your current process with an AI-assisted version using actual data, planning estimates, or low-to-high ranges.</p>
+        <p class="hero-note">You can complete a quick estimate in about two minutes. Detailed TCO, risk, and governance inputs are available under Advanced Analysis.</p>
+        <div class="hero-actions"><a class="button primary" href="#calculator">Start quick estimate</a><a href="#methodology">View the methodology</a></div>
+      </div>
+    </section>
 
-      <section class="calculator-intro" aria-labelledby="calculator-intro-title">
-        <div class="section-inner calculator-intro-grid">
-          <div>
-            <p class="eyebrow">The measurement rule</p>
-            <h2 id="calculator-intro-title">A token is a meter reading. It is not a business result.</h2>
-          </div>
-          <p>This tool calculates the fully loaded cost of building, running, reviewing, correcting, governing, and maintaining an AI use case—then divides that cost by outcomes the business actually verified.</p>
-        </div>
-      </section>
+    <section class="calculator-workspace" id="calculator" aria-labelledby="calculator-title">
+      <div class="calculator-shell">
+        <header class="workspace-heading"><div><p class="eyebrow">Quick Estimate</p><h2 id="calculator-title">A decision-ready result, without the methodology homework.</h2></div><p><strong>Private by design.</strong> Inputs stay in this browser and are not submitted.</p></header>
+        <div class="calculator-error-summary" data-error-summary role="alert" tabindex="-1" hidden></div>
+        <form id="ai-economics-form" novalidate>
+          <section class="quick-section use-case-section" aria-labelledby="use-case-title">
+            <div class="section-number">1</div><div class="section-body"><h3 id="use-case-title">Choose the work being evaluated</h3>
+              <label class="use-case-select">Type of work<select name="use_case_template"><option value="service">Customer service case</option><option value="content">Product content or PDP</option><option value="catalog">Catalog or marketplace operation</option><option value="creative">Creative asset production</option><option value="order">Order or fulfillment exception</option><option value="reporting">Reporting or analysis workflow</option><option value="custom">Custom business process</option></select></label>
+              <div class="outcome-summary"><span>Verified outcome</span><p data-outcome-definition>Case closed, quality requirements passed, no policy breach, and not reopened within the selected period.</p><label class="custom-outcome" hidden>What completed business result are you measuring?<input name="custom_outcome" type="text" maxlength="180" placeholder="Example: One approved product page published without material correction."><small>Optional. You can refine this in Advanced Analysis.</small></label></div>
+            </div>
+          </section>
 
-      <section class="calculator-methodology" aria-labelledby="methodology-teaser-title">
-        <div class="section-inner">
-          <div class="methodology-teaser"><div><p class="eyebrow">Methodology</p><h2 id="methodology-teaser-title">Begin with the business result, then count what makes it usable.</h2></div><p>Most AI calculators begin with model cost and end with an impressive ROI percentage. This one begins with the business result that must actually be delivered—and then counts everything required to make that result accurate, usable, governed, and complete.</p></div>
-          <details class="methodology-disclosure" data-methodology>
-            <summary>Learn how the calculation was built</summary>
-            <div class="methodology-introduction"><p>Most AI cost discussions begin with tokens, API calls, or hours saved. Those numbers describe activity. They do not prove that the business received a usable result.</p><p>This framework starts somewhere else:</p><blockquote>What did the organization actually receive, and what did it cost to make that outcome acceptable?</blockquote></div>
-            <div class="methodology-sections">
-              <details><summary>1. Why model cost is not the full cost</summary><div><p>An AI output may still require human review, correction, policy and compliance approval, exception handling, system integration, monitoring, maintenance, escalation, and downstream remediation.</p><p><strong>The model invoice is one part of the cost stack—not the entire business case.</strong></p></div></details>
-              <details><summary>2. Why the calculator uses verified outcomes</summary><div><dl><dt>Attempt</dt><dd>The workflow starts or the system produces an output.</dd><dt>Completed output</dt><dd>The technical workflow reaches its end.</dd><dt>First-pass verified outcome</dt><dd>The result passes without material correction.</dd><dt>Reviewed-pass outcome</dt><dd>A human reviews and approves it without correction; this is not autonomous.</dd><dt>Corrected verified outcome</dt><dd>The result becomes acceptable after material correction.</dd><dt>Failure</dt><dd>The attempt is rejected, abandoned, reopened, reversed, or causes a defined exception.</dd></dl><p><strong>A prompt is not a result. An API call is not a result. A technically completed workflow is not necessarily a verified business outcome.</strong></p></div></details>
-              <details open><summary>3. The primary calculation</summary><div><pre><code>Fully Loaded AI Cost per Verified Outcome = Unit-Economics AI TCO ÷ Verified Outcomes</code></pre><pre><code>Unit-Economics AI TCO = Direct Model and Platform Cost + Human Review Cost + Rework and Exception Cost + Escalation Cost + Other Recurring AI Operating Cost + Annualized Implementation Cost + Annualized Refresh Cost</code></pre><p>Cost per attempt and cost per verified outcome appear side by side because the difference reveals the correction and failure burden.</p></div></details>
-              <details><summary>4. Why capacity is not treated as cash</summary><div><p>Saved time becomes hard financial value only when there is evidence of payroll, contractor cost, or overtime removed; approved hiring avoided; retired software or process cost; or measurable incremental contribution.</p><p><strong>Released capacity may be valuable. It is not automatically cash savings.</strong></p><blockquote>Finance does not deposit hours. <cite>— Sudeep Arya</cite></blockquote></div></details>
-              <details><summary>5. Why the calculator shows three TCO views</summary><div><p><strong>Year 1 cash TCO</strong> answers how much cash the initiative requires in its first year. <strong>Steady-state annual TCO</strong> shows the ongoing run rate. <strong>Unit-economics TCO</strong> adds annualized implementation and refresh so cost can be compared with verified outcomes.</p></div></details>
-              <details><summary>6. What is original about the framework</summary><div><p>The AI Cost Reality Framework is an original decision framework developed by Sudeep Arya. It applies established finance, FinOps, risk-management, and unit-economics methods to measuring fully loaded AI cost per verified business outcome.</p><p>Established concepts include TCO, ROI, NPV, payback, expected loss, break-even, contribution margin, and unit economics. The original contribution is the combined system: verified outcomes as the controlling denominator; cost per attempt beside cost per verified outcome; human correction inside cost; capacity separate from cash; three TCO views; evidence labels; a governance gate; ecommerce outcome templates; and integrated cost, quality, benefit, and risk engines.</p></div></details>
-              <details><summary>7. What the calculator can and cannot tell you</summary><div><p>It can help assess verified unit cost, hard financial value, payback, risk-adjusted economics, evidence coverage, and whether more production evidence is required.</p><p>It cannot decide whether people should be eliminated, reach legal or employment conclusions, determine accounting treatment, provide investment advice, or make weak assumptions valid because they were entered into a tool.</p><p><strong>The purpose of the calculator is not to make every AI initiative look attractive. Its purpose is to make the economics visible.</strong></p></div></details>
+          <section class="quick-section inputs-section" aria-labelledby="inputs-title">
+            <div class="section-number">2</div><div class="section-body"><h3 id="inputs-title">Add five numbers</h3><p class="section-intro">Estimates are fine. Use a range only when it helps.</p>
+              <div class="input-groups">
+                <fieldset><legend>Current process</legend><div class="quick-grid">
+                  <div class="evidence-field" data-field="baseline_verified" data-role="benefit"><label>Annual outcomes completed today</label><small>Completed results that met the required standard.</small></div>
+                  <div class="evidence-field" data-field="baseline_cost" data-role="cost" data-money><label>Current annual process cost</label><small>Fully loaded annual cost of today’s process.</small></div>
+                </div></fieldset>
+                <fieldset><legend>AI-assisted process</legend><div class="quick-grid">
+                  <div class="evidence-field" data-field="ai_attempts" data-role="benefit"><label>Expected AI-assisted attempts per year</label></div>
+                  <div class="evidence-field" data-field="verified_rate" data-role="rate" data-percent><label>Expected success rate</label><small>Percentage of attempts expected to become usable outcomes.</small></div>
+                  <div class="evidence-field" data-field="total_ai_cost" data-role="cost" data-money><label>Total annual AI-assisted cost</label><small>Model, platform, human review, correction, and operations combined.</small></div>
+                </div></fieldset>
+              </div>
+              <details class="quick-options"><summary>Add optional setup cost</summary><div class="quick-grid"><div class="evidence-field optional-field" data-field="upfront" data-role="cost" data-money data-optional><label>Upfront implementation cost <em>Optional</em></label></div></div></details>
+              <button class="button primary calculate-button" type="submit">Calculate estimate</button>
+            </div>
+          </section>
+
+          <details class="advanced-analysis" data-advanced>
+            <summary><span><strong>Advanced analysis</strong><small>Detailed TCO, outcome reconciliation, risk, finance, governance, and model economics</small></span></summary>
+            <div class="advanced-content">
+              <p>Quick values are preserved. Add detail only where it improves the decision.</p>
+              <div class="advanced-grid">
+                <fieldset><legend>Outcome and comparison</legend>
+                  <label>Custom outcome definition<input name="outcome_definition" type="text"></label><label>Quality threshold<input name="quality_threshold" type="text" value="Meets documented quality and policy requirements"></label><label>Verification window<input name="verification_window" type="text" value="Template default"></label>
+                  <label><input type="checkbox" name="match_outcome"> Outcome definition matches</label><label><input type="checkbox" name="match_quality"> Quality threshold matches</label><label><input type="checkbox" name="match_period"> Period matches</label><label><input type="checkbox" name="match_scope"> Scope matches</label><label><input type="checkbox" name="match_window"> Verification window matches</label><label><input type="checkbox" name="match_volume"> Volume basis matches</label>
+                </fieldset>
+                <fieldset><legend>Verified outcomes and human work</legend>
+                  <label>First-pass verified outcomes<input name="first_pass" type="number" min="0"></label><label>Reviewed-pass outcomes<input name="reviewed_pass" type="number" min="0"></label><label>Corrected verified outcomes<input name="corrected" type="number" min="0"></label><label>Failures<input name="failed" type="number" min="0"></label>
+                  <label>Outputs reviewed<input name="reviewed_outputs" type="number" min="0"></label><label>Review minutes per output<input name="review_minutes" type="number" min="0"></label><label>Reviewer hourly rate<input name="reviewer_rate" type="number" min="0"></label><label>Correction minutes per output<input name="correction_minutes" type="number" min="0"></label><label>Correction hourly rate<input name="correction_rate" type="number" min="0"></label><label>Escalation cost<input name="escalation_cost" type="number" min="0" value="0"></label>
+                </fieldset>
+                <fieldset><legend>TCO and finance</legend>
+                  <label>Other recurring TCO<input name="other_recurring" type="number" min="0" value="0"></label><label>Useful life (years)<input name="useful_life" type="number" min="0.1" step="0.1" value="3"></label><label>Annualized refresh cost<input name="refresh_annualized" type="number" min="0" value="0"></label><label>Year 1 transition cost<input name="transition_year_1" type="number" min="0" value="0"></label><label>Discount rate (%)<input name="discount_rate" type="number" min="0" max="100" value="8"></label><label>NPV horizon (years)<input name="horizon" type="number" min="1" max="10" value="3"></label><label>Annual fixed AI cost<input name="annual_fixed_ai_cost" type="number" min="0" value="0"></label><label>Baseline variable unit cost<input name="baseline_variable_unit_cost" type="number" min="0" value="0"></label><label>AI variable unit cost<input name="ai_variable_unit_cost" type="number" min="0" value="0"></label><label><input type="checkbox" name="fixed_variable_boundaries_match"> Fixed/variable boundaries match</label>
+                </fieldset>
+                <fieldset><legend>Risk, capacity, and governance</legend>
+                  <label>Expected annual loss<input name="expected_loss" type="number" min="0" value="0"></label><label>Estimated annual hours released<input name="capacity_hours" type="number" min="0" value="0"></label><label>Severe-loss scenario<input name="severe_loss" type="number" min="0" value="0"></label><label>Productive hours per FTE<input name="productive_hours_per_fte" type="number" min="1" value="2080"></label>
+                  <label><input type="checkbox" name="quality_at_or_above_baseline"> Quality at or above baseline</label><label><input type="checkbox" name="representative_production_evidence"> Representative production evidence</label><label><input type="checkbox" name="failure_recovery_tested"> Failure recovery tested</label><label><input type="checkbox" name="specialist_knowledge_retained"> Specialist knowledge retained</label><label><input type="checkbox" name="named_accountable_owner"> Named accountable owner</label><label><input type="checkbox" name="finance_validated_hard_benefits"> Finance validated hard benefits</label><label><input type="checkbox" name="control_approvals_complete"> Control approvals complete</label>
+                </fieldset>
+                <fieldset><legend>Token and model economics</legend>
+                  <label>Annual input tokens (millions)<input name="input_tokens" type="number" min="0"></label><label>Annual output tokens (millions)<input name="output_tokens" type="number" min="0"></label><label>Input price per million<input name="input_token_rate" type="number" min="0"></label><label>Output price per million<input name="output_token_rate" type="number" min="0"></label><label>Cached input share (%)<input name="cached_share" type="number" min="0" max="100"></label><label>Cache read price per million<input name="cache_read_rate" type="number" min="0"></label><label>Batch discount (%)<input name="batch_discount" type="number" min="0" max="100"></label><label>Model migration reserve<input name="model_migration_reserve" type="number" min="0"></label>
+                </fieldset>
+              </div>
             </div>
           </details>
-        </div>
-      </section>
+        </form>
 
-      <section class="calculator-workspace" id="calculator" aria-labelledby="calculator-title">
-        <div class="calculator-shell">
-          <div class="calculator-workspace-heading">
-            <div><p class="eyebrow">AI Economics Snapshot</p><h2 id="calculator-title">Build a recalculable business case</h2></div>
-            <p class="privacy-note"><strong>Your inputs stay on this device.</strong> Nothing entered here is submitted, saved automatically, placed in a URL, or sent to analytics.</p>
+        <section class="calculator-results" data-results hidden aria-labelledby="results-title">
+          <div class="results-heading"><div><p class="eyebrow">Your result</p><h2 id="results-title">What the assumptions show</h2></div><button class="text-button" type="button" data-edit>Edit inputs</button></div>
+          <div class="scenario-tabs" role="tablist" aria-label="Range scenarios"><button type="button" data-scenario="conservative">Conservative</button><button type="button" data-scenario="central" aria-selected="true">Central</button><button type="button" data-scenario="favorable">Favorable</button></div>
+          <div class="primary-results" aria-live="polite">
+            <article><span>Current cost per successful outcome</span><strong data-output="baseline-cost">—</strong></article><article><span>AI cost per attempt</span><strong data-output="attempt-cost">—</strong></article><article><span>AI cost per successful outcome</span><strong data-output="verified-cost">—</strong></article><article><span>Expected failed attempts</span><strong data-output="failed-attempts">—</strong></article><article><span>Annual cost spent on failed work</span><strong data-output="failure-cost">—</strong></article><article class="status-result"><span>Directional signal</span><strong data-output="status">—</strong></article>
           </div>
-          <noscript><p class="calculator-noscript">Interactive calculation requires JavaScript. The methodology and definitions remain available without it.</p></noscript>
-          <section class="scenario-controls" aria-labelledby="scenario-title"><div><p class="eyebrow">Scenario</p><h3 id="scenario-title">Keep each case explicit</h3></div><div class="scenario-buttons" role="group" aria-label="Calculation scenario"><button type="button" data-scenario="conservative" aria-pressed="false">Conservative <small>Not set</small></button><button type="button" data-scenario="operating_plan" aria-pressed="true">Operating plan <small>Active</small></button><button type="button" data-scenario="proven_case" aria-pressed="false">Proven case <small>Not set</small></button></div><p data-scenario-status>The visible starting assumptions are a synthetic demonstration—not a benchmark or claim. Replace them with your evidence. Switching to an unset scenario explicitly copies the visible fields and records that copy.</p></section>
+          <p class="range-summary" data-range-summary hidden></p>
+          <div class="attempt-explainer"><p>Attempts include failed, corrected, and unusable work. Successful outcomes are the completed business results that met the required standard.</p></div>
+          <details class="full-detail"><summary>View the full financial model</summary><div class="detail-grid"><article><span>Year 1 TCO</span><strong data-output="year1">—</strong></article><article><span>Steady-state TCO</span><strong data-output="steady">—</strong></article><article><span>Unit-economics TCO</span><strong data-output="unit-tco">—</strong></article><article><span>Expected annual loss</span><strong data-output="expected-loss">—</strong></article><article><span>NPV</span><strong data-output="npv">—</strong></article><article><span>Payback</span><strong data-output="payback">—</strong></article><article><span>Unit-cost improvement</span><strong data-output="unit-improvement">Available in Advanced Analysis</strong></article><article><span>Decision gate</span><strong data-output="decision-gate">—</strong></article></div></details>
+          <details class="range-rules"><summary>How ranges are calculated</summary><p>Costs use high / midpoint / low for conservative / central / favorable. Benefits and verified rates use low / midpoint / high. Expected loss uses high / midpoint / low. Actual and Estimate values stay the same in all three scenarios.</p></details>
+          <p class="result-footnote">Formula 1.1.0 · Decision support only. Capacity is never treated as cash.</p>
+        </section>
+      </div>
+    </section>
 
-          <nav class="calculator-stepper" aria-label="Calculator progress">
-            <button type="button" data-step-button="0" aria-current="step"><span>1</span>Outcome</button>
-            <button type="button" data-step-button="1"><span>2</span>Baseline</button>
-            <button type="button" data-step-button="2"><span>3</span>AI cost</button>
-            <button type="button" data-step-button="3"><span>4</span>Benefit</button>
-            <button type="button" data-step-button="4"><span>5</span>Risk</button>
-            <button type="button" data-step-button="5"><span>6</span>Results</button>
-          </nav>
-
-          <div class="calculator-error-summary" id="calculator-error-summary" data-error-summary role="alert" tabindex="-1" hidden></div>
-
-          <form id="ai-economics-form" novalidate>
-            <fieldset class="calculator-step" data-step="0">
-              <legend><span>01</span> Define the verified outcome</legend>
-              <p class="step-intro">Use the same business outcome, quality threshold, period, and verification window for the baseline and AI-assisted process.</p>
-              <div class="field-grid field-grid-wide">
-                <label class="field"><span>Use-case template</span><select name="use_case_template"><option value="custom">Custom outcome</option><option value="service">Customer service case</option><option value="content">Product content</option><option value="order">Order exception</option><option value="catalog">Catalog operation</option><option value="creative">Creative asset</option></select><small>Templates are editable starting points.</small></label>
-                <label class="field field-span"><span>Verified outcome definition</span><textarea name="outcome_definition" rows="3" required>Case closed, quality check passed, no policy breach, and not reopened within 7 days</textarea><small>Describe what the business accepts—not what the model generates.</small></label>
-                <label class="field"><span>Quality threshold</span><input name="quality_threshold" type="text" value="Meets documented quality and policy requirements"></label>
-                <label class="field"><span>Verification window</span><input name="verification_window" type="text" value="7 days after completion"></label>
-                <label class="field"><span>Currency</span><select name="currency"><option value="USD">USD — US dollar</option><option value="CAD">CAD — Canadian dollar</option><option value="EUR">EUR — Euro</option><option value="GBP">GBP — Pound sterling</option></select></label>
-                <label class="field"><span>Evidence label</span><select name="metadata_evidence"><option value="forecast">Forecast</option><option value="estimate">Estimate</option><option value="measured">Measured</option><option value="actual_reconciled">Actual, reconciled</option><option value="unknown">Unknown</option></select></label>
-              </div>
-            </fieldset>
-
-            <fieldset class="calculator-step" data-step="1">
-              <legend><span>02</span> Establish the current-state baseline</legend>
-              <p class="step-intro">Enter a comparable annual process cost and number of verified outcomes.</p>
-              <div class="field-grid">
-                <label class="field"><span>Annual verified outcomes</span><input name="baseline_verified" type="number" min="0" step="1" value="100000" inputmode="decimal" required></label>
-                <label class="field"><span>Annual process cost</span><span class="money-input"><b data-currency-symbol>$</b><input name="baseline_cost" type="number" min="0" step="0.01" value="1000000" inputmode="decimal" required></span></label>
-                <label class="field"><span>Evidence label</span><select name="baseline_evidence"><option value="actual_reconciled">Actual, reconciled</option><option value="measured">Measured</option><option value="forecast">Forecast</option><option value="estimate">Estimate</option><option value="unknown">Unknown</option></select></label>
-              </div>
-              <details class="advanced-inputs"><summary>Optional fixed and variable cost boundary</summary><div class="field-grid"><label class="field"><span>Baseline variable cost per outcome</span><span class="money-input"><b data-currency-symbol>$</b><input name="baseline_variable_unit_cost" type="number" min="0" step="0.01"></span></label><label class="check-field"><input name="fixed_variable_boundaries_match" type="checkbox"><span>Baseline and AI fixed/variable boundaries match</span></label></div></details>
-            </fieldset>
-
-            <fieldset class="calculator-step" data-step="2">
-              <legend><span>03</span> Enter AI cost and quality</legend>
-              <p class="step-intro">Count every attempt. Failed and retried calls still cost money.</p>
-              <div class="field-grid">
-                <label class="field"><span>Annual attempts</span><input name="ai_attempts" type="number" min="0" step="1" value="125000" inputmode="decimal" required></label>
-                <label class="field" data-rate-field><span>Final verified-outcome rate</span><span class="percent-input"><input name="verified_rate" type="number" min="0" max="100" step="0.01" value="84" inputmode="decimal" required><b>%</b></span></label>
-                <label class="field"><span>Direct model and platform cost</span><span class="money-input"><b data-currency-symbol>$</b><input name="direct_ai_cost" type="number" min="0" step="0.01" value="150000" inputmode="decimal" required></span></label>
-                <label class="field"><span>Human review cost</span><span class="money-input"><b data-currency-symbol>$</b><input name="human_review" type="number" min="0" step="0.01" value="160000" inputmode="decimal" required></span></label>
-                <label class="field"><span>Rework and exception cost</span><span class="money-input"><b data-currency-symbol>$</b><input name="rework_exception" type="number" min="0" step="0.01" value="90000" inputmode="decimal" required></span></label>
-                <label class="field"><span>Other recurring operating cost</span><span class="money-input"><b data-currency-symbol>$</b><input name="other_recurring" type="number" min="0" step="0.01" value="200000" inputmode="decimal" required></span></label>
-                <label class="field"><span>Upfront implementation cost</span><span class="money-input"><b data-currency-symbol>$</b><input name="upfront" type="number" min="0" step="0.01" value="300000" inputmode="decimal" required></span></label>
-                <label class="field"><span>Expected useful life</span><span class="suffix-input"><input name="useful_life" type="number" min="0.1" max="10" step="0.1" value="3" required><b>years</b></span></label>
-                <label class="field"><span>Evidence label</span><select name="ai_evidence"><option value="forecast">Forecast</option><option value="estimate">Estimate</option><option value="measured">Measured</option><option value="actual_reconciled">Actual, reconciled</option><option value="unknown">Unknown</option></select></label>
-              </div>
-              <details class="advanced-inputs" data-detailed-counts><summary>Use detailed outcome counts</summary><p>For a closed period, all categories must reconcile to attempts.</p><div class="field-grid"><label class="field"><span>First-pass verified</span><input name="first_pass" type="number" min="0" step="1" disabled></label><label class="field"><span>Reviewed, no correction</span><input name="reviewed_pass" type="number" min="0" step="1" disabled></label><label class="field"><span>Corrected and verified</span><input name="corrected" type="number" min="0" step="1" disabled></label><label class="field"><span>Failed or abandoned</span><input name="failed" type="number" min="0" step="1" disabled></label><label class="field"><span>Unresolved</span><input name="unresolved" type="number" min="0" step="1" disabled></label><label class="check-field"><input name="period_closed" type="checkbox" checked disabled><span>This is a closed measurement period</span></label></div></details>
-              <input name="escalation_cost" type="hidden" value="0">
-              <details class="advanced-inputs"><summary>Calculate human review, rework, and escalation from activity</summary><div class="field-grid"><label class="field"><span>Outputs reviewed</span><input name="reviewed_outputs" type="number" min="0" step="1"></label><label class="field"><span>Review minutes per output</span><input name="review_minutes" type="number" min="0" step="0.1"></label><label class="field"><span>Reviewer hourly rate</span><span class="money-input"><b data-currency-symbol>$</b><input name="reviewer_rate" type="number" min="0" step="0.01"></span></label><label class="field"><span>Outputs corrected</span><input name="corrected_outputs" type="number" min="0" step="1"></label><label class="field"><span>Correction minutes per output</span><input name="correction_minutes" type="number" min="0" step="0.1"></label><label class="field"><span>Correction hourly rate</span><span class="money-input"><b data-currency-symbol>$</b><input name="correction_rate" type="number" min="0" step="0.01"></span></label><label class="field"><span>External remediation cost</span><span class="money-input"><b data-currency-symbol>$</b><input name="external_remediation" type="number" min="0" step="0.01"></span></label><label class="field"><span>Escalations</span><input name="escalations" type="number" min="0" step="1"></label><label class="field"><span>Cost per escalation</span><span class="money-input"><b data-currency-symbol>$</b><input name="escalation_unit_cost" type="number" min="0" step="0.01"></span></label></div><button class="text-button" type="button" data-apply-human-costs>Apply calculated human costs</button></details>
-              <details class="advanced-inputs"><summary>Build the detailed recurring operating-cost stack</summary><p>Use annual costs. The total replaces the aggregate “other recurring” field; direct model/platform, human review, rework, and escalation remain separate.</p><div class="field-grid"><label class="field"><span>Hosting, compute, and network</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_hosting_compute" type="number" min="0" step="0.01"></span></label><label class="field"><span>Storage, search, retrieval, and data pipelines</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_data_infrastructure" type="number" min="0" step="0.01"></span></label><label class="field"><span>Software licenses and subscriptions</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_software" type="number" min="0" step="0.01"></span></label><label class="field"><span>Evaluation, monitoring, and observability</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_monitoring" type="number" min="0" step="0.01"></span></label><label class="field"><span>Security, privacy, legal, and compliance</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_controls" type="number" min="0" step="0.01"></span></label><label class="field"><span>Maintenance and model migration</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_maintenance" type="number" min="0" step="0.01"></span></label><label class="field"><span>Incident response and vendor support</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_incident_vendor" type="number" min="0" step="0.01"></span></label><label class="field"><span>Allocated engineering, product, data, finance, and management</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_cross_functional" type="number" min="0" step="0.01"></span></label><label class="field"><span>Exit or vendor-switching reserve</span><span class="money-input"><b data-currency-symbol>$</b><input name="cost_exit_reserve" type="number" min="0" step="0.01"></span></label></div><button class="text-button" type="button" data-apply-recurring-costs>Apply detailed recurring total</button></details>
-              <details class="advanced-inputs"><summary>Optional break-even inputs</summary><div class="field-grid"><label class="field"><span>Annual fixed AI cost</span><span class="money-input"><b data-currency-symbol>$</b><input name="annual_fixed_ai_cost" type="number" min="0" step="0.01"></span></label><label class="field"><span>AI variable cost per outcome</span><span class="money-input"><b data-currency-symbol>$</b><input name="ai_variable_unit_cost" type="number" min="0" step="0.01"></span></label></div></details>
-            </fieldset>
-
-            <fieldset class="calculator-step" data-step="3">
-              <legend><span>04</span> Separate hard benefit from capacity</legend>
-              <p class="step-intro">Freed hours are not cash. Capacity remains outside hard ROI unless Finance validates an actual cash or contribution benefit.</p>
-              <div class="field-grid">
-                <label class="field"><span>Hard annual benefit</span><span class="money-input"><b data-currency-symbol>$</b><input name="hard_benefit" type="number" min="0" step="0.01" value="1050000" inputmode="decimal" required></span><small>Cash savings, contribution, finance-validated avoidance, and measured loss avoided only.</small></label>
-                <label class="field"><span>Capacity hours released</span><input name="capacity_hours" type="number" min="0" step="0.1" value="0" inputmode="decimal"><small>Displayed separately; never added to hard benefit.</small></label>
-                <label class="field"><span>Loaded hourly rate for capacity</span><span class="money-input"><b data-currency-symbol>$</b><input name="loaded_hourly_rate" type="number" min="0" step="0.01" value="0" inputmode="decimal"></span></label>
-                <label class="field"><span>Productive annual hours per FTE</span><input name="productive_hours_per_fte" type="number" min="1" step="1" value="2080" inputmode="numeric"><small>Used only for capacity-equivalent FTE.</small></label>
-                <label class="field"><span>Evidence label</span><select name="benefit_evidence"><option value="forecast">Forecast</option><option value="estimate">Estimate</option><option value="measured">Measured</option><option value="actual_reconciled">Actual, reconciled</option><option value="unknown">Unknown</option></select></label>
-              </div>
-            </fieldset>
-
-            <fieldset class="calculator-step" data-step="4">
-              <legend><span>05</span> Add risk and finance assumptions</legend>
-              <p class="step-intro">Expected loss is decision support, not a complete treatment of low-probability, high-severity, correlated, legal, privacy, or security risk.</p>
-              <div class="field-grid">
-                <label class="field"><span>Expected annual loss</span><span class="money-input"><b data-currency-symbol>$</b><input name="expected_loss" type="number" min="0" step="0.01" value="50000" inputmode="decimal" required></span></label>
-                <label class="field"><span>Severe-loss scenario</span><span class="money-input"><b data-currency-symbol>$</b><input name="severe_loss" type="number" min="0" step="0.01" value="250000" inputmode="decimal" required></span><small>Shown beside expected loss; not automatically added to it.</small></label>
-                <label class="field"><span>Evaluation horizon</span><span class="suffix-input"><input name="horizon" type="number" min="1" max="10" step="1" value="3" required><b>years</b></span></label>
-                <label class="field"><span>Annual discount rate</span><span class="percent-input"><input name="discount_rate" type="number" min="0" max="100" step="0.01" placeholder="Confirm rate" required><b>%</b></span><small>No rate is silently assumed.</small></label>
-                <label class="field"><span>Evidence label</span><select name="risk_evidence"><option value="estimate">Estimate</option><option value="forecast">Forecast</option><option value="measured">Measured</option><option value="actual_reconciled">Actual, reconciled</option><option value="unknown">Unknown</option></select></label>
-              </div>
-              <label class="check-field risk-check"><input name="risk_not_double_counted" type="checkbox" required><span>I confirm expected loss does not duplicate rework, incidents, refunds, or remediation already entered in TCO.</span></label>
-              <details class="advanced-inputs"><summary>Calculate an expected-loss event</summary><div class="field-grid"><label class="field"><span>Annual exposures</span><input name="risk_exposures" type="number" min="0" step="1"></label><label class="field"><span>Probability per exposure</span><span class="percent-input"><input name="risk_probability" type="number" min="0" max="100" step="0.001"><b>%</b></span></label><label class="field"><span>Average financial impact</span><span class="money-input"><b data-currency-symbol>$</b><input name="risk_impact" type="number" min="0" step="0.01"></span></label></div><label class="check-field"><input name="risk_event_in_tco" type="checkbox"><span>This observed cost is already included in TCO; do not add it again as expected loss.</span></label><button class="text-button" type="button" data-apply-risk-event>Apply event expected loss</button></details>
-              <details class="advanced-inputs governance-gate"><summary>Governance evidence for the decision gate</summary><p>The strongest workforce-related statement requires every condition. The calculator still does not recommend eliminating people.</p><div class="governance-grid"><label class="check-field"><input name="quality_at_or_above_baseline" type="checkbox"><span>AI verified quality meets or exceeds baseline</span></label><label class="check-field"><input name="representative_production_evidence" type="checkbox"><span>Representative production period includes peaks and exceptions</span></label><label class="check-field"><input name="failure_recovery_tested" type="checkbox"><span>Failure recovery and escalation tested</span></label><label class="check-field"><input name="specialist_knowledge_retained" type="checkbox"><span>Specialist knowledge and exceptions documented and retained</span></label><label class="check-field"><input name="named_accountable_owner" type="checkbox"><span>Named human owner remains accountable</span></label><label class="check-field"><input name="finance_validated_hard_benefits" type="checkbox"><span>Finance validated hard benefit separately from capacity</span></label><label class="check-field"><input name="control_approvals_complete" type="checkbox"><span>Legal, security, privacy, and relevant control approvals complete</span></label></div></details>
-            </fieldset>
-
-            <section class="calculator-step calculator-results" data-step="5" aria-labelledby="results-title">
-              <div class="results-heading"><div><p class="eyebrow">Your AI Economics Snapshot</p><h2 id="results-title">What the current assumptions show</h2></div><p data-result-status>Complete the inputs to calculate results.</p></div>
-              <div class="result-six" aria-live="polite" aria-atomic="true">
-                <article><span>Year 1 cash TCO</span><strong data-output="year1">—</strong><small>Upfront + recurring + transition</small></article>
-                <article><span>Steady-state annual TCO</span><strong data-output="steady">—</strong><small>Recurring + annualized refresh</small></article>
-                <article><span>Cost per verified outcome</span><strong data-output="verified-cost">—</strong><small data-reason="verified-cost"></small></article>
-                <article><span>Baseline cost per outcome</span><strong data-output="baseline-cost">—</strong><small data-reason="baseline-cost"></small></article>
-                <article><span>Risk-adjusted ROI</span><strong data-output="risk-roi">—</strong><small>Author-designed decision metric</small></article>
-                <article><span>Payback</span><strong data-output="payback">—</strong><small data-reason="payback"></small></article>
-              </div>
-              <div class="result-detail-grid">
-                <article><span>Cost per attempt</span><strong data-output="attempt-cost">—</strong></article>
-                <article><span>Risk-adjusted cost per outcome</span><strong data-output="risk-cost">—</strong></article>
-                <article><span>Unit-economics TCO</span><strong data-output="unit-tco">—</strong></article>
-                <article><span>Unit-cost improvement</span><strong data-output="unit-improvement">—</strong></article>
-                <article><span>Final verified yield</span><strong data-output="final-yield">—</strong></article>
-                <article><span>First-pass yield</span><strong data-output="first-yield">—</strong></article>
-                <article><span>Reviewed-pass rate</span><strong data-output="reviewed-rate">—</strong></article>
-                <article><span>Corrected rate</span><strong data-output="corrected-rate">—</strong></article>
-                <article><span>Failure rate</span><strong data-output="failure-rate">—</strong></article>
-                <article><span>Human review + rework share</span><strong data-output="human-share">—</strong></article>
-                <article><span>Model/platform share</span><strong data-output="model-share">—</strong></article>
-                <article><span>Hard annual benefit</span><strong data-output="hard-benefit">—</strong></article>
-                <article><span>Human review cost</span><strong data-output="review-cost">—</strong></article>
-                <article><span>Rework + escalation cost</span><strong data-output="rework-cost">—</strong></article>
-                <article><span>Gross capacity value</span><strong data-output="capacity-value">—</strong><small>Not cash savings</small></article>
-                <article><span>Capacity hours</span><strong data-output="capacity-hours">—</strong></article>
-                <article><span>Capacity-equivalent FTE</span><strong data-output="capacity-fte">—</strong></article>
-                <article><span>Expected annual loss</span><strong data-output="expected-loss">—</strong></article>
-                <article><span>Severe-loss scenario</span><strong data-output="severe-loss">—</strong></article>
-                <article><span>Break-even volume</span><strong data-output="break-even">—</strong></article>
-                <article><span>NPV</span><strong data-output="npv">—</strong></article>
-                <article><span>Net annual hard value</span><strong data-output="net-hard-value">—</strong></article>
-                <article><span>Risk-adjusted net value</span><strong data-output="risk-net-value">—</strong></article>
-                <article><span>Hard ROI</span><strong data-output="hard-roi">—</strong></article>
-                <article><span>Measured cost coverage</span><strong data-output="cost-coverage">—</strong></article>
-                <article><span>Measured benefit coverage</span><strong data-output="benefit-coverage">—</strong></article>
-              </div>
-              <div class="result-narrative"><p data-narrative></p><p><strong>Decision gate:</strong> <span data-decision-gate>More evidence required.</span></p></div>
-              <details class="calculation-disclosure" data-formula-disclosure><summary>How was this calculated?</summary><div data-calculation-breakdown></div></details>
-              <div class="result-actions">
-                <button class="button primary" type="button" data-export>Export JSON</button>
-                <label class="button secondary import-control">Import JSON<input type="file" accept="application/json,.json" data-import></label>
-                <button class="button secondary" type="button" data-print>Print Snapshot</button>
-                <button class="text-button" type="button" data-clear>Clear entered values</button>
-              </div>
-              <p class="calculator-disclaimer">Decision support only. This tool is not accounting, legal, investment, employment, cybersecurity, privacy, or regulatory advice. It does not recommend eliminating jobs.</p>
-            </section>
-
-            <div class="calculator-navigation">
-              <button class="button secondary" type="button" data-previous hidden>Previous</button>
-              <button class="button primary" type="button" data-next>Continue</button>
-              <button class="button primary" type="submit" data-calculate hidden>Calculate snapshot</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <section class="calculator-method" aria-labelledby="method-title">
-        <div class="section-inner calculator-method-grid">
-          <div><p class="eyebrow">Method</p><h2 id="method-title">Fully loaded cost per verified outcome</h2><p>The calculator combines standard finance mathematics, FinOps unit economics, and an author-designed verified-outcome framework. It keeps Year 1 cash TCO, steady-state TCO, and annualized unit-economics TCO separate.</p></div>
-          <dl><div><dt>TCO</dt><dd>Total cost of ownership: implementation, model/platform, people, integration, governance, review, rework, and operations.</dd></div><div><dt>Verified outcome</dt><dd>A result that meets the defined quality, policy, compliance, and completion standard.</dd></div><div><dt>Hard benefit</dt><dd>Realized cash, contribution, approved avoidance, or measured loss avoided—not a blanket value for time saved.</dd></div><div><dt>Capacity value</dt><dd>A directional value for released hours, displayed separately from hard cash benefit.</dd></div><div><dt>Risk-adjusted ROI</dt><dd>An author-designed decision metric that subtracts expected annual loss and includes it in the denominator.</dd></div></dl>
-        </div>
-      </section>
-
-      <section class="section recruiter-band" aria-labelledby="calculator-cta-title"><div class="section-inner recruiter-panel reveal"><div><p class="eyebrow">Bring the questions into the same room</p><h2 id="calculator-cta-title">The calculation shows what still needs to be proven.</h2><p>Use the framework for a board session, leadership workshop, or AI workflow diagnostic.</p></div><div class="resume-actions"><a class="button primary" data-ga-event="engagement_cta_click" data-placement="calculator-results" data-destination="/engagements/" href="/engagements/">Discuss an engagement</a><a class="button secondary" href="/insights/running-before-crawling/">Read the paper</a></div></div></section>
-    </main>
-
-    <footer class="site-footer"><div class="footer-profile"><a class="brand footer-brand" href="/" aria-label="Sudeep Arya home"><span>SA</span><span class="footer-brand-copy"><strong>Sudeep Arya</strong><small>Commerce leadership that connects marketplaces, DTC, retail media, data, and operations.</small></span></a></div><div class="footer-link-stack"><nav class="footer-primary-nav" aria-label="Footer primary navigation"><a href="/engagements/">Speaking &amp; Media</a><a href="/insights/">Insights</a><a href="/case-studies/">Case Studies</a><a href="/audit/">Audit</a><a href="/contact/">Contact</a></nav><nav class="footer-action-nav" aria-label="Footer actions"><a href="/insights/running-before-crawling/">Read the White Paper</a><a href="/case-studies/ai-economics-decision-framework/">View the Framework Case Study</a></nav></div></footer>
-    <script defer src="/script.js"></script>
-    <script type="module" src="calculator.js"></script>
-  </body>
-</html>
+    <section class="calculator-method" id="methodology" aria-labelledby="method-title"><div class="section-inner calculator-method-grid"><div><p class="eyebrow">Methodology</p><h2 id="method-title">Fully loaded cost per verified outcome</h2><p>The engine keeps Year 1 cash TCO, steady-state TCO, and annualized unit economics separate.</p></div><dl><div><dt>Attempt</dt><dd>Any workflow run, including failed, corrected, and unusable work.</dd></div><div><dt>Verified outcome</dt><dd>A completed business result that passed the defined quality and policy standard.</dd></div><div><dt>Hard benefit</dt><dd>Cash savings, contribution, validated cost avoidance, or measured loss avoided.</dd></div><div><dt>Capacity</dt><dd>Released time shown separately; it is not automatically financial value.</dd></div></dl></div></section>
+  </main>
+  <footer class="site-footer"><div class="footer-profile"><a class="brand footer-brand" href="/"><span>SA</span><span class="footer-brand-copy"><strong>Sudeep Arya</strong><small>Commerce leadership that connects marketplaces, DTC, retail media, data, and operations.</small></span></a></div><div class="footer-link-stack"><nav class="footer-primary-nav"><a href="/engagements/">Speaking &amp; Media</a><a href="/insights/">Insights</a><a href="/case-studies/">Case Studies</a><a href="/contact/">Contact</a></nav></div></footer>
+  <script defer src="/script.js"></script><script type="module" src="calculator.js"></script>
+</body></html>
