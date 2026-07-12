@@ -19,6 +19,7 @@ function addNumericControl(name, container) {
   const prefix = container.hasAttribute("data-money") ? '<span class="input-prefix">$</span>' : "";
   const suffix = container.hasAttribute("data-percent") ? '<span class="input-suffix">%</span>' : "";
   const label = container.querySelector("label");
+  const existingInput = container.querySelector("input");
   const inputId = `quick-${name.replaceAll("_", "-")}`;
   const tipId = `${inputId}-help`;
   label.htmlFor = inputId;
@@ -27,11 +28,28 @@ function addNumericControl(name, container) {
   label.before(labelRow);
   labelRow.append(label);
   labelRow.insertAdjacentHTML("beforeend", `<button class="field-help" type="button" aria-label="Help for ${label.textContent.trim()}" aria-describedby="${tipId}" aria-expanded="false">?</button><span class="field-tooltip" id="${tipId}" role="tooltip">${helpText[name]}</span>`);
-  const displayValue = container.hasAttribute("data-percent") ? String(defaults[name]) : new Intl.NumberFormat("en-US").format(defaults[name]);
-  container.insertAdjacentHTML("beforeend", `<div class="value-row"><div class="single-value">${prefix}<input id="${inputId}" name="${name}" type="text" inputmode="decimal" data-grouped="${container.hasAttribute("data-percent") ? "false" : "true"}" value="${displayValue}" required>${suffix}</div></div>`);
+  if (!existingInput) container.insertAdjacentHTML("beforeend", `<div class="value-row"><div class="single-value">${prefix}<input id="${inputId}" name="${name}" type="text" inputmode="decimal" value="${defaults[name]}" required>${suffix}</div></div>`);
+  const input = container.querySelector("input");
+  if (input) {
+    input.type = "text";
+    input.inputMode = "decimal";
+    input.autocomplete = "off";
+  }
 }
 
 document.querySelectorAll(".evidence-field").forEach((container) => addNumericControl(container.dataset.field, container));
+
+const formatEditableNumber = (input) => {
+  const cleaned = input.value.replace(/,/g, "").replace(/[^0-9.]/g, "");
+  const [integer = "", ...decimalParts] = cleaned.split(".");
+  const grouped = integer.replace(/^0+(?=\d)/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") || "0";
+  input.value = decimalParts.length ? `${grouped}.${decimalParts.join("")}` : grouped;
+};
+
+form.querySelectorAll(".evidence-field input").forEach((input) => {
+  formatEditableNumber(input);
+  input.addEventListener("input", () => formatEditableNumber(input));
+});
 
 document.addEventListener("click", (event) => {
   const trigger = event.target.closest(".field-help");
@@ -41,17 +59,7 @@ document.addEventListener("click", (event) => {
   if (trigger) trigger.setAttribute("aria-expanded", String(trigger.getAttribute("aria-expanded") !== "true"));
 });
 
-const value = (name) => form.elements[name]?.value.replaceAll(",", "") ?? "";
-
-form.addEventListener("focusin", (event) => {
-  if (event.target.matches("input[data-grouped='true']")) event.target.value = event.target.value.replaceAll(",", "");
-});
-
-form.addEventListener("focusout", (event) => {
-  if (!event.target.matches("input[data-grouped='true']")) return;
-  const numeric = Number(event.target.value.replaceAll(",", ""));
-  if (Number.isFinite(numeric) && numeric >= 0) event.target.value = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 }).format(numeric);
-});
+const value = (name) => (form.elements[name]?.value ?? "").replace(/,/g, "");
 const showErrors = (messages) => {
   errorSummary.innerHTML = `<strong>Check the five inputs</strong><ul>${messages.map((message) => `<li>${message}</li>`).join("")}</ul>`;
   errorSummary.hidden = false;
