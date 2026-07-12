@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#071521">
   <title>AI Cost Reality Calculator | Sudeep Arya</title>
-  <meta name="description" content="Compare current and AI-assisted cost per verified business outcome using actuals, estimates, or ranges.">
+  <meta name="description" content="Compare current and AI-assisted cost per successful business outcome with five simple inputs.">
   <link rel="canonical" href="https://sudeeparya.com/tools/ai-cost-reality-calculator/">
   <link rel="icon" href="/favicon.ico" sizes="any"><link rel="stylesheet" href="/styles.css"><link rel="stylesheet" href="calculator.css">
 </head>
@@ -17,9 +17,9 @@
         <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><a href="/insights/">Insights</a><span>/</span><span>Calculator</span></nav>
         <p class="eyebrow">AI Cost Reality Calculator · Formula 1.1.0</p>
         <h1>What does one usable AI business outcome actually cost?</h1>
-        <p class="hero-subhead">Compare your current process with an AI-assisted version using actual data, planning estimates, or low-to-high ranges.</p>
-        <p class="hero-note">You can complete a quick estimate in about two minutes. Detailed TCO, risk, and governance inputs are available under Advanced Analysis.</p>
-        <div class="hero-actions"><a class="button primary" href="#calculator">Start quick estimate</a><a href="#methodology">View the methodology</a></div>
+        <p class="hero-subhead">Compare your current process with an AI-assisted version using five simple numbers.</p>
+        <p class="hero-note">You can complete the estimate in about one minute.</p>
+        <div class="hero-actions"><a class="button primary" href="#calculator">Start quick estimate</a></div>
       </div>
     </section>
 
@@ -28,24 +28,17 @@
         <header class="workspace-heading"><div><p class="eyebrow">Quick Estimate</p><h2 id="calculator-title">A decision-ready result, without the methodology homework.</h2></div><p><strong>Private by design.</strong> Inputs stay in this browser and are not submitted.</p></header>
         <div class="calculator-error-summary" data-error-summary role="alert" tabindex="-1" hidden></div>
         <form id="ai-economics-form" novalidate>
-          <section class="quick-section use-case-section" aria-labelledby="use-case-title">
-            <div class="section-number">1</div><div class="section-body"><h3 id="use-case-title">Choose the work being evaluated</h3>
-              <label class="use-case-select">Type of work<select name="use_case_template"><option value="service">Customer service case</option><option value="content">Product content or PDP</option><option value="catalog">Catalog or marketplace operation</option><option value="creative">Creative asset production</option><option value="order">Order or fulfillment exception</option><option value="reporting">Reporting or analysis workflow</option><option value="custom">Custom business process</option></select></label>
-              <div class="outcome-summary"><span>Verified outcome</span><p data-outcome-definition>Case closed, quality requirements passed, no policy breach, and not reopened within the selected period.</p><label class="custom-outcome" hidden>What completed business result are you measuring?<input name="custom_outcome" type="text" maxlength="180" placeholder="Example: One approved product page published without material correction."><small>Optional. You can refine this in Advanced Analysis.</small></label></div>
-            </div>
-          </section>
-
           <section class="quick-section inputs-section" aria-labelledby="inputs-title">
-            <div class="section-number">2</div><div class="section-body"><h3 id="inputs-title">Add five numbers</h3><p class="section-intro">Estimates are fine. Use a range only when it helps.</p>
+            <div class="section-number">1</div><div class="section-body"><h3 id="inputs-title">Add five numbers</h3><p class="section-intro">A successful outcome is a completed business result that met the required standard. Use actuals when you have them; planning estimates are fine.</p>
               <div class="input-groups">
                 <fieldset><legend>Current process</legend><div class="quick-grid">
-                  <div class="evidence-field" data-field="baseline_verified" data-role="benefit"><label>Annual outcomes completed today</label><small>Completed results that met the required standard.</small></div>
-                  <div class="evidence-field" data-field="baseline_cost" data-role="cost" data-money><label>Current annual process cost</label><small>Fully loaded annual cost of today’s process.</small></div>
+                  <div class="evidence-field" data-field="baseline_verified" data-role="benefit"><label>Annual outcomes completed today</label></div>
+                  <div class="evidence-field" data-field="baseline_cost" data-role="cost" data-money><label>Current annual process cost</label></div>
                 </div></fieldset>
                 <fieldset><legend>AI-assisted process</legend><div class="quick-grid">
                   <div class="evidence-field" data-field="ai_attempts" data-role="benefit"><label>Expected AI-assisted attempts per year</label></div>
-                  <div class="evidence-field" data-field="verified_rate" data-role="rate" data-percent><label>Expected success rate</label><small>Percentage of attempts expected to become usable outcomes.</small></div>
-                  <div class="evidence-field" data-field="total_ai_cost" data-role="cost" data-money><label>Total annual AI-assisted cost</label><small>Model, platform, human review, correction, and operations combined.</small></div>
+                  <div class="evidence-field" data-field="verified_rate" data-role="rate" data-percent><label>Expected success rate</label></div>
+                  <div class="evidence-field" data-field="total_ai_cost" data-role="cost" data-money><label>Total annual AI-assisted cost</label></div>
                 </div></fieldset>
               </div>
               <details class="quick-options"><summary>Add optional setup cost</summary><div class="quick-grid"><div class="evidence-field optional-field" data-field="upfront" data-role="cost" data-money data-optional><label>Upfront implementation cost <em>Optional</em></label></div></div></details>
@@ -53,50 +46,19 @@
             </div>
           </section>
 
-          <details class="advanced-analysis" data-advanced>
-            <summary><span><strong>Advanced analysis</strong><small>Detailed TCO, outcome reconciliation, risk, finance, governance, and model economics</small></span></summary>
-            <div class="advanced-content">
-              <p>Quick values are preserved. Add detail only where it improves the decision.</p>
-              <div class="advanced-grid">
-                <fieldset><legend>Outcome and comparison</legend>
-                  <label>Custom outcome definition<input name="outcome_definition" type="text"></label><label>Quality threshold<input name="quality_threshold" type="text" value="Meets documented quality and policy requirements"></label><label>Verification window<input name="verification_window" type="text" value="Template default"></label>
-                  <label><input type="checkbox" name="match_outcome"> Outcome definition matches</label><label><input type="checkbox" name="match_quality"> Quality threshold matches</label><label><input type="checkbox" name="match_period"> Period matches</label><label><input type="checkbox" name="match_scope"> Scope matches</label><label><input type="checkbox" name="match_window"> Verification window matches</label><label><input type="checkbox" name="match_volume"> Volume basis matches</label>
-                </fieldset>
-                <fieldset><legend>Verified outcomes and human work</legend>
-                  <label>First-pass verified outcomes<input name="first_pass" type="number" min="0"></label><label>Reviewed-pass outcomes<input name="reviewed_pass" type="number" min="0"></label><label>Corrected verified outcomes<input name="corrected" type="number" min="0"></label><label>Failures<input name="failed" type="number" min="0"></label>
-                  <label>Outputs reviewed<input name="reviewed_outputs" type="number" min="0"></label><label>Review minutes per output<input name="review_minutes" type="number" min="0"></label><label>Reviewer hourly rate<input name="reviewer_rate" type="number" min="0"></label><label>Correction minutes per output<input name="correction_minutes" type="number" min="0"></label><label>Correction hourly rate<input name="correction_rate" type="number" min="0"></label><label>Escalation cost<input name="escalation_cost" type="number" min="0" value="0"></label>
-                </fieldset>
-                <fieldset><legend>TCO and finance</legend>
-                  <label>Other recurring TCO<input name="other_recurring" type="number" min="0" value="0"></label><label>Useful life (years)<input name="useful_life" type="number" min="0.1" step="0.1" value="3"></label><label>Annualized refresh cost<input name="refresh_annualized" type="number" min="0" value="0"></label><label>Year 1 transition cost<input name="transition_year_1" type="number" min="0" value="0"></label><label>Discount rate (%)<input name="discount_rate" type="number" min="0" max="100" value="8"></label><label>NPV horizon (years)<input name="horizon" type="number" min="1" max="10" value="3"></label><label>Annual fixed AI cost<input name="annual_fixed_ai_cost" type="number" min="0" value="0"></label><label>Baseline variable unit cost<input name="baseline_variable_unit_cost" type="number" min="0" value="0"></label><label>AI variable unit cost<input name="ai_variable_unit_cost" type="number" min="0" value="0"></label><label><input type="checkbox" name="fixed_variable_boundaries_match"> Fixed/variable boundaries match</label>
-                </fieldset>
-                <fieldset><legend>Risk, capacity, and governance</legend>
-                  <label>Expected annual loss<input name="expected_loss" type="number" min="0" value="0"></label><label>Estimated annual hours released<input name="capacity_hours" type="number" min="0" value="0"></label><label>Severe-loss scenario<input name="severe_loss" type="number" min="0" value="0"></label><label>Productive hours per FTE<input name="productive_hours_per_fte" type="number" min="1" value="2080"></label>
-                  <label><input type="checkbox" name="quality_at_or_above_baseline"> Quality at or above baseline</label><label><input type="checkbox" name="representative_production_evidence"> Representative production evidence</label><label><input type="checkbox" name="failure_recovery_tested"> Failure recovery tested</label><label><input type="checkbox" name="specialist_knowledge_retained"> Specialist knowledge retained</label><label><input type="checkbox" name="named_accountable_owner"> Named accountable owner</label><label><input type="checkbox" name="finance_validated_hard_benefits"> Finance validated hard benefits</label><label><input type="checkbox" name="control_approvals_complete"> Control approvals complete</label>
-                </fieldset>
-                <fieldset><legend>Token and model economics</legend>
-                  <label>Annual input tokens (millions)<input name="input_tokens" type="number" min="0"></label><label>Annual output tokens (millions)<input name="output_tokens" type="number" min="0"></label><label>Input price per million<input name="input_token_rate" type="number" min="0"></label><label>Output price per million<input name="output_token_rate" type="number" min="0"></label><label>Cached input share (%)<input name="cached_share" type="number" min="0" max="100"></label><label>Cache read price per million<input name="cache_read_rate" type="number" min="0"></label><label>Batch discount (%)<input name="batch_discount" type="number" min="0" max="100"></label><label>Model migration reserve<input name="model_migration_reserve" type="number" min="0"></label>
-                </fieldset>
-              </div>
-            </div>
-          </details>
         </form>
 
         <section class="calculator-results" data-results hidden aria-labelledby="results-title">
           <div class="results-heading"><div><p class="eyebrow">Your result</p><h2 id="results-title">What the assumptions show</h2></div><button class="text-button" type="button" data-edit>Edit inputs</button></div>
-          <div class="scenario-tabs" role="tablist" aria-label="Range scenarios"><button type="button" data-scenario="conservative">Conservative</button><button type="button" data-scenario="central" aria-selected="true">Central</button><button type="button" data-scenario="favorable">Favorable</button></div>
           <div class="primary-results" aria-live="polite">
             <article><span>Current cost per successful outcome</span><strong data-output="baseline-cost">—</strong></article><article><span>AI cost per attempt</span><strong data-output="attempt-cost">—</strong></article><article><span>AI cost per successful outcome</span><strong data-output="verified-cost">—</strong></article><article><span>Expected failed attempts</span><strong data-output="failed-attempts">—</strong></article><article><span>Annual cost spent on failed work</span><strong data-output="failure-cost">—</strong></article><article class="status-result"><span>Directional signal</span><strong data-output="status">—</strong></article>
           </div>
-          <p class="range-summary" data-range-summary hidden></p>
           <div class="attempt-explainer"><p>Attempts include failed, corrected, and unusable work. Successful outcomes are the completed business results that met the required standard.</p></div>
-          <details class="full-detail"><summary>View the full financial model</summary><div class="detail-grid"><article><span>Year 1 TCO</span><strong data-output="year1">—</strong></article><article><span>Steady-state TCO</span><strong data-output="steady">—</strong></article><article><span>Unit-economics TCO</span><strong data-output="unit-tco">—</strong></article><article><span>Expected annual loss</span><strong data-output="expected-loss">—</strong></article><article><span>NPV</span><strong data-output="npv">—</strong></article><article><span>Payback</span><strong data-output="payback">—</strong></article><article><span>Unit-cost improvement</span><strong data-output="unit-improvement">Available in Advanced Analysis</strong></article><article><span>Decision gate</span><strong data-output="decision-gate">—</strong></article></div></details>
-          <details class="range-rules"><summary>How ranges are calculated</summary><p>Costs use high / midpoint / low for conservative / central / favorable. Benefits and verified rates use low / midpoint / high. Expected loss uses high / midpoint / low. Actual and Estimate values stay the same in all three scenarios.</p></details>
-          <p class="result-footnote">Formula 1.1.0 · Decision support only. Capacity is never treated as cash.</p>
+          <p class="result-footnote">Formula 1.1.0 · Directional estimate for planning.</p>
         </section>
       </div>
     </section>
 
-    <section class="calculator-method" id="methodology" aria-labelledby="method-title"><div class="section-inner calculator-method-grid"><div><p class="eyebrow">Methodology</p><h2 id="method-title">Fully loaded cost per verified outcome</h2><p>The engine keeps Year 1 cash TCO, steady-state TCO, and annualized unit economics separate.</p></div><dl><div><dt>Attempt</dt><dd>Any workflow run, including failed, corrected, and unusable work.</dd></div><div><dt>Verified outcome</dt><dd>A completed business result that passed the defined quality and policy standard.</dd></div><div><dt>Hard benefit</dt><dd>Cash savings, contribution, validated cost avoidance, or measured loss avoided.</dd></div><div><dt>Capacity</dt><dd>Released time shown separately; it is not automatically financial value.</dd></div></dl></div></section>
   </main>
   <footer class="site-footer"><div class="footer-profile"><a class="brand footer-brand" href="/"><span>SA</span><span class="footer-brand-copy"><strong>Sudeep Arya</strong><small>Commerce leadership that connects marketplaces, DTC, retail media, data, and operations.</small></span></a></div><div class="footer-link-stack"><nav class="footer-primary-nav"><a href="/engagements/">Speaking &amp; Media</a><a href="/insights/">Insights</a><a href="/case-studies/">Case Studies</a><a href="/contact/">Contact</a></nav></div></footer>
   <script defer src="/script.js"></script><script type="module" src="calculator.js"></script>
