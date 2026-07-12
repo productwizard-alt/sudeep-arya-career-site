@@ -11,6 +11,7 @@ const indexableRoutes = new Set([
   "/case-studies/",
   "/case-studies/banfield-subscription-commerce/",
   "/case-studies/ai-economics-decision-framework/",
+  "/case-studies/running-before-crawling-whitepaper/",
   "/insights/",
   "/insights/running-before-crawling/",
   "/tools/ai-cost-reality-calculator/",

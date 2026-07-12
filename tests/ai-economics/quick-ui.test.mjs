@@ -8,7 +8,7 @@ const css = await readFile(new URL("../../tools/ai-cost-reality-calculator/calcu
 
 test("quick calculator has five required logical inputs", () => {
   assert.equal((html.match(/class="evidence-field"/g) || []).length, 5);
-  assert.match(html, /Add five numbers/);
+  assert.match(html, /Enter your operating assumptions/);
 });
 
 test("quick calculator has no evidence or range dropdowns", () => {
@@ -24,7 +24,7 @@ test("every basic numeric input has accessible plain-language help", () => {
 
 test("basic calculator has no use-case dropdown", () => {
   assert.doesNotMatch(html, /name="use_case_template"/);
-  assert.match(html, /A successful outcome is a completed business result/);
+  assert.match(html, /Count only completed outcomes that meet the same business standard/);
 });
 
 test("public calculator has no advanced-analysis form", () => {
