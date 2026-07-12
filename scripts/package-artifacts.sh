@@ -26,6 +26,10 @@ zip -qr "$REPO_ZIP" . \
   -x "./artifacts" \
   -x "./source-assets/private/*" \
   -x "./source-assets/private" \
+  -x "./.codex-input/*" \
+  -x "./.codex-input" \
+  -x "./.codex-inputs/*" \
+  -x "./.codex-inputs" \
   -x "./node_modules/*" \
   -x "*/node_modules/*" \
   -x "./.DS_Store" \

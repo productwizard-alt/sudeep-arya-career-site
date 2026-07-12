@@ -7,6 +7,9 @@
   const caseMoreButton = document.querySelector("[data-case-more]");
   const extraCaseStudyGroup = document.getElementById("additional-case-studies");
   const extraCaseStudies = document.querySelectorAll("[data-case-extra]");
+  const caseStudies = Array.from(document.querySelectorAll(".case-study[data-case-lenses]"));
+  const caseLensButtons = Array.from(document.querySelectorAll("[data-case-lens]"));
+  const caseLensStatus = document.querySelector("[data-case-lens-status]");
   const regionalToggles = document.querySelectorAll("[data-regional-toggle]");
   const contactFocusButton = document.querySelector("[data-contact-focus]");
   let calendlyLoadPromise;
@@ -223,39 +226,111 @@
     return true;
   };
 
-  if (caseMoreButton && extraCaseStudies.length) {
+  if (caseMoreButton && extraCaseStudies.length && caseStudies.length && caseLensButtons.length) {
+    const lensLabels = Object.fromEntries(
+      caseLensButtons.map((button) => [button.dataset.caseLens, button.querySelector("span")?.textContent.trim() || "case studies"])
+    );
+    const validLenses = new Set(Object.keys(lensLabels));
+    let areAllCaseStudiesExpanded = false;
+    let activeLens = "all";
+
     const setCaseStudiesExpanded = (isExpanded) => {
+      areAllCaseStudiesExpanded = isExpanded;
       caseMoreButton.setAttribute("aria-expanded", String(isExpanded));
       caseMoreButton.textContent = isExpanded ? "Show Fewer Case Studies" : "View More Case Studies";
-      if (extraCaseStudyGroup) extraCaseStudyGroup.hidden = !isExpanded;
+      if (extraCaseStudyGroup && activeLens === "all") extraCaseStudyGroup.hidden = !isExpanded;
 
       extraCaseStudies.forEach((study) => {
-        study.hidden = !isExpanded;
+        if (activeLens === "all") study.hidden = !isExpanded;
         if (isExpanded) study.classList.add("is-visible");
       });
+
+      if (activeLens === "all" && caseLensStatus) {
+        caseLensStatus.textContent = isExpanded
+          ? `Showing all ${caseStudies.length} case studies.`
+          : `Showing the first ${caseStudies.length - extraCaseStudies.length} of ${caseStudies.length} case studies.`;
+      }
     };
 
-    const expandForHash = () => {
-      const target = getHashTarget();
-      if (!(target instanceof HTMLElement)) return;
-      if (target && target.hasAttribute("data-case-extra")) {
-        setCaseStudiesExpanded(true);
+    const setActiveLens = (lens, { updateHash = false } = {}) => {
+      activeLens = validLenses.has(lens) ? lens : "all";
+      const isAll = activeLens === "all";
+      let resultCount = 0;
+
+      caseStudies.forEach((study) => {
+        const matches = isAll || (study.dataset.caseLenses || "").split(/\s+/).includes(activeLens);
+        if (matches) resultCount += 1;
+        study.hidden = !matches || (isAll && study.hasAttribute("data-case-extra") && !areAllCaseStudiesExpanded);
+        study.classList.toggle("is-filter-match", matches && !isAll);
+      });
+
+      if (extraCaseStudyGroup) extraCaseStudyGroup.hidden = isAll && !areAllCaseStudiesExpanded;
+      caseMoreButton.closest(".case-study-controls").hidden = !isAll;
+
+      caseLensButtons.forEach((button) => {
+        const isActive = button.dataset.caseLens === activeLens;
+        button.classList.toggle("is-active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      if (caseLensStatus) {
+        caseLensStatus.textContent = isAll
+          ? (areAllCaseStudiesExpanded
+            ? `Showing all ${caseStudies.length} case studies.`
+            : `Showing the first ${caseStudies.length - extraCaseStudies.length} of ${caseStudies.length} case studies.`)
+          : `Showing ${resultCount} case ${resultCount === 1 ? "study" : "studies"} focused on ${lensLabels[activeLens]}.`;
       }
+
+      if (updateHash) {
+        const nextUrl = activeLens === "all"
+          ? `${window.location.pathname}${window.location.search}`
+          : `#lens-${activeLens}`;
+        window.history.pushState({ lens: activeLens }, "", nextUrl);
+      }
+    };
+
+    const restoreStateFromHash = ({ shouldScroll = true } = {}) => {
+      const hashValue = window.location.hash.slice(1);
+      const requestedLens = hashValue.startsWith("lens-") ? hashValue.slice(5) : null;
+
+      if (requestedLens && validLenses.has(requestedLens) && requestedLens !== "all") {
+        setActiveLens(requestedLens);
+        return;
+      }
+
+      if (requestedLens && !validLenses.has(requestedLens)) {
+        setCaseStudiesExpanded(false);
+      }
+
+      const target = getHashTarget();
+      setActiveLens("all");
+      if (!(target instanceof HTMLElement)) return;
+      if (target.hasAttribute("data-case-extra")) setCaseStudiesExpanded(true);
       expandCaseStudy(target);
-      scrollElementBelowHeader(target);
+      if (shouldScroll) scrollElementBelowHeader(target);
     };
 
     setCaseStudiesExpanded(false);
-    expandForHash();
+    restoreStateFromHash({ shouldScroll: false });
 
-    caseMoreButton.addEventListener("click", () => {
-      const isExpanded = caseMoreButton.getAttribute("aria-expanded") === "true";
-      setCaseStudiesExpanded(!isExpanded);
-      if (isExpanded) caseMoreButton.scrollIntoView({ block: "center" });
+    caseLensButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        setActiveLens(button.dataset.caseLens || "all", { updateHash: true });
+      });
     });
 
-    window.addEventListener("hashchange", expandForHash);
-    window.addEventListener("load", () => scrollElementBelowHeader(getHashTarget()));
+    caseMoreButton.addEventListener("click", () => {
+      const wasExpanded = caseMoreButton.getAttribute("aria-expanded") === "true";
+      setCaseStudiesExpanded(!wasExpanded);
+      if (wasExpanded) caseMoreButton.scrollIntoView({ block: "center" });
+    });
+
+    window.addEventListener("hashchange", () => restoreStateFromHash());
+    window.addEventListener("popstate", () => restoreStateFromHash());
+    window.addEventListener("load", () => {
+      const target = getHashTarget();
+      if (target instanceof HTMLElement) scrollElementBelowHeader(target);
+    });
   } else if (window.location.hash) {
     const target = getHashTarget();
     if (target instanceof HTMLElement) {

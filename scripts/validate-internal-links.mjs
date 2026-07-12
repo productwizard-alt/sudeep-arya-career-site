@@ -4,7 +4,7 @@ import path from "node:path";
 
 const root = process.cwd();
 const canonicalOrigin = "https://sudeeparya.com";
-const skipDirs = new Set([".git", ".codex-inputs", "reports", "artifacts", "node_modules"]);
+const skipDirs = new Set([".git", ".codex-input", ".codex-inputs", "reports", "artifacts", "node_modules"]);
 
 function walk(dir, predicate) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {

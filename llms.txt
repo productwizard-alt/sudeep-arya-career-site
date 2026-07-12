@@ -9,7 +9,9 @@ Important public pages:
 - https://sudeeparya.com/ - Career profile and executive summary.
 - https://sudeeparya.com/resume/ - Crawlable HTML resume and resume PDF link.
 - https://sudeeparya.com/case-studies/ - Ecommerce and marketplace case-study library.
+- https://sudeeparya.com/case-studies/ai-economics-decision-framework/ - Original research and product-design case study for transparent AI economics; it is not a client-results claim.
 - https://sudeeparya.com/case-studies/banfield-subscription-commerce/ - Public-safe subscription commerce and payment workflow case study.
+- https://sudeeparya.com/tools/ai-cost-reality-calculator/ - Private browser-based calculator for current and AI-assisted cost per successful outcome. User-entered values stay in the browser.
 - https://sudeeparya.com/skills/ - Commerce capability map across channels, platforms, analytics, media, and operations.
 - https://sudeeparya.com/recruiters/ - Recruiter and hiring manager brief.
 - https://sudeeparya.com/audit/ - Digital Acceleration Audit overview and booking path.
