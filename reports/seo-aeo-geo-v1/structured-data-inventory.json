@@ -27,6 +27,15 @@
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
   },
   {
+    "page": "/case-studies/ai-economics-decision-framework/",
+    "schemaType": "Article,CreativeWork, WebPage, BreadcrumbList",
+    "@id": "https://sudeeparya.com/case-studies/ai-economics-decision-framework/#work, https://sudeeparya.com/case-studies/ai-economics-decision-framework/#webpage, https://sudeeparya.com/case-studies/ai-economics-decision-framework/#breadcrumb",
+    "primaryEntity": "",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
     "page": "/case-studies/banfield-subscription-commerce/",
     "schemaType": "WebSite, Person, BreadcrumbList, CreativeWork",
     "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/case-studies/banfield-subscription-commerce/#case-study",
@@ -73,8 +82,8 @@
   },
   {
     "page": "/insights/running-before-crawling/",
-    "schemaType": "Report, WebPage, BreadcrumbList",
-    "@id": "https://sudeeparya.com/insights/running-before-crawling/#report, https://sudeeparya.com/insights/running-before-crawling/#webpage, https://sudeeparya.com/insights/running-before-crawling/#breadcrumb",
+    "schemaType": "Article, WebPage, BreadcrumbList",
+    "@id": "https://sudeeparya.com/insights/running-before-crawling/#article, https://sudeeparya.com/insights/running-before-crawling/#webpage, https://sudeeparya.com/insights/running-before-crawling/#breadcrumb",
     "primaryEntity": "",
     "validationStatus": "valid",
     "issues": [],
@@ -103,6 +112,15 @@
     "schemaType": "WebSite, Person, WebPage, ItemList, BreadcrumbList",
     "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/skills/#webpage, https://sudeeparya.com/skills/#capability-zones",
     "primaryEntity": "https://sudeeparya.com/#person",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/tools/ai-cost-reality-calculator/",
+    "schemaType": "WebApplication, BreadcrumbList",
+    "@id": "https://sudeeparya.com/tools/ai-cost-reality-calculator/#app, https://sudeeparya.com/tools/ai-cost-reality-calculator/#breadcrumb",
+    "primaryEntity": "",
     "validationStatus": "valid",
     "issues": [],
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."

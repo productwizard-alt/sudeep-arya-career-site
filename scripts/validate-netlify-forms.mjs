@@ -10,7 +10,7 @@ const jsSubmitInterceptions = [];
 const formIdCounts = new Map();
 const netlifyFormNameCounts = new Map();
 
-const skipDirs = new Set([".git", ".codex-inputs", "reports", "artifacts", ".netlify", "node_modules"]);
+const skipDirs = new Set([".git", ".codex-input", ".codex-inputs", "reports", "artifacts", ".netlify", "node_modules"]);
 
 function walk(dir) {
   for (const entry of readdirSync(dir)) {

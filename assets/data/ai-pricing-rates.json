@@ -1,0 +1,7 @@
+{
+  "snapshot_id": "manual-entry-1.1.0",
+  "formula_version": "1.1.0",
+  "retrieved_date": "2026-07-11",
+  "rates": [],
+  "notice": "The MVP uses manual aggregate model and platform cost. No vendor rate is hardcoded or fetched at runtime."
+}

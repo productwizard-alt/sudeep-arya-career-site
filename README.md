@@ -41,8 +41,15 @@ The script creates a timestamped ZIP in `artifacts/` and copies it to `/mnt/c/Us
 - `/` - executive homepage
 - `/resume/` - crawlable HTML resume and resume download
 - `/case-studies/` - structured commerce case studies
+- `/case-studies/ai-economics-decision-framework/` - original AI economics research and product-design framework
+- `/insights/` - executive insight library
+- `/insights/running-before-crawling/` - canonical Running Before Crawling executive paper
+- `/tools/ai-cost-reality-calculator/` - private, browser-based AI TCO and verified-outcome calculator
+- `/downloads/running-before-crawling-executive-edition.pdf` - corrected executive-edition PDF
 - `/skills/` - recruiter and search keyword index
 - `/recruiters/` - quick recruiter brief
 - `/audit/` - free Digital Acceleration Audit landing page
 - `/engagements/` - podcast, panel, webinar, advisory, and professional discussion inquiries
 - `/contact/` - contact form and scheduling paths
+
+The AI Cost Reality Calculator uses formula version `1.1.0`. It runs entirely in the browser, does not auto-save, and does not transmit entered financial values to analytics or another service.

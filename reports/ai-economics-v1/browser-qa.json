@@ -1,0 +1,86 @@
+{
+  "status": "PASS",
+  "findings": [
+    {
+      "type": "page-audit",
+      "route": "/insights/",
+      "overflow": 0,
+      "h1Count": 1,
+      "duplicateIds": [],
+      "brokenAriaControls": []
+    },
+    {
+      "type": "page-audit",
+      "route": "/insights/running-before-crawling/",
+      "overflow": 0,
+      "h1Count": 1,
+      "duplicateIds": [],
+      "brokenAriaControls": []
+    },
+    {
+      "type": "page-audit",
+      "route": "/tools/ai-cost-reality-calculator/",
+      "overflow": 0,
+      "h1Count": 1,
+      "duplicateIds": [],
+      "brokenAriaControls": []
+    },
+    {
+      "type": "keyboard",
+      "focusVisible": true
+    },
+    {
+      "type": "privacy",
+      "sentinelFound": false,
+      "requestCount": 2
+    },
+    {
+      "type": "page-audit",
+      "route": "/case-studies/ai-economics-decision-framework/",
+      "overflow": 0,
+      "h1Count": 1,
+      "duplicateIds": [],
+      "brokenAriaControls": []
+    },
+    {
+      "type": "page-audit",
+      "route": "/insights/",
+      "overflow": 0,
+      "h1Count": 1,
+      "duplicateIds": [],
+      "brokenAriaControls": []
+    },
+    {
+      "type": "page-audit",
+      "route": "/insights/running-before-crawling/",
+      "overflow": 0,
+      "h1Count": 1,
+      "duplicateIds": [],
+      "brokenAriaControls": []
+    },
+    {
+      "type": "page-audit",
+      "route": "/tools/ai-cost-reality-calculator/",
+      "overflow": 0,
+      "h1Count": 1,
+      "duplicateIds": [],
+      "brokenAriaControls": []
+    },
+    {
+      "type": "page-audit",
+      "route": "/case-studies/ai-economics-decision-framework/",
+      "overflow": 0,
+      "h1Count": 1,
+      "duplicateIds": [],
+      "brokenAriaControls": []
+    },
+    {
+      "type": "reduced-motion",
+      "behavior": "auto"
+    },
+    {
+      "type": "no-javascript",
+      "methodologyAvailable": true
+    }
+  ]
+}
