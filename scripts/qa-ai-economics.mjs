@@ -12,6 +12,15 @@ const executablePath = path.join(root, ".netlify/plugins/node_modules/puppeteer/
 const browser = await puppeteer.launch({ executablePath, headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
 const base = "http://127.0.0.1:8080/tools/ai-cost-reality-calculator/";
 const findings = [];
+const realCases = [
+  { id: "published-example", values: [100000, 1000000, 125000, 84, 600000], expected: ["$10.00", "$4.80", "$5.71", "20,000", "$96,000", "Lower cost per success under this estimate"] },
+  { id: "perfect-success", values: [100000, 1000000, 100000, 100, 600000], expected: ["$10.00", "$6.00", "$6.00", "0", "$0", "Lower cost per success under this estimate"] },
+  { id: "half-success-higher-cost", values: [100000, 1000000, 100000, 50, 750000], expected: ["$10.00", "$7.50", "$15.00", "50,000", "$375,000", "Higher cost per success under this estimate"] },
+  { id: "unit-cost-parity", values: [100000, 1000000, 100000, 60, 600000], expected: ["$10.00", "$6.00", "$10.00", "40,000", "$240,000", "Cost per success is approximately the same"] },
+  { id: "zero-success", values: [100000, 1000000, 100000, 0, 600000], expected: ["$10.00", "$6.00", "Not calculable", "100,000", "$600,000", "No successful AI outcomes under this estimate"] },
+  { id: "small-content-workflow", values: [2400, 186000, 3600, 72.5, 94500], expected: ["$77.50", "$26.25", "$36.21", "990", "$25,988", "Lower cost per success under this estimate"] },
+  { id: "zero-ai-cost", values: [100000, 1000000, 125000, 84, 0], expected: ["$10.00", "$0.00", "$0.00", "20,000", "$0", "Lower cost per success under this estimate"] },
+];
 
 async function exercise(viewport, prefix) {
   const page = await browser.newPage();
@@ -41,6 +50,17 @@ async function exercise(viewport, prefix) {
     primaryOutputs: document.querySelectorAll(".primary-results article").length,
   }));
   findings.push({ type: "result", viewport: prefix, ...result });
+  for (const testCase of realCases) {
+    await page.evaluate((values) => {
+      ["baseline_verified", "baseline_cost", "ai_attempts", "verified_rate", "total_ai_cost"].forEach((name, index) => { document.querySelector(`[name="${name}"]`).value = values[index]; });
+    }, testCase.values);
+    await page.click('button[type="submit"]');
+    const actual = await page.evaluate(() => ["baseline-cost", "attempt-cost", "verified-cost", "failed-attempts", "failure-cost", "status"].map((name) => document.querySelector(`[data-output="${name}"]`).textContent.trim()));
+    findings.push({ type: "calculation-case", viewport: prefix, id: testCase.id, passed: JSON.stringify(actual) === JSON.stringify(testCase.expected), actual, expected: testCase.expected });
+  }
+  await page.$eval('[name="verified_rate"]', (node) => { node.value = "101"; });
+  await page.click('button[type="submit"]');
+  findings.push({ type: "browser-validation", viewport: prefix, passed: await page.$eval("[data-error-summary]", (node) => !node.hidden && node.textContent.includes("cannot exceed 100%")) });
   await page.close();
 }
 
@@ -48,7 +68,7 @@ await exercise({ width: 1440, height: 1000, deviceScaleFactor: 1 }, "desktop-144
 await exercise({ width: 390, height: 844, deviceScaleFactor: 1 }, "mobile-390");
 await browser.close();
 
-const failures = findings.filter((item) => item.type === "pageerror" || item.type === "console" || item.type === "initial" && (item.overflow > 1 || item.requiredQuickInputs !== 5 || !item.resultsHidden || item.helpButtons !== 6) || item.type === "help" && (!item.expanded || !item.visible) || item.type === "result" && (item.evidenceDropdowns !== 0 || item.primaryOutputs !== 6));
+const failures = findings.filter((item) => item.type === "pageerror" || item.type === "console" || item.type === "initial" && (item.overflow > 1 || item.requiredQuickInputs !== 5 || !item.resultsHidden || item.helpButtons !== 5) || item.type === "help" && (!item.expanded || !item.visible) || item.type === "result" && (item.evidenceDropdowns !== 0 || item.primaryOutputs !== 6) || item.type === "calculation-case" && !item.passed || item.type === "browser-validation" && !item.passed);
 const report = { status: failures.length ? "FAIL" : "PASS", findings, failures };
 writeFileSync(path.join(root, "reports/ai-economics-v2/browser-qa.json"), `${JSON.stringify(report, null, 2)}\n`);
 console.log(`${report.status}: calculator browser QA completed with ${failures.length} failure(s).`);

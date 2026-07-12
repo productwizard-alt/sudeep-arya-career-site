@@ -7,7 +7,7 @@
       "overflow": 0,
       "requiredQuickInputs": 5,
       "resultsHidden": true,
-      "helpButtons": 6
+      "helpButtons": 5
     },
     {
       "type": "help",
@@ -20,6 +20,165 @@
       "viewport": "desktop-1440",
       "evidenceDropdowns": 0,
       "primaryOutputs": 6
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "desktop-1440",
+      "id": "published-example",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$4.80",
+        "$5.71",
+        "20,000",
+        "$96,000",
+        "Lower cost per success under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$4.80",
+        "$5.71",
+        "20,000",
+        "$96,000",
+        "Lower cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "desktop-1440",
+      "id": "perfect-success",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$6.00",
+        "$6.00",
+        "0",
+        "$0",
+        "Lower cost per success under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$6.00",
+        "$6.00",
+        "0",
+        "$0",
+        "Lower cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "desktop-1440",
+      "id": "half-success-higher-cost",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$7.50",
+        "$15.00",
+        "50,000",
+        "$375,000",
+        "Higher cost per success under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$7.50",
+        "$15.00",
+        "50,000",
+        "$375,000",
+        "Higher cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "desktop-1440",
+      "id": "unit-cost-parity",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$6.00",
+        "$10.00",
+        "40,000",
+        "$240,000",
+        "Cost per success is approximately the same"
+      ],
+      "expected": [
+        "$10.00",
+        "$6.00",
+        "$10.00",
+        "40,000",
+        "$240,000",
+        "Cost per success is approximately the same"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "desktop-1440",
+      "id": "zero-success",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$6.00",
+        "Not calculable",
+        "100,000",
+        "$600,000",
+        "No successful AI outcomes under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$6.00",
+        "Not calculable",
+        "100,000",
+        "$600,000",
+        "No successful AI outcomes under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "desktop-1440",
+      "id": "small-content-workflow",
+      "passed": true,
+      "actual": [
+        "$77.50",
+        "$26.25",
+        "$36.21",
+        "990",
+        "$25,988",
+        "Lower cost per success under this estimate"
+      ],
+      "expected": [
+        "$77.50",
+        "$26.25",
+        "$36.21",
+        "990",
+        "$25,988",
+        "Lower cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "desktop-1440",
+      "id": "zero-ai-cost",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$0.00",
+        "$0.00",
+        "20,000",
+        "$0",
+        "Lower cost per success under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$0.00",
+        "$0.00",
+        "20,000",
+        "$0",
+        "Lower cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "browser-validation",
+      "viewport": "desktop-1440",
+      "passed": true
     },
     {
       "type": "initial",
@@ -27,7 +186,7 @@
       "overflow": 0,
       "requiredQuickInputs": 5,
       "resultsHidden": true,
-      "helpButtons": 6
+      "helpButtons": 5
     },
     {
       "type": "help",
@@ -40,6 +199,165 @@
       "viewport": "mobile-390",
       "evidenceDropdowns": 0,
       "primaryOutputs": 6
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "mobile-390",
+      "id": "published-example",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$4.80",
+        "$5.71",
+        "20,000",
+        "$96,000",
+        "Lower cost per success under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$4.80",
+        "$5.71",
+        "20,000",
+        "$96,000",
+        "Lower cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "mobile-390",
+      "id": "perfect-success",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$6.00",
+        "$6.00",
+        "0",
+        "$0",
+        "Lower cost per success under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$6.00",
+        "$6.00",
+        "0",
+        "$0",
+        "Lower cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "mobile-390",
+      "id": "half-success-higher-cost",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$7.50",
+        "$15.00",
+        "50,000",
+        "$375,000",
+        "Higher cost per success under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$7.50",
+        "$15.00",
+        "50,000",
+        "$375,000",
+        "Higher cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "mobile-390",
+      "id": "unit-cost-parity",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$6.00",
+        "$10.00",
+        "40,000",
+        "$240,000",
+        "Cost per success is approximately the same"
+      ],
+      "expected": [
+        "$10.00",
+        "$6.00",
+        "$10.00",
+        "40,000",
+        "$240,000",
+        "Cost per success is approximately the same"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "mobile-390",
+      "id": "zero-success",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$6.00",
+        "Not calculable",
+        "100,000",
+        "$600,000",
+        "No successful AI outcomes under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$6.00",
+        "Not calculable",
+        "100,000",
+        "$600,000",
+        "No successful AI outcomes under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "mobile-390",
+      "id": "small-content-workflow",
+      "passed": true,
+      "actual": [
+        "$77.50",
+        "$26.25",
+        "$36.21",
+        "990",
+        "$25,988",
+        "Lower cost per success under this estimate"
+      ],
+      "expected": [
+        "$77.50",
+        "$26.25",
+        "$36.21",
+        "990",
+        "$25,988",
+        "Lower cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "calculation-case",
+      "viewport": "mobile-390",
+      "id": "zero-ai-cost",
+      "passed": true,
+      "actual": [
+        "$10.00",
+        "$0.00",
+        "$0.00",
+        "20,000",
+        "$0",
+        "Lower cost per success under this estimate"
+      ],
+      "expected": [
+        "$10.00",
+        "$0.00",
+        "$0.00",
+        "20,000",
+        "$0",
+        "Lower cost per success under this estimate"
+      ]
+    },
+    {
+      "type": "browser-validation",
+      "viewport": "mobile-390",
+      "passed": true
     }
   ],
   "failures": []

@@ -17,7 +17,7 @@ test("quick calculator has no evidence or range dropdowns", () => {
 });
 
 test("every basic numeric input has accessible plain-language help", () => {
-  for (const name of ["baseline_verified", "baseline_cost", "ai_attempts", "verified_rate", "total_ai_cost", "upfront"]) assert.match(js, new RegExp(`${name}: \\"`));
+  for (const name of ["baseline_verified", "baseline_cost", "ai_attempts", "verified_rate", "total_ai_cost"]) assert.match(js, new RegExp(`${name}: \\"`));
   assert.match(js, /role="tooltip"/);
   assert.match(js, /aria-expanded="false"/);
 });
@@ -33,7 +33,7 @@ test("public calculator has no advanced-analysis form", () => {
 });
 
 test("results focus on success and failure cost", () => {
-  for (const label of ["Current cost per successful outcome", "AI cost per attempt", "AI cost per successful outcome", "Expected failed attempts", "Annual cost spent on failed work", "Directional signal"]) assert.match(html, new RegExp(label));
+  for (const label of ["Current cost per successful outcome", "AI cost per attempt", "AI cost per successful outcome", "Expected failed attempts", "Estimated cost allocated to failed attempts", "Directional signal"]) assert.match(html, new RegExp(label));
   assert.equal((html.match(/<article(?:\s|>)/g) || []).length, 6);
 });
 
