@@ -1,280 +1,271 @@
-import { calculateAdvanced, calculateQuick, compareScenarios, FORMULA_VERSION, METHODOLOGY_VERSION } from "./economics-model.js";
-import { ANSWERS, assessReadiness, QUESTIONS } from "./readiness-model.js";
-import { recommendNextAction } from "./recommendation-rules.js";
-import { buildCsv, buildExecutiveSummary, downloadCsv } from "./result-export.js";
-
-const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
+const snapshotForm = document.querySelector("#snapshot-form");
+const controlForm = document.querySelector("#control-form");
+const emptyState = document.querySelector("[data-empty-state]");
+const resultState = document.querySelector("[data-result]");
+const liveStatus = document.querySelector("[data-live-status]");
 const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 });
+const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
 const percent = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
-const state = { quick: null, advanced: null, readiness: null, activePanel: null, step: 0, assessmentIndex: 0, assessmentAnswers: {} };
+const state = { baseline: null, recommendation: null };
 
 const q = (selector, root = document) => root.querySelector(selector);
 const qa = (selector, root = document) => [...root.querySelectorAll(selector)];
-const numeric = (formData, key) => {
-  const raw = formData.get(key);
+const numeric = (data, name) => {
+  const raw = data.get(name);
   return raw === null || String(raw).trim() === "" ? undefined : Number(raw);
 };
 
-function openPanel(name, focus = true) {
-  qa("[data-panel]").forEach((panel) => { panel.hidden = panel.dataset.panel !== name; });
-  qa("[data-open-panel]").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.openPanel === name)));
-  state.activePanel = name;
-  const panel = q(`[data-panel="${name}"]`);
-  if (focus) panel?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
-}
-
-qa("[data-open-panel]").forEach((button) => button.addEventListener("click", () => openPanel(button.dataset.openPanel)));
-
-function readQuick() {
-  const data = new FormData(q("#quick-form"));
-  return { requests: numeric(data, "requests"), deliverablesPerRequest: numeric(data, "deliverablesPerRequest"), creationHours: numeric(data, "creationHours"), reviewCorrectionHours: numeric(data, "reviewCorrectionHours"), laborCost: numeric(data, "laborCost"), finalApprovalRate: numeric(data, "finalApprovalRate") === undefined ? undefined : numeric(data, "finalApprovalRate") / 100 };
-}
-
-function showErrors(kind, errors) {
-  const summary = q(`[data-${kind}-errors]`);
-  if (!summary) return;
-  qa("[data-error-for]").forEach((node) => { node.textContent = ""; });
-  const list = q("ul", summary);
-  list.innerHTML = errors.map((error) => `<li>${error.message}</li>`).join("");
-  for (const error of errors) {
-    const field = error.field.replace(/^costs\./, "");
-    const inline = q(`[data-error-for="${field}"]`);
-    if (inline) inline.textContent = error.message;
+const RECOMMENDATIONS = {
+  truth: {
+    title: "Establish product and claim truth",
+    explanation: "The workflow cannot become more reliable while product facts or claims lack one approved source.",
+    now: "Name one owned record for facts, claims, qualifiers, and source evidence.",
+    test: "Run one deliverable using only that approved record and route conflicts to its owner.",
+    measure: ["Approved outputs", "Source conflicts", "Correction hours"],
+    note: "Evaluate PIM capability only if repeated cross-channel product complexity continues after approved truth is established."
+  },
+  ownership: {
+    title: "Clarify approval ownership",
+    explanation: "Work will continue to circulate when nobody is clearly authorized to approve, correct, escalate, or stop it.",
+    now: "Name the final approver, backup approver, and exception owner for this workflow.",
+    test: "Route the next five deliverables through the same visible approval path.",
+    measure: ["Approval time", "Correction rounds", "Unresolved outputs"]
+  },
+  workflow: {
+    title: "Map one repeatable workflow",
+    explanation: "Document the real request-to-approval path before optimizing or automating it.",
+    now: "Record the owner, input, output, decision, and exception route for each step.",
+    test: "Remove one avoidable handoff from the next repeated cycle.",
+    measure: ["Cycle time", "Handoffs", "Review/correction hours"]
+  },
+  asset: {
+    title: "Fix asset control",
+    explanation: "Content work stays exposed to rework when the current approved asset, version, rights, or intended use is unclear.",
+    now: "Create one visible approved-asset record with owner, version, rights, and status.",
+    test: "Run the next workflow cycle from the governed asset set only.",
+    measure: ["Asset search time", "Version errors", "Correction hours"],
+    note: "Evaluate DAM capability only if version, rights, and distribution complexity continues after asset control is established."
+  },
+  approval: {
+    title: "Reduce approval loss before adding AI",
+    explanation: "All four controls are present, but too much attempted work still fails to become approved output.",
+    now: "Review the most common reasons work is corrected, abandoned, or left unresolved.",
+    test: "Change one brief, source, or approval rule that addresses the largest recurring loss.",
+    measure: ["Final approval rate", "Unapproved outputs", "Correction hours"]
+  },
+  ai: {
+    title: "Test one controlled AI-assisted step",
+    explanation: "The workflow has its core controls, approval is stable, and review/correction work remains material enough to test one bounded assistive step.",
+    now: "Choose one reversible preparation task and define approved inputs, human decisions, and stop conditions.",
+    test: "Compare a small assisted sample with the current workflow using the same approval definition.",
+    measure: ["Approved outputs", "Review/correction share", "Quality exceptions"]
+  },
+  simple: {
+    title: "Keep the workflow simple",
+    explanation: "The available evidence does not justify a larger system or AI intervention. Maintain clear ownership and improve only where repeated friction is visible.",
+    now: "Keep one approved source, one visible workflow, and one accountable approver.",
+    test: "Remove the smallest repeated delay or correction loop you can observe.",
+    measure: ["Approved outputs", "Review/correction hours", "Unresolved outputs"]
   }
-  summary.hidden = false;
-  summary.focus();
-  const first = errors[0]?.field.replace(/^costs\./, "");
-  q(`[name="${first}"]`)?.focus();
+};
+
+function readInputs() {
+  const data = new FormData(snapshotForm);
+  return {
+    workflow: String(data.get("workflowType") || ""),
+    attempted: numeric(data, "attempted"),
+    creationHours: numeric(data, "creationHours"),
+    reviewHours: numeric(data, "reviewHours"),
+    approvalRatePercent: numeric(data, "approvalRate"),
+    laborCost: numeric(data, "laborCost")
+  };
 }
 
-function clearErrors(kind) {
-  const summary = q(`[data-${kind}-errors]`);
-  if (summary) summary.hidden = true;
-  qa("[data-error-for]").forEach((node) => { node.textContent = ""; });
+function validate(inputs) {
+  const errors = {};
+  for (const key of ["attempted", "creationHours", "reviewHours"]) {
+    if (inputs[key] === undefined) errors[key] = "Enter a value.";
+    else if (!Number.isFinite(inputs[key]) || inputs[key] < 0) errors[key] = "Enter zero or a positive number.";
+  }
+  if (inputs.approvalRatePercent === undefined) errors.approvalRate = "Enter a percentage.";
+  else if (!Number.isFinite(inputs.approvalRatePercent) || inputs.approvalRatePercent < 0 || inputs.approvalRatePercent > 100) errors.approvalRate = "Enter a percentage from 0 to 100.";
+  if (inputs.laborCost !== undefined && (!Number.isFinite(inputs.laborCost) || inputs.laborCost < 0)) errors.laborCost = "Enter zero or a positive number.";
+  return errors;
 }
 
-function renderKpis(target, rows) {
-  target.innerHTML = rows.map(([label, value]) => `<div><span>${label}</span><strong>${value}</strong></div>`).join("");
+function showErrors(errors) {
+  const nameMap = { attempted: "attempted", creationHours: "creationHours", reviewHours: "reviewHours", approvalRate: "approvalRate", laborCost: "laborCost" };
+  for (const [key, name] of Object.entries(nameMap)) {
+    const input = q(`[name="${name}"]`, snapshotForm);
+    const error = q(`[data-error-for="${key}"]`);
+    const hasValue = input?.value.trim() !== "";
+    const message = errors[key] && hasValue ? errors[key] : "";
+    if (error) error.textContent = message;
+    if (input) input.setAttribute("aria-invalid", String(Boolean(message)));
+  }
 }
 
-function quickRows(result) {
-  return [
-    ["Attempted deliverables", number.format(result.attempted)],
-    ["Approved deliverables", number.format(result.approved)],
-    ["Monthly labor hours", number.format(result.laborHours)],
-    ["Review + correction burden", result.reviewCorrectionBurden === null ? "Not calculable" : percent.format(result.reviewCorrectionBurden)],
-    ["Monthly modeled labor cost", money.format(result.modeledLaborCost)],
-    ["Labor cost per approved deliverable", result.laborCostPerApproved === null ? result.approvedOutputState : money.format(result.laborCostPerApproved)],
-  ];
+function calculate(inputs) {
+  const attempted = inputs.attempted;
+  const approvalRate = inputs.approvalRatePercent / 100;
+  const approved = attempted * approvalRate;
+  const unapproved = attempted - approved;
+  const creationHours = attempted * inputs.creationHours;
+  const reviewHours = attempted * inputs.reviewHours;
+  const totalHours = creationHours + reviewHours;
+  const reviewShare = totalHours > 0 ? reviewHours / totalHours : null;
+  const laborCost = inputs.laborCost === undefined ? null : totalHours * inputs.laborCost;
+  const costPerApproved = laborCost === null || approved <= 0 ? null : laborCost / approved;
+  return { inputs, attempted, approvalRate, approved, unapproved, creationHours, reviewHours, totalHours, reviewShare, laborCost, costPerApproved };
 }
 
-q("#quick-form")?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const result = calculateQuick(readQuick());
-  if (!result.ok) return showErrors("quick", result.errors);
-  clearErrors("quick");
-  state.quick = result;
-  const results = q("[data-quick-results]");
-  renderKpis(q("[data-quick-kpis]"), quickRows(result));
-  q("[data-quick-summary]").textContent = `Your workflow attempts ${number.format(result.attempted)} deliverables per month and produces approximately ${number.format(result.approved)} approved outputs. Review and correction consume about ${result.reviewCorrectionBurden === null ? "an uncalculable share of" : percent.format(result.reviewCorrectionBurden)} modeled labor time.`;
-  results.hidden = false;
-  q("#quick-results-title").focus();
-  q("[data-quick-live]").textContent = "Quick estimate calculated.";
-});
+function readControls() {
+  const data = new FormData(controlForm);
+  return Object.fromEntries(["productTruth", "approvalOwner", "assetControl", "workflowDocumented"].map((key) => [key, data.get(key)]));
+}
+
+function selectRecommendation(baseline) {
+  const controls = readControls();
+  const isGap = (value) => value === "no" || value === "unsure";
+  if (isGap(controls.productTruth)) return RECOMMENDATIONS.truth;
+  if (isGap(controls.approvalOwner)) return RECOMMENDATIONS.ownership;
+  if (isGap(controls.workflowDocumented)) return RECOMMENDATIONS.workflow;
+  if (isGap(controls.assetControl)) return RECOMMENDATIONS.asset;
+  const allYes = Object.values(controls).every((value) => value === "yes");
+  if (allYes && baseline.approvalRate < .8) return RECOMMENDATIONS.approval;
+  if (allYes && baseline.approvalRate >= .8 && baseline.reviewShare !== null && baseline.reviewShare >= .25) return RECOMMENDATIONS.ai;
+  return RECOMMENDATIONS.simple;
+}
+
+function renderRecommendation(recommendation) {
+  state.recommendation = recommendation;
+  q("[data-recommendation-title]").textContent = recommendation.title;
+  q("[data-recommendation-explanation]").textContent = recommendation.explanation;
+  q("[data-do-now]").textContent = recommendation.now;
+  q("[data-test-next]").textContent = recommendation.test;
+  q("[data-measure]").innerHTML = recommendation.measure.map((item) => `<li>${item}</li>`).join("");
+  const note = q("[data-recommendation-note]");
+  note.hidden = !recommendation.note;
+  note.textContent = recommendation.note || "";
+}
+
+function renderBaseline(baseline) {
+  state.baseline = baseline;
+  emptyState.hidden = true;
+  resultState.hidden = false;
+  q("[data-workflow-label]").textContent = baseline.inputs.workflow || "Content workflow";
+  q("[data-approved]").textContent = number.format(baseline.approved);
+  q("[data-unapproved]").textContent = number.format(baseline.unapproved);
+  q("[data-review-hours]").textContent = number.format(baseline.reviewHours);
+  q("[data-review-share]").textContent = baseline.reviewShare === null ? "Not calculable" : percent.format(baseline.reviewShare);
+  const costMetric = q("[data-cost-metric]");
+  costMetric.hidden = baseline.inputs.laborCost === undefined;
+  if (!costMetric.hidden) q("[data-cost-per-approved]").textContent = baseline.costPerApproved === null ? "Not calculable — no approved outputs" : money.format(baseline.costPerApproved);
+  q("[data-qualification]").textContent = baseline.approved <= 0
+    ? "Zero approved output makes cost per approved output explicitly not calculable. No value is converted to infinity."
+    : "Directional model based only on the values entered. It is not an industry benchmark or a realized financial result.";
+  renderRecommendation(selectRecommendation(baseline));
+  resultState.classList.remove("is-updated");
+  requestAnimationFrame(() => resultState.classList.add("is-updated"));
+  liveStatus.textContent = "Workflow baseline and recommendation updated.";
+}
+
+function update() {
+  const inputs = readInputs();
+  const errors = validate(inputs);
+  showErrors(errors);
+  if (Object.keys(errors).length) {
+    state.baseline = null;
+    state.recommendation = null;
+    emptyState.hidden = false;
+    resultState.hidden = true;
+    return;
+  }
+  renderBaseline(calculate(inputs));
+}
+
+snapshotForm?.addEventListener("input", update);
+snapshotForm?.addEventListener("change", update);
+controlForm?.addEventListener("change", () => { if (state.baseline) renderRecommendation(selectRecommendation(state.baseline)); });
 
 q("[data-load-sample]")?.addEventListener("click", () => {
-  const values = { requests: 40, deliverablesPerRequest: 2, creationHours: 1.2, reviewCorrectionHours: .5, laborCost: 60, finalApprovalRate: 75 };
-  for (const [key, value] of Object.entries(values)) q(`#quick-form [name="${key}"]`).value = value;
-  q("[data-quick-live]").textContent = "Hypothetical sample loaded.";
+  const sample = { workflowType: "Product detail pages", attempted: 80, creationHours: 1.2, reviewHours: .5, approvalRate: 75, laborCost: 60 };
+  for (const [name, value] of Object.entries(sample)) q(`[name="${name}"]`, snapshotForm).value = value;
+  update();
+  liveStatus.textContent = "Hypothetical sample loaded. Baseline and recommendation updated.";
 });
 
-function carryQuickToAdvanced() {
-  if (!state.quick) return;
-  const quick = readQuick();
-  const values = { requests: quick.requests, deliverablesPerRequest: quick.deliverablesPerRequest, creationHours: quick.creationHours, standardReviewHours: quick.reviewCorrectionHours, correctionHours: 0, exceptionHours: 0, governanceHours: 0, laborCost: quick.laborCost, firstPassApprovalRate: quick.finalApprovalRate * 100, finalApprovalRate: quick.finalApprovalRate * 100, averageReviewRounds: 1, cycleTimeDays: 1 };
-  for (const [key, value] of Object.entries(values)) {
-    const input = q(`#advanced-form [name="${key}"]`);
-    if (input) input.value = value;
+function resetSnapshot() {
+  snapshotForm.reset();
+  controlForm.reset();
+  q(".snapshot-controls")?.removeAttribute("open");
+  state.baseline = null;
+  state.recommendation = null;
+  emptyState.hidden = false;
+  resultState.hidden = true;
+  qa("[data-error-for]").forEach((node) => { node.textContent = ""; });
+  qa("[aria-invalid]", snapshotForm).forEach((node) => node.setAttribute("aria-invalid", "false"));
+  liveStatus.textContent = "Snapshot reset.";
+}
+
+q("[data-reset]")?.addEventListener("click", resetSnapshot);
+snapshotForm?.addEventListener("reset", () => setTimeout(() => {
+  if (state.baseline) resetSnapshot();
+  else { emptyState.hidden = false; resultState.hidden = true; }
+}, 0));
+q("[data-print]")?.addEventListener("click", () => window.print());
+
+function summaryText() {
+  if (!state.baseline || !state.recommendation) return "";
+  const b = state.baseline;
+  return [
+    "Content Workflow Snapshot",
+    `Workflow: ${b.inputs.workflow || "Not specified"}`,
+    `Approved outputs per month: ${number.format(b.approved)}`,
+    `Unapproved or unresolved outputs: ${number.format(b.unapproved)}`,
+    `Monthly review/correction hours: ${number.format(b.reviewHours)}`,
+    `Review/correction share: ${b.reviewShare === null ? "Not calculable" : percent.format(b.reviewShare)}`,
+    ...(b.inputs.laborCost === undefined ? [] : [`Labor cost per approved output: ${b.costPerApproved === null ? "Not calculable — no approved outputs" : money.format(b.costPerApproved)}`]),
+    `Recommendation: ${state.recommendation.title}`,
+    `Do now: ${state.recommendation.now}`,
+    `Test next: ${state.recommendation.test}`,
+    `Measure: ${state.recommendation.measure.join("; ")}`,
+    "Directional model based only on entered values. Not an industry benchmark or realized financial result."
+  ].join("\n");
+}
+
+q("[data-copy]")?.addEventListener("click", async (event) => {
+  const button = event.currentTarget;
+  try {
+    await navigator.clipboard.writeText(summaryText());
+    button.textContent = "Copied";
+    setTimeout(() => { button.textContent = "Copy result"; }, 1400);
+  } catch {
+    liveStatus.textContent = "Copy was unavailable. Use Print / Save as PDF or download the local CSV.";
   }
-  setStep(0);
-  openPanel("advanced");
-}
-q("[data-continue-advanced]")?.addEventListener("click", carryQuickToAdvanced);
-
-function setStep(index) {
-  state.step = Math.max(0, Math.min(3, index));
-  qa("[data-step]").forEach((step) => { step.hidden = Number(step.dataset.step) !== state.step; });
-  qa(".step-progress span").forEach((item, itemIndex) => item.classList.toggle("active", itemIndex <= state.step));
-  q("[data-step-back]").hidden = state.step === 0;
-  q("[data-step-next]").hidden = state.step === 3;
-  q("[data-advanced-submit]").hidden = state.step !== 3;
-}
-q("[data-step-next]")?.addEventListener("click", () => setStep(state.step + 1));
-q("[data-step-back]")?.addEventListener("click", () => setStep(state.step - 1));
-
-qa("select[name$='State']").forEach((select) => {
-  const sync = () => {
-    const base = select.name.replace("State", "");
-    const value = q(`[name="${base}Value"]`);
-    if (value) value.disabled = select.value !== "included";
-    if (base === "implementation") q("[name='amortizationMonths']").disabled = select.value !== "included";
-  };
-  select.addEventListener("change", sync);
-  sync();
 });
 
-function readAdvanced() {
-  const data = new FormData(q("#advanced-form"));
-  return {
-    requests: numeric(data, "requests"), deliverablesPerRequest: numeric(data, "deliverablesPerRequest"),
-    firstPassApprovalRate: numeric(data, "firstPassApprovalRate") === undefined ? undefined : numeric(data, "firstPassApprovalRate") / 100,
-    finalApprovalRate: numeric(data, "finalApprovalRate") === undefined ? undefined : numeric(data, "finalApprovalRate") / 100,
-    averageReviewRounds: numeric(data, "averageReviewRounds"), cycleTimeDays: numeric(data, "cycleTimeDays"),
-    creationHours: numeric(data, "creationHours"), standardReviewHours: numeric(data, "standardReviewHours"), correctionHours: numeric(data, "correctionHours"),
-    exceptionHours: numeric(data, "exceptionHours"), governanceHours: numeric(data, "governanceHours"), laborCost: numeric(data, "laborCost"),
-    availableHours: numeric(data, "availableHours"), specialistReviewRate: numeric(data, "specialistReviewRate") === undefined ? undefined : numeric(data, "specialistReviewRate") / 100,
-    amortizationMonths: numeric(data, "amortizationMonths"),
-    costs: {
-      technology: { state: data.get("technologyState"), value: numeric(data, "technologyValue") },
-      external: { state: data.get("externalState"), value: numeric(data, "externalValue") },
-      implementation: { state: data.get("implementationState"), value: numeric(data, "implementationValue") },
-    },
-  };
-}
-
-q("[data-compare-pilot]")?.addEventListener("click", () => {
-  const current = readAdvanced();
-  const values = {
-    pilotCreationHours: current.creationHours,
-    pilotStandardReviewHours: current.standardReviewHours,
-    pilotCorrectionHours: current.correctionHours,
-    pilotFirstPassApprovalRate: finiteRate(current.firstPassApprovalRate),
-    pilotFinalApprovalRate: finiteRate(current.finalApprovalRate),
-    pilotExceptionHours: current.exceptionHours,
-    pilotGovernanceHours: current.governanceHours,
-    pilotTechnologyValue: current.costs.technology.value ?? 0,
-    pilotExternalValue: current.costs.external.value ?? 0,
-    pilotImplementationValue: current.costs.implementation.value ?? 0,
-    pilotAmortizationMonths: q("[name='amortizationMonths']")?.value || 24,
-  };
-  for (const [key, value] of Object.entries(values)) q(`[name="${key}"]`).value = value;
-  q("[data-pilot-panel]").hidden = false;
-});
-const finiteRate = (value) => Number.isFinite(value) ? value * 100 : "";
-
-function readProposed(baselineInput) {
-  const data = new FormData(q("#advanced-form"));
-  const proposed = structuredClone(baselineInput);
-  proposed.creationHours = numeric(data, "pilotCreationHours");
-  proposed.standardReviewHours = numeric(data, "pilotStandardReviewHours");
-  proposed.correctionHours = numeric(data, "pilotCorrectionHours");
-  proposed.firstPassApprovalRate = numeric(data, "pilotFirstPassApprovalRate") / 100;
-  proposed.finalApprovalRate = numeric(data, "pilotFinalApprovalRate") / 100;
-  proposed.exceptionHours = numeric(data, "pilotExceptionHours");
-  proposed.governanceHours = numeric(data, "pilotGovernanceHours");
-  const tech = numeric(data, "pilotTechnologyValue");
-  const external = numeric(data, "pilotExternalValue");
-  const implementation = numeric(data, "pilotImplementationValue");
-  proposed.amortizationMonths = numeric(data, "pilotAmortizationMonths");
-  proposed.costs.technology = { state: baselineInput.costs.technology.state === "excluded" && tech === 0 ? "excluded" : tech === 0 ? "zero" : "included", value: tech };
-  proposed.costs.external = { state: baselineInput.costs.external.state === "excluded" && external === 0 ? "excluded" : external === 0 ? "zero" : "included", value: external };
-  proposed.costs.implementation = { state: baselineInput.costs.implementation.state === "excluded" && implementation === 0 ? "excluded" : implementation === 0 ? "zero" : "included", value: implementation };
-  return proposed;
-}
-
-function renderTable(target, rows) { target.innerHTML = rows.map(([label, value]) => `<tr><th scope="row">${label}</th><td>${value}</td></tr>`).join(""); }
-
-q("#advanced-form")?.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const input = readAdvanced();
-  const baseline = calculateAdvanced(input);
-  if (!baseline.ok) { setStep(0); return showErrors("advanced", baseline.errors); }
-  clearErrors("advanced");
-  let proposed = null;
-  let comparison = null;
-  if (!q("[data-pilot-panel]").hidden) {
-    proposed = calculateAdvanced(readProposed(input));
-    if (!proposed.ok) return showErrors("advanced", proposed.errors);
-    const data = new FormData(q("#advanced-form"));
-    const definition = { approval: data.has("definitionApproval"), deliverable: data.has("definitionDeliverable"), quality: data.has("definitionQuality"), channel: data.has("definitionChannel"), period: data.has("definitionPeriod") };
-    comparison = compareScenarios(baseline, proposed, { baseline: definition, proposed: definition });
-  }
-  const readiness = state.readiness?.result;
-  const recommendation = recommendNextAction({ readiness, baseline, proposed, comparison });
-  state.advanced = { baseline, proposed, comparison, recommendation };
+const csvCell = (value) => `"${String(value).replaceAll('"', '""')}"`;
+q("[data-csv]")?.addEventListener("click", () => {
+  if (!state.baseline || !state.recommendation) return;
+  const b = state.baseline;
   const rows = [
-    ["Monthly approved output", number.format(baseline.approved)], ["Cost per approved deliverable", baseline.costs.perApproved === null ? baseline.approvedOutputState : money.format(baseline.costs.perApproved)],
-    ["First-pass approval rate", percent.format(input.firstPassApprovalRate)], ["Standard review hours", number.format(baseline.labor.standardReview)],
-    ["Correction/rework hours", number.format(baseline.labor.correction)], ["Rework burden", baseline.labor.reworkBurden === null ? "Not calculable" : percent.format(baseline.labor.reworkBurden)],
-    ["Primary bottleneck", baseline.labor.correction > baseline.labor.standardReview ? "Correction/rework" : baseline.inputs.averageReviewRounds > 1 ? "Review flow" : "No single dominant labor bottleneck"],
+    ["Metric", "Value"],
+    ["Workflow", b.inputs.workflow || "Not specified"],
+    ["Monthly attempted deliverables", b.attempted],
+    ["Approved outputs per month", b.approved],
+    ["Unapproved or unresolved outputs", b.unapproved],
+    ["Monthly review/correction hours", b.reviewHours],
+    ["Review/correction share", b.reviewShare === null ? "Not calculable" : b.reviewShare],
+    ...(b.inputs.laborCost === undefined ? [] : [["Labor cost per approved output", b.costPerApproved === null ? "Not calculable" : b.costPerApproved]]),
+    ["Recommendation", state.recommendation.title],
+    ["Do now", state.recommendation.now],
+    ["Test next", state.recommendation.test],
+    ["Measure", state.recommendation.measure.join("; ")]
   ];
-  renderKpis(q("[data-advanced-kpis]"), rows);
-  q("[data-advanced-summary]").textContent = `${comparison?.reason || "Current workflow snapshot calculated."} Recommended next action: ${recommendation}`;
-  renderTable(q("[data-funnel-table]"), [["Attempted", number.format(baseline.funnel.attempted)], ["Approved on first pass", number.format(baseline.funnel.firstPassApproved)], ["Not approved on first pass", number.format(baseline.funnel.notApprovedFirstPass)], ["Approved after correction", number.format(baseline.funnel.approvedAfterCorrection)], ["Failed/abandoned/unresolved", number.format(baseline.funnel.failed)], ["Total finally approved", number.format(baseline.funnel.approved)]]);
-  renderTable(q("[data-labor-table]"), [["Creation", number.format(baseline.labor.creation)], ["Standard review", number.format(baseline.labor.standardReview)], ["Correction/rework", number.format(baseline.labor.correction)], ["Exception resolution", number.format(baseline.labor.exception)], ["Governance/administration", number.format(baseline.labor.governance)], ["Total modeled labor", number.format(baseline.labor.total)]]);
-  renderTable(q("[data-cost-table]"), [["Labor", money.format(baseline.costs.labor)], ["Technology", money.format(baseline.costs.technology)], ["External", money.format(baseline.costs.external)], ["Amortized implementation", money.format(baseline.costs.amortizedImplementation)], ["Modeled attributable workflow cost", money.format(baseline.costs.modeledAttributableWorkflowCost)]]);
-  const scope = baseline.scopeDisclosure;
-  q("[data-comparison-detail]").innerHTML = `<p><strong>Current approved capacity:</strong> ${baseline.capacity.approvedCapacity === null ? baseline.capacity.state : `${number.format(baseline.capacity.approvedCapacity)} approved outputs`}</p>${comparison ? `<p><strong>Comparison:</strong> ${comparison.reason}</p>${comparison.operationalComparable ? `<table class="data-table"><thead><tr><th>Comparable KPI</th><th>Current → proposed</th></tr></thead><tbody><tr><th>Approved output</th><td>${number.format(baseline.approved)} → ${number.format(proposed.approved)} (${comparison.deltas.approved >= 0 ? "+" : ""}${number.format(comparison.deltas.approved)})</td></tr><tr><th>Total labor hours</th><td>${number.format(baseline.labor.total)} → ${number.format(proposed.labor.total)} (${number.format(comparison.deltas.laborHours)})</td></tr><tr><th>Cost per approved</th><td>${comparison.financialComparable ? `${money.format(baseline.costs.perApproved)} → ${money.format(proposed.costs.perApproved)} (${money.format(comparison.deltas.costPerApproved)})` : "Not comparable"}</td></tr><tr><th>Modeled attributable cost</th><td>${comparison.financialComparable ? `${money.format(baseline.costs.modeledAttributableWorkflowCost)} → ${money.format(proposed.costs.modeledAttributableWorkflowCost)} (${money.format(comparison.deltas.modeledCost)})` : "Not comparable"}</td></tr></tbody></table>` : ""}<p><strong>${comparison.capacityLabel}:</strong> ${comparison.potentialCapacityReleased === null ? "Not calculable" : `${number.format(Math.abs(comparison.potentialCapacityReleased))} hours`}. Potential capacity is not realized cash savings.</p><p><strong>Break-even:</strong> ${comparison.breakEven.state}${comparison.breakEven.volume === null ? "" : ` at ${number.format(comparison.breakEven.volume)} approved outputs per month`}.</p><p><strong>Most influential entered assumption:</strong> ${comparison.sensitivity ? `${comparison.sensitivity.input} (${comparison.sensitivity.direction} test)` : "Not calculable"}.</p>` : ""}<p><strong>Included:</strong> ${scope.included.join(", ") || "None"}<br><strong>Known zero:</strong> ${scope.knownZero.join(", ") || "None"}<br><strong>Excluded or not estimated:</strong> ${scope.excluded.join(", ") || "None"}</p><p><small>Formula ${FORMULA_VERSION} · Methodology ${METHODOLOGY_VERSION}</small></p>`;
-  q("[data-advanced-results]").hidden = false;
-  q("#advanced-results-title").focus();
-  q("[data-advanced-live]").textContent = "Full workflow result calculated.";
+  const blob = new Blob([rows.map((row) => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = Object.assign(document.createElement("a"), { href: url, download: "content-workflow-snapshot.csv" });
+  link.click();
+  URL.revokeObjectURL(url);
 });
-
-function renderAssessment() {
-  const question = QUESTIONS[state.assessmentIndex];
-  const selected = state.assessmentAnswers[question.key];
-  q("[data-assessment-stage]").innerHTML = `<p class="assessment-progress">Question ${state.assessmentIndex + 1} of ${QUESTIONS.length}</p><fieldset><legend class="assessment-question">${question.text}</legend><p>${question.label} · ${question.domain}</p><div class="assessment-answers">${ANSWERS.map((answer) => `<label class="assessment-answer"><input type="radio" name="assessment-${question.key}" value="${answer.score}" ${selected === answer.score ? "checked" : ""}> <span>${answer.label}</span></label>`).join("")}</div></fieldset>`;
-  q("[data-assessment-back]").hidden = state.assessmentIndex === 0;
-  q("[data-assessment-next]").textContent = state.assessmentIndex === QUESTIONS.length - 1 ? "See readiness result" : "Next";
-}
-renderAssessment();
-q("[data-assessment-back]")?.addEventListener("click", () => { state.assessmentIndex--; renderAssessment(); });
-q("[data-assessment-next]")?.addEventListener("click", () => {
-  const question = QUESTIONS[state.assessmentIndex];
-  const checked = q(`[name="assessment-${question.key}"]:checked`);
-  if (!checked) { q("[data-assessment-stage] fieldset").insertAdjacentHTML("afterbegin", '<p class="field-error" role="alert">Choose the answer that best describes the current workflow.</p>'); return; }
-  state.assessmentAnswers[question.key] = Number(checked.value);
-  if (state.assessmentIndex < QUESTIONS.length - 1) { state.assessmentIndex++; renderAssessment(); return; }
-  const result = assessReadiness(state.assessmentAnswers);
-  state.readiness = { result };
-  renderKpis(q("[data-readiness-kpis]"), [["Readiness stage", result.stage], ["Primary bottleneck", result.primaryBottleneck], ["Recommended first action", result.recommendation]]);
-  q("[data-readiness-summary]").textContent = result.qualification;
-  q("[data-readiness-detail]").innerHTML = `<h4>Why this stage was assigned</h4><p>${result.gateExplanation}</p><h4>Domain breakdown</h4><table class="data-table"><tbody>${Object.entries(result.domains).map(([label, value]) => `<tr><th>${label}</th><td>${number.format(value)} of 3</td></tr>`).join("")}</tbody></table><p><strong>Secondary bottleneck:</strong> ${result.secondaryBottleneck}</p><h4>30 / 60 / 90 days</h4><ol><li><strong>30 days:</strong> ${result.plan.day30}</li><li><strong>60 days:</strong> ${result.plan.day60}</li><li><strong>90 days:</strong> ${result.plan.day90}</li></ol><p><strong>Relevant publication chapters:</strong> ${result.relevantChapters.join(", ")}</p>`;
-  q("[data-readiness-results]").hidden = false;
-  q("#readiness-results-title").focus();
-  q("[data-readiness-live]").textContent = "Readiness result calculated.";
-});
-
-function currentRows(kind) {
-  if (kind === "quick" && state.quick) return quickRows(state.quick);
-  if (kind === "advanced" && state.advanced) return qa("[data-advanced-kpis] div").map((node) => [q("span", node).textContent, q("strong", node).textContent]);
-  if (kind === "readiness" && state.readiness) return qa("[data-readiness-kpis] div").map((node) => [q("span", node).textContent, q("strong", node).textContent]);
-  return [];
-}
-
-async function copyText(value, live) {
-  await navigator.clipboard.writeText(value);
-  if (live) live.textContent = "Copied to clipboard.";
-}
-
-qa("[data-copy-summary]").forEach((button) => button.addEventListener("click", async () => {
-  const kind = button.dataset.copySummary;
-  const qualification = kind === "readiness" ? state.readiness?.result.qualification : "Modeled estimate. Potential capacity is not realized cash savings.";
-  const recommendation = kind === "advanced" ? state.advanced?.recommendation : kind === "readiness" ? state.readiness?.result.recommendation : "Continue to Full Workflow Analysis to separate review, rework, capacity, and cost scope.";
-  await copyText(buildExecutiveSummary({ title: "Small Team Output Planner", metrics: currentRows(kind), recommendation, qualification }), q(`[data-${kind}-live]`));
-}));
-qa("[data-copy-kpis]").forEach((button) => button.addEventListener("click", () => copyText(currentRows(button.dataset.copyKpis).map(([label, value]) => `${label}\t${value}`).join("\n"), q(`[data-${button.dataset.copyKpis}-live]`))));
-qa("[data-csv]").forEach((button) => button.addEventListener("click", () => {
-  const kind = button.dataset.csv;
-  const scope = kind === "advanced" ? state.advanced?.baseline.scopeDisclosure : { included: ["Labor"], knownZero: [], excluded: ["Exception resolution", "Governance", "Technology", "External", "Implementation"] };
-  downloadCsv(buildCsv({ scenario: kind === "quick" ? "Quick labor-only estimate" : "Current workflow", rows: currentRows(kind), scope, limitations: ["Modeled estimate", "Potential capacity is not realized cash savings"] }));
-}));
-qa("[data-print]").forEach((button) => button.addEventListener("click", () => window.print()));
-q("[data-edit-quick]")?.addEventListener("click", () => q("#quick-requests").focus());
-q("[data-edit-advanced]")?.addEventListener("click", () => { setStep(0); q("#adv-requests").focus(); });
-qa("[data-restart]").forEach((button) => button.addEventListener("click", () => {
-  const kind = button.dataset.restart;
-  if (kind === "quick") { q("#quick-form").reset(); q("[data-quick-results]").hidden = true; state.quick = null; }
-  if (kind === "advanced") { q("#advanced-form").reset(); qa("select[name$='State']").forEach((select) => select.dispatchEvent(new Event("change"))); q("[data-advanced-results]").hidden = true; q("[data-pilot-panel]").hidden = true; state.advanced = null; setStep(0); }
-  if (kind === "readiness") { state.assessmentIndex = 0; state.assessmentAnswers = {}; state.readiness = null; q("[data-readiness-results]").hidden = true; renderAssessment(); }
-}));

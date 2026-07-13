@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title description">
+  <title id="title">AI Economics Decision Framework cover</title>
+  <desc id="description">A midnight-blue editorial cover showing activity, full cost, review, and accepted outcomes connected in a transparent economic decision path.</desc>
+  <rect width="800" height="1000" fill="#102A3A"/>
+  <path d="M0 0h112v1000H0z" fill="#173D4D"/>
+  <path d="M112 0h14v1000h-14z" fill="#C87552"/>
+  <g fill="none" stroke="#E6D2B9" stroke-width="3" opacity=".35">
+    <circle cx="505" cy="625" r="196"/><circle cx="505" cy="625" r="145"/><circle cx="505" cy="625" r="94"/>
+  </g>
+  <path d="M190 625h475" stroke="#C87552" stroke-width="7"/>
+  <g fill="#F6EFE5" stroke="#C87552" stroke-width="5">
+    <rect x="160" y="575" width="126" height="100"/>
+    <path d="M368 566h150l54 59-54 59H368l-54-59z" fill="#173D4D"/>
+    <rect x="612" y="575" width="140" height="100"/>
+  </g>
+  <g fill="#F6EFE5" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="2">
+    <text x="179" y="616" fill="#173D4D" font-size="14" letter-spacing="1">ACTIVITY</text><text x="185" y="641" fill="#173D4D" font-size="14" letter-spacing="1">VOLUME</text>
+    <text x="386" y="616">FULL COST</text><text x="401" y="641">+ REVIEW</text>
+    <text x="628" y="616" fill="#173D4D" font-size="14" letter-spacing="1">ACCEPTED</text><text x="638" y="641" fill="#173D4D" font-size="14" letter-spacing="1">OUTCOME</text>
+  </g>
+  <g fill="#F6EFE5">
+    <text x="160" y="124" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700" letter-spacing="4">AI ECONOMICS FIELD GUIDE</text>
+    <text x="154" y="245" font-family="Georgia, 'Times New Roman', serif" font-size="103" font-weight="700">AI</text>
+    <text x="154" y="347" font-family="Georgia, 'Times New Roman', serif" font-size="82" font-weight="700">ECONOMICS</text>
+    <text x="154" y="431" font-family="Georgia, 'Times New Roman', serif" font-size="63" font-weight="700">DECISION</text>
+    <text x="154" y="502" font-family="Georgia, 'Times New Roman', serif" font-size="63" font-weight="700">FRAMEWORK</text>
+    <text x="160" y="840" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="600">Compare accepted outcomes—</text>
+    <text x="160" y="875" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="600">not activity alone.</text>
+    <text x="160" y="908" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" letter-spacing="3">SUDEEP ARYA</text>
+  </g>
+  <path d="M160 790h592" stroke="#E6D2B9" stroke-width="3" opacity=".75"/>
+</svg>
