@@ -69,15 +69,6 @@
         ]
       }
     </script>
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C65RGRMMW1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-C65RGRMMW1');
-    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -86,13 +77,13 @@
       <nav class="nav" aria-label="Primary navigation">
         <a class="brand" href="/"><span>SA</span>Sudeep Arya</a>
         <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu"><span class="sr-only">Toggle navigation</span><span></span><span></span></button>
-        <div class="nav-menu" id="nav-menu"><a href="/resume/">Resume</a><a href="/case-studies/">Case Studies</a><a href="/tools/">Tools</a><a href="/skills/">Skills</a><a href="/engagements/">Speaking &amp; Media</a><a class="nav-audit" href="/audit/">Audit</a><a class="nav-contact" href="/contact/">Contact</a></div>
+        <div class="nav-menu" id="nav-menu"><a href="/resume/">Resume</a><a href="/case-studies/">Case Studies</a><a href="/publications/">Publications</a><a href="/tools/">Tools</a><a href="/skills/">Skills</a><a href="/engagements/">Speaking &amp; Media</a><a class="nav-audit" href="/audit/">Audit</a><a class="nav-contact" href="/contact/">Contact</a></div>
       </nav>
     </header>
 
     <main id="main">
       <section class="page-hero page-hero--contact contact-hero image-hero">
-        <img class="page-hero-image" src="/assets/hero-contact.webp" alt="" aria-hidden="true">
+        <img class="page-hero-image" src="/assets/hero-contact.webp" alt="" aria-hidden="true" width="1672" height="941" fetchpriority="high">
         <div class="page-hero-inner reveal">
           <nav class="breadcrumbs" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>Contact</span></nav>
           <p class="eyebrow">Contact</p>
@@ -124,54 +115,51 @@
 
               <div class="contact-location-block">
                 <p><strong>Based in Central New Jersey</strong></p>
-                <p>Connected across the Northeast corridor</p>
+                <p>Select engagements across the Northeast and beyond</p>
               </div>
 
-              <button class="regional-toggle" type="button" aria-expanded="false" aria-controls="regional-availability" data-regional-toggle data-closed-label="Show Location &amp; Travel Availability" data-open-label="Hide Location &amp; Travel Availability">Show Location &amp; Travel Availability</button>
+              <button class="regional-toggle" type="button" aria-expanded="false" aria-controls="regional-availability" data-regional-toggle data-closed-label="Show Speaking, Advisory &amp; Travel" data-open-label="Hide Speaking, Advisory &amp; Travel">Show Speaking, Advisory &amp; Travel</button>
 
-              <div class="regional-panel regional-card regional-card--full regional-corridor regional-corridor--full availability-system availability-system--full" id="regional-availability" data-regional-panel hidden>
-                <div class="regional-card-copy regional-corridor__copy">
-                  <p class="regional-eyebrow">Location &amp; travel</p>
-                  <h3>Central New Jersey is the base—not the boundary.</h3>
-                  <p>Available across the Northeast corridor and open to domestic or international travel when the role, project, event, or business need warrants it.</p><p class="regional-corridor__note">A stylized view of regional availability; not a literal transit route.</p>
+              <div class="regional-panel location-opportunity location-opportunity--full location-opportunity--narrow location-opportunity__surface" id="regional-availability" data-regional-panel hidden>
+                <div class="location-travel__layout">
+                  <div class="location-opportunity__intro">
+                    <p class="regional-eyebrow">Speaking, advisory &amp; travel</p>
+                    <h3>Central New Jersey is the base. The right audience can be anywhere.</h3>
+                    <p>Available for select panels, podcasts, trade-show programs, executive briefings, workshops, and advisory engagements across the Northeast, throughout the United States, and internationally.</p>
+                    <p class="location-opportunity__support">Each engagement is considered based on the audience, subject matter, format, and scope, with travel planned around the needs of the program.</p>
+                  </div>
+                  <figure class="location-map-card location-map-card--regional">
+                    <figcaption>
+                      <h4>Northeast access</h4>
+                      <p>Convenient access to Washington, DC, Wilmington, Philadelphia, New York City, Bridgeport, and the broader Northeast event corridor.</p>
+                    </figcaption>
+                    <div class="location-map-card__visual"><div class="location-map-card__media"><img class="location-map-card__image" src="/assets/location/northeast-access.webp" width="2000" height="1400" loading="lazy" decoding="async" alt="Editorial corridor map showing Washington, DC, Wilmington, Philadelphia, Central New Jersey, New York City, and Bridgeport."></div></div>
+                  </figure>
+                  <figure class="location-map-card location-map-card--global">
+                    <figcaption>
+                      <h4>U.S. and international engagements</h4>
+                      <p>Available for select domestic and international programs when the audience, subject, and format are the right fit.</p>
+                    </figcaption>
+                    <div class="location-map-card__visual location-map-card__visual--global">
+                      <div class="location-map-card__media"><img class="location-map-card__image" src="/assets/location/global-engagements.webp" width="2200" height="1200" loading="lazy" decoding="async" alt="Global engagement map showing Central New Jersey as the base for select U.S. and international programs."></div>
+                      <ul class="location-map-legend" aria-label="Map legend">
+                        <li><span class="location-map-legend__domestic" aria-hidden="true"></span>United States availability</li>
+                        <li><span class="location-map-legend__international" aria-hidden="true"></span>Select international engagements</li>
+                      </ul>
+                    </div>
+                  </figure>
                 </div>
-                <div class="regional-visual regional-corridor__visual">
-                  <svg class="corridor-map regional-corridor__route" viewBox="0 0 720 260" role="img" aria-labelledby="contact-corridor-title">
-                    <title id="contact-corridor-title">Stylized regional availability corridor from Wilmington to Bridgeport with Central New Jersey emphasized</title>
-                    <g class="corridor-grid" aria-hidden="true">
-                      <path class="corridor-grid-line" fill="none" d="M76 56H650M76 116H650M76 176H650M120 34V212M240 34V212M360 34V212M480 34V212M600 34V212" />
-                    </g>
-                    <path class="corridor-shadow" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M58 170 C128 122 185 146 248 126 C302 106 350 82 404 104 C458 126 500 152 557 116 C600 90 642 92 670 58" />
-                    <path class="corridor-glow" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M58 170 C128 122 185 146 248 126 C302 106 350 82 404 104 C458 126 500 152 557 116 C600 90 642 92 670 58" />
-                    <path class="corridor-line" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M58 170 C128 122 185 146 248 126 C302 106 350 82 404 104 C458 126 500 152 557 116 C600 90 642 92 670 58" />
-                    <path class="corridor-line-core" fill="none" stroke-linecap="round" stroke-linejoin="round" d="M58 170 C128 122 185 146 248 126 C302 106 350 82 404 104 C458 126 500 152 557 116 C600 90 642 92 670 58" />
-                    <g class="corridor-stop corridor-stop--endpoint"><circle class="node-halo" cx="58" cy="170" r="12" /><circle class="node-core" cx="58" cy="170" r="7" /><text x="84" y="214">Wilmington, DE</text></g>
-                    <g class="corridor-stop"><circle class="node-halo" cx="150" cy="139" r="12" /><circle class="node-core" cx="150" cy="139" r="7" /><text x="150" y="103">Philadelphia, PA</text></g>
-                    <g class="corridor-stop"><circle class="node-halo" cx="248" cy="126" r="12" /><circle class="node-core" cx="248" cy="126" r="7" /><text x="248" y="166">Trenton, NJ</text></g>
-                    <g class="corridor-stop corridor-stop--primary"><circle class="node-halo" cx="360" cy="92" r="15" /><circle class="node-core" cx="360" cy="92" r="9" /><text x="360" y="60">Central NJ</text></g>
-                    <g class="corridor-stop"><circle class="node-halo" cx="466" cy="125" r="12" /><circle class="node-core" cx="466" cy="125" r="7" /><text x="466" y="166">Newark, NJ</text></g>
-                    <g class="corridor-stop"><circle class="node-halo" cx="557" cy="116" r="12" /><circle class="node-core" cx="557" cy="116" r="7" /><text x="557" y="86">NYC</text></g>
-                    <g class="corridor-stop corridor-stop--endpoint"><circle class="node-halo" cx="670" cy="58" r="12" /><circle class="node-core" cx="670" cy="58" r="7" /><text x="632" y="34">Bridgeport, CT</text></g>
-                  </svg>
-                  <ol class="corridor-list regional-corridor__cities" aria-label="Regional corridor stops">
-                    <li><span>DE</span>Wilmington</li>
-                    <li><span>PA</span>Philadelphia</li>
-                    <li><span>NJ</span>Trenton</li>
-                    <li><span>NJ</span>Central New Jersey</li>
-                    <li><span>NJ</span>Newark</li>
-                    <li><span>NY</span>NYC</li>
-                    <li><span>CT</span>Bridgeport</li>
-                  </ol>
-                </div>
-                <section class="availability-system__travel" aria-labelledby="contact-travel-title"><div><p class="regional-eyebrow">Travel availability</p><h4 id="contact-travel-title">Selective mobility beyond the corridor</h4><p>Open to domestic and international travel when the opportunity, engagement, or business need is the right fit.</p><small>A representation of travel flexibility, not a list of guaranteed destinations.</small></div><div class="travel-arc" aria-hidden="true"><span class="travel-origin">Central NJ</span><span>United States</span><span>International</span></div><ul class="availability-system__mode-list" aria-label="Available work modes"><li>Remote</li><li>Hybrid</li><li>On-site</li><li>Domestic travel</li><li>International travel</li></ul></section>
               </div>
 
               <div class="contact-schedule-panel">
-                <h2>Prefer a direct path?</h2>
-                <p>Use the speaking path for podcasts, panels, and practical industry conversations, or the audit path for brand/operator diagnostics.</p>
+                <div class="contact-schedule-panel__heading">
+                  <p class="regional-eyebrow">Speaking &amp; advisory</p>
+                  <h2>Bring a practical commerce operator into the room.</h2>
+                </div>
+                <p>Invite Sudeep for a panel, podcast, trade-show program, executive session, workshop, or focused advisory engagement.</p>
                 <div class="recruiter-actions">
-                  <a class="button primary" href="/engagements/#engagement-form">Invite Me to Speak</a>
-                  <a class="button secondary" href="https://calendly.com/zsudeepharya/new-meeting" target="_blank" rel="noopener">Book Free Digital Acceleration Audit</a>
+                  <a class="button primary" href="/engagements/#engagement-inquiry-form">Request Speaking Availability</a>
+                  <a class="button secondary" href="https://calendly.com/zsudeepharya/new-meeting" target="_blank" rel="noopener">Discuss an Advisory Engagement</a>
                 </div>
               </div>
             </div>
@@ -207,7 +195,7 @@
 
     <footer class="site-footer">
       <div class="footer-profile">
-        <a class="brand footer-brand" href="/" aria-label="Sudeep Arya home">
+        <a class="brand footer-brand" href="/">
           <span>SA</span>
           <span class="footer-brand-copy">
             <strong>Sudeep Arya</strong>
@@ -276,6 +264,7 @@
         <nav class="footer-primary-nav" aria-label="Footer primary navigation">
           <a href="/engagements/">Speaking &amp; Media</a>
           <a href="/case-studies/">Case Studies</a>
+          <a href="/publications/">Publications</a>
           <a href="/tools/">Tools</a>
           <a href="/skills/">Skills</a>
           <a href="/audit/">Audit</a>
@@ -283,7 +272,7 @@
           <a href="/resume/">Career</a>
         </nav>
         <nav class="footer-action-nav" aria-label="Footer actions">
-          <a href="/engagements/#engagement-form">Invite Me to Speak</a>
+          <a href="/engagements/#engagement-inquiry-form">Invite Sudeep to Participate</a>
           <a href="https://calendly.com/zsudeepharya/new-meeting" target="_blank" rel="noopener">Book Free Audit</a>
           <a href="https://www.linkedin.com/in/sudeep-arya/" target="_blank" rel="me noopener">LinkedIn</a>
           <a href="/contact/">Use Contact Form</a>

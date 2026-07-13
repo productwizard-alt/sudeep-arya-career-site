@@ -60,9 +60,10 @@ check((tool.match(/<fieldset><legend>/g) || []).length === 4, "Snapshot must hav
 for (const name of ["productTruth", "approvalOwner", "assetControl", "workflowDocumented"]) {
   check((tool.match(new RegExp(`name="${name}"`, "g")) || []).length === 3, `${name} must offer Yes, No, and Not sure`);
 }
-for (const action of ["Do now", "Test next", "Measure", "Copy result", "Print / Save as PDF", "Download local CSV", "Reset"]) {
+for (const action of ["Do now", "Test next", "Measure", "Copy result", "Download local CSV", "Reset"]) {
   check(tool.includes(action), `Snapshot output is missing ${action}`);
 }
+check(!/Print \/ Save as PDF|data-print|\.pdf/i.test(tool), "Snapshot exposes a PDF action or link");
 check(tool.includes("Missing information stays missing—it is never treated as zero."), "Missing-data boundary is absent");
 check(tool.includes("Zero approved output returns an explicit not-calculable state."), "Zero-approved boundary is absent");
 check(!/>\s*(?:Advanced|Full Workflow|Readiness score|Maturity stage|30\s*\/\s*60\s*\/\s*90)\b/i.test(tool), "Rejected V2 interface language remains visible");
@@ -90,17 +91,19 @@ for (const route of [
   "/whitepapers/",
   "/whitepapers/running-before-crawling/",
   "/assets/whitepapers/sudeep-arya-running-before-crawling.pdf",
-  "/case-studies/running-before-crawling-whitepaper/",
+  "/downloads/running-before-crawling-executive-edition.pdf",
 ]) {
-  check(redirects.includes(`${route} /404.html 410!`), `Deleted route ${route} must retain 410`);
+  check(redirects.includes(`${route} /publications/running-before-crawling/ 301!`) || redirects.includes(`${route} /publications/ 301!`), `Legacy route ${route} must redirect into Publications`);
 }
+check(redirects.includes("/case-studies/running-before-crawling-whitepaper/ /case-studies/ai-economics-decision-framework/ 301!"), "Legacy framework case-study redirect is missing");
 
 const home = await read("index.html");
 const caseHub = await read("case-studies/index.html");
 const pubHub = await read("publications/index.html");
 for (const [name, html] of [["homepage", home], ["case-studies hub", caseHub], ["publications hub", pubHub]]) {
   check(html.includes("/publications/small-team-bigger-output/"), `${name} is missing the Small Team publication link`);
-  check(!/Running Before Crawling|running-before-crawling|href="\/insights\//i.test(html), `${name} restores prohibited legacy publication content`);
+  check(html.includes("/publications/running-before-crawling/"), `${name} is missing the Running Before Crawling publication link`);
+  check(!/href="\/insights\//i.test(html), `${name} links to the retired Insights route`);
 }
 
 const htmlFiles = (await readdir(root, { recursive: true })).filter((file) => file.endsWith(".html"));
@@ -113,4 +116,4 @@ if (failures.length) {
   process.exit(1);
 }
 assert.equal(failures.length, 0);
-console.log(`Content operations validation passed: ${routes.length} routes, four publication controls, one-page snapshot, six-section case study, privacy, deleted-route 410s, and source controls verified.`);
+console.log(`Content operations validation passed: ${routes.length} routes, four publication controls, one-page snapshot, six-section case study, privacy, publication redirects, and source controls verified.`);

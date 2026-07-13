@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 import { validateClosedPeriod, validateComparison } from "../../assets/js/ai-economics/validation.js";
 import { unitCostImprovement } from "../../tools/ai-cost-reality-calculator/calculator-core.js";
 
-const vectors = JSON.parse(await readFile(new URL("../../.codex-input/running-before-crawling/07_CALCULATOR_TEST_VECTORS.json", import.meta.url)));
+const vectors = JSON.parse(await readFile(new URL("./fixtures/calculator-test-vectors.json", import.meta.url)));
 const byId = Object.fromEntries(vectors.cases.map((item) => [item.id, item]));
 
 test("closed period counts must reconcile", () => {

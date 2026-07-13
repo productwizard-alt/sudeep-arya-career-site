@@ -10,13 +10,14 @@ const indexableRoutes = new Set([
   "/resume/",
   "/case-studies/",
   "/case-studies/ai-economics-decision-framework/",
-  "/case-studies/banfield-subscription-commerce/",
   "/case-studies/small-team-bigger-output/",
+  "/case-studies/banfield-subscription-commerce/",
   "/publications/",
+  "/publications/running-before-crawling/",
   "/publications/small-team-bigger-output/",
   "/tools/",
-  "/tools/content-operations-readiness/",
   "/tools/ai-cost-reality-calculator/",
+  "/tools/content-operations-readiness/",
   "/skills/",
   "/recruiters/",
   "/audit/",
@@ -25,7 +26,7 @@ const indexableRoutes = new Set([
 ]);
 const requiredOg = ["og:type", "og:title", "og:description", "og:url", "og:image", "og:image:width", "og:image:height", "og:image:alt"];
 const requiredTwitter = ["twitter:card", "twitter:title", "twitter:description", "twitter:image", "twitter:image:alt"];
-const skipDirs = new Set([".git", ".codex-inputs", "reports", "artifacts", "node_modules"]);
+const skipDirs = new Set([".git", ".codex-input", ".codex-inputs", ".staging-dist", "reports", "artifacts", "node_modules"]);
 
 function walk(dir, predicate) {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -236,8 +237,12 @@ for (const url of sitemapUrls) {
 }
 const robots = readFileSync(path.join(root, "robots.txt"), "utf8");
 if (!robots.includes(`Sitemap: ${canonicalOrigin}/sitemap.xml`)) issues.push("robots.txt: sitemap reference missing or inconsistent");
-if (readFileSync(path.join(root, "script.js"), "utf8").includes("G-C65RGRMMW1")) {
-  issues.push("script.js: GA4 ID should remain in HTML, not script.js");
+const siteScript = readFileSync(path.join(root, "script.js"), "utf8");
+if (!siteScript.includes("G-C65RGRMMW1") || !siteScript.includes("isProductionHost") || !siteScript.includes("analyticsBlockedRoutes")) {
+  issues.push("script.js: centralized production-only GA4 loader or calculator exclusions are missing");
+}
+if (pages.some((page) => /googletagmanager\.com\/gtag\/js|\bgtag\s*\(/iu.test(page.html))) {
+  issues.push("HTML contains inline analytics instead of using the centralized production-only loader");
 }
 
 mkdirSync(reportDir, { recursive: true });

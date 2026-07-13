@@ -6,7 +6,7 @@ import {
   riskAdjustedRoi, simplePayback, unitCostImprovement, validateOutcomeCounts,
 } from "../tools/ai-cost-reality-calculator/calculator-core.js";
 
-const vectors = JSON.parse(await readFile(new URL("../.codex-input/running-before-crawling/07_CALCULATOR_TEST_VECTORS.json", import.meta.url)));
+const vectors = JSON.parse(await readFile(new URL("../tests/ai-economics/fixtures/calculator-test-vectors.json", import.meta.url)));
 const close = (actual, expected) => assert.ok(Math.abs(actual - expected) <= vectors.tolerance, `${actual} != ${expected}`);
 let passed = 0;
 

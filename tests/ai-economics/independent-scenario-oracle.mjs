@@ -89,8 +89,8 @@ function currentBuilderTotal(builder = {}) {
 function aiBuilderTotal(builder = {}, period, aiAttempts) {
   const technologyCost = numeric(builder.technologyCost || 0);
   const implementationCost = numeric(builder.implementationCost || 0);
-  const amortizationYears = numeric(builder.amortizationYears || 3);
-  const annualizedImplementation = implementationCost / amortizationYears;
+  const amortizationYears = numeric(builder.amortizationYears || 0);
+  const annualizedImplementation = implementationCost > 0 && amortizationYears > 0 ? implementationCost / amortizationYears : 0;
   const allocatedImplementation = annualizedImplementation / PERIODS_PER_YEAR[period];
   const reviewCost = builder.reviewMethod === "calculated"
     ? numeric(aiAttempts) * (numeric(builder.reviewRate || 0) / 100) * (numeric(builder.reviewMinutes || 0) / 60) * numeric(builder.reviewHourlyCost || 0)
@@ -132,8 +132,9 @@ export function referenceAdvanced(input, period = input.period || "annual") {
   } else {
     const builder = input.aiCostBuilder || {};
     if (!nonNegative(builder.technologyCost)) errors.push("Enter model, platform, and software cost in the AI cost builder.");
-    if (!nonNegative(builder.implementationCost) || !nonNegative(builder.amortizationYears) || !nonNegative(builder.otherOperatingCost)) errors.push("Active AI builder values must be finite and nonnegative.");
-    if (numeric(builder.amortizationYears) < 1 || numeric(builder.amortizationYears) > 10) errors.push("Amortization period must be between 1 and 10 years.");
+    if (!nonNegative(builder.implementationCost) || !nonNegative(builder.otherOperatingCost)) errors.push("Active AI builder values must be finite and nonnegative.");
+    if (numeric(builder.implementationCost) > 0 && !nonNegative(builder.amortizationYears)) errors.push("Enter a useful life for implementation cost.");
+    if (builder.amortizationYears !== "" && builder.amortizationYears !== null && builder.amortizationYears !== undefined && (numeric(builder.amortizationYears) < 1 || numeric(builder.amortizationYears) > 10)) errors.push("Amortization period must be between 1 and 10 years.");
     if (builder.reviewMethod === "calculated") {
       for (const value of [builder.reviewRate, builder.reviewMinutes, builder.reviewHourlyCost]) if (!nonNegative(value)) errors.push("Active time-derived review values must be finite and nonnegative.");
       if (nonNegative(builder.reviewRate) && numeric(builder.reviewRate) > 100) errors.push("Review percentage cannot exceed 100%.");
@@ -162,7 +163,7 @@ export function referenceAdvanced(input, period = input.period || "annual") {
   }
   if (aiCostMethod === "builder") {
     const b = input.aiCostBuilder;
-    builderSteps.push(`Annualized implementation = ${b.implementationCost} ÷ ${b.amortizationYears} = ${composition.annualizedImplementation}`);
+    if (numeric(b.implementationCost) > 0) builderSteps.push(`Annualized implementation = ${b.implementationCost} ÷ ${b.amortizationYears} = ${composition.annualizedImplementation}`);
     builderSteps.push(`Selected-period implementation allocation = ${composition.annualizedImplementation} ÷ ${PERIODS_PER_YEAR[period]} = ${composition.allocatedImplementation}`);
     if (b.reviewMethod === "calculated") builderSteps.push(`Time-derived review = ${input.aiAttempts} × (${b.reviewRate} ÷ 100) × (${b.reviewMinutes} ÷ 60) × ${b.reviewHourlyCost} = ${composition.reviewCost}`);
     else builderSteps.push(`Direct review cost = ${b.knownReviewCost}`);

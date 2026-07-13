@@ -32,11 +32,27 @@ async function filesIn(directory) {
 
 const files = await filesIn(outputDir);
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
+const relativeFiles = new Set(files.map((file) => path.relative(outputDir, file).replaceAll(path.sep, "/")));
+
+for (const required of [
+  "publications/index.html",
+  "publications/running-before-crawling/index.html",
+  "publications/small-team-bigger-output/index.html",
+  "case-studies/ai-economics-decision-framework/index.html",
+  "case-studies/small-team-bigger-output/index.html",
+  "tools/ai-cost-reality-calculator/index.html",
+  "tools/content-operations-readiness/index.html",
+]) {
+  if (!relativeFiles.has(required)) issues.push(`${required}: required release route missing from staging output`);
+}
 
 for (const file of files) {
   const relative = path.relative(outputDir, file).replaceAll(path.sep, "/");
   if (/(^|\/)(\.git|\.netlify|reports|screenshots|source-assets|artifacts|node_modules|tests|browser-profiles?|caches?)(\/|$)/iu.test(relative)) {
     issues.push(`${relative}: forbidden staging output path`);
+  }
+  if (/\.pdf$/iu.test(relative) && relative !== "resume/Sudeep-Arya-Amazon-DTC-Marketplace-AI-Commerce-Resume.pdf") {
+    issues.push(`${relative}: deployable non-resume PDF is prohibited`);
   }
 }
 
@@ -56,6 +72,9 @@ for (const file of htmlFiles) {
     issues.push(`${relative}: analytics code remains in generated HTML`);
   }
   if (/Flemington/iu.test(html)) issues.push(`${relative}: deprecated Flemington reference present`);
+  if (/running-before-crawling[^"'\s<]*\.pdf|small-team-bigger-output[^"'\s<]*\.pdf|download\s+pdf|save\s+as\s+pdf|whitepaper_download/iu.test(html)) {
+    issues.push(`${relative}: publication PDF reference or CTA present`);
+  }
   if (duplicateIds.length) issues.push(`${relative}: duplicate IDs: ${duplicateIds.join(", ")}`);
 
   for (const match of html.matchAll(/\saria-controls=["']([^"']+)["']/giu)) {
@@ -80,6 +99,16 @@ if (!headers.includes("Cache-Control: no-store")) issues.push("_headers: missing
 const robots = await readFile(path.join(outputDir, "robots.txt"), "utf8");
 if (robots !== expectedRobots) issues.push("robots.txt: contents differ from the staging policy");
 if (/sitemap/iu.test(robots.replace(/^#.*$/gmu, ""))) issues.push("robots.txt: sitemap is advertised");
+
+const redirects = await readFile(path.join(outputDir, "_redirects"), "utf8");
+for (const legacyPdf of [
+  "/assets/whitepapers/sudeep-arya-running-before-crawling.pdf",
+  "/downloads/running-before-crawling-executive-edition.pdf",
+]) {
+  if (!redirects.includes(`${legacyPdf} /publications/running-before-crawling/ 301!`)) {
+    issues.push(`_redirects: ${legacyPdf} must redirect to the HTML publication`);
+  }
+}
 
 if (issues.length) {
   console.error(`Staging output validation failed (${issues.length} issues):`);

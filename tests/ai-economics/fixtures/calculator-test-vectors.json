@@ -1,0 +1,119 @@
+{
+  "formula_version": "1.1.0",
+  "tolerance": 1e-06,
+  "cases": [
+    {
+      "id": "synthetic_happy_path",
+      "inputs": {
+        "baseline_cost": 1000000,
+        "baseline_verified": 100000,
+        "unit_economics_tco": 700000,
+        "attempts": 125000,
+        "verified": 105000,
+        "hard_benefit": 1050000,
+        "expected_loss": 50000,
+        "upfront": 300000,
+        "monthly_net_hard_benefit": 25000
+      },
+      "expected": {
+        "baseline_unit_cost": 10,
+        "cost_per_attempt": 5.6,
+        "cost_per_verified": 6.6666666667,
+        "risk_adjusted_net_annual_value": 300000,
+        "risk_adjusted_roi": 0.4,
+        "simple_payback_months": 12
+      }
+    },
+    {
+      "id": "zero_verified_outcomes",
+      "inputs": {
+        "unit_economics_tco": 100000,
+        "attempts": 1000,
+        "verified": 0
+      },
+      "expected": {
+        "cost_per_verified": {
+          "status": "not_calculable",
+          "reason": "verified_outcomes_zero"
+        }
+      }
+    },
+    {
+      "id": "no_payback",
+      "inputs": {
+        "upfront": 300000,
+        "monthly_hard_benefit": 10000,
+        "monthly_recurring_tco": 12000,
+        "monthly_expected_loss": 1000
+      },
+      "expected": {
+        "payback": {
+          "status": "no_payback"
+        }
+      }
+    },
+    {
+      "id": "no_break_even",
+      "inputs": {
+        "annual_fixed_ai_cost": 200000,
+        "baseline_variable_unit_cost": 4,
+        "ai_variable_unit_cost": 4.5
+      },
+      "expected": {
+        "break_even": {
+          "status": "no_break_even"
+        }
+      }
+    },
+    {
+      "id": "cache_break_even_all_in",
+      "inputs": {
+        "normal_input_rate": 1,
+        "write_all_in_rate": 1.25,
+        "cache_read_rate": 0.1,
+        "repeated_tokens": 1000000,
+        "reads": 1
+      },
+      "expected": {
+        "no_cache_cost": 2,
+        "cache_cost": 1.35,
+        "cache_savings": 0.65,
+        "minimum_whole_reads": 1
+      }
+    },
+    {
+      "id": "closed_period_reconciliation_error",
+      "inputs": {
+        "period_closed": true,
+        "attempts": 100,
+        "first_pass": 50,
+        "reviewed_pass": 10,
+        "corrected": 20,
+        "failed": 10,
+        "unresolved": 5
+      },
+      "expected": {
+        "validation": {
+          "status": "validation_error",
+          "reason": "attempt_categories_do_not_reconcile",
+          "difference": 5
+        }
+      }
+    },
+    {
+      "id": "not_comparable_outcomes",
+      "inputs": {
+        "baseline_outcome_definition": "case closed and not reopened in 7 days",
+        "ai_outcome_definition": "reply generated",
+        "baseline_unit_cost": 12,
+        "ai_unit_cost": 3
+      },
+      "expected": {
+        "unit_cost_improvement": {
+          "status": "not_comparable",
+          "reason": "outcome_definition_mismatch"
+        }
+      }
+    }
+  ]
+}

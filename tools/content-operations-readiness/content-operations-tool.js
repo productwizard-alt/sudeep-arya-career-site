@@ -213,8 +213,6 @@ snapshotForm?.addEventListener("reset", () => setTimeout(() => {
   if (state.baseline) resetSnapshot();
   else { emptyState.hidden = false; resultState.hidden = true; }
 }, 0));
-q("[data-print]")?.addEventListener("click", () => window.print());
-
 function summaryText() {
   if (!state.baseline || !state.recommendation) return "";
   const b = state.baseline;
@@ -241,7 +239,7 @@ q("[data-copy]")?.addEventListener("click", async (event) => {
     button.textContent = "Copied";
     setTimeout(() => { button.textContent = "Copy result"; }, 1400);
   } catch {
-    liveStatus.textContent = "Copy was unavailable. Use Print / Save as PDF or download the local CSV.";
+    liveStatus.textContent = "Copy was unavailable. Download the local CSV instead.";
   }
 });
 

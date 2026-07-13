@@ -12,7 +12,7 @@ const root = process.cwd();
 const artifactDir = path.join(root, "artifacts/ai-cost-calculator-upgrade-v1/local/scenario-validation");
 const screenshotDir = path.join(artifactDir, "screenshots");
 await mkdir(screenshotDir, { recursive: true });
-const base = "http://127.0.0.1:8000";
+const base = process.env.QA_BASE_URL || "http://127.0.0.1:8000";
 const urls = { Quick: `${base}/tools/ai-cost-reality-calculator/`, Advanced: `${base}/tools/ai-cost-reality-calculator/advanced/` };
 const executablePath = path.join(root, ".netlify/plugins/node_modules/puppeteer/node_modules/puppeteer-core/.local-chromium/linux-1045629/chrome-linux/chrome");
 const browser = await puppeteer.launch({ executablePath, headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
@@ -130,7 +130,7 @@ async function layoutPass(mode, width) {
   record("accessibility", `${mode} ${width}: keyboard focus indicator is visible`, keyboardFocus.outlineStyle !== "none" && parseFloat(keyboardFocus.outlineWidth) >= 2, keyboardFocus);
 
   if (mode === "Advanced" && width >= 1024) {
-    await page.click('input[name="current_cost_method"][value="builder"]');
+    await selectRadio(page, "current_cost_method", "builder");
     const tops = await page.evaluate(() => [...document.querySelectorAll("#current-builder-panel .builder-grid input")].map((node) => node.getBoundingClientRect().top));
     const alignedPairs = tops.every((top, index) => index % 2 || Math.abs(top - tops[index + 1]) <= 1);
     record("alignment", `Advanced ${width}: component-builder inputs align within logical rows`, alignedPairs, tops);
@@ -158,8 +158,12 @@ async function setValues(page, values) {
   }, values);
 }
 
+async function selectRadio(page, name, value) {
+  await page.$eval(`input[name="${name}"][value="${value}"]`, (node) => node.closest("label").click());
+}
+
 async function fillQuick(page, scenario) {
-  await page.click(`input[name="period"][value="${scenario.period}"]`);
+  await selectRadio(page, "period", scenario.period);
   await setValues(page, { baseline_verified: scenario.input.currentOutcomes, baseline_cost: scenario.input.currentCost, ai_attempts: scenario.input.aiAttempts, verified_rate: scenario.input.successRate, total_ai_cost: scenario.input.aiCost });
   if (scenario.acceptanceMode === "pilot") {
     await page.$eval(".pilot-helper", (node) => { node.open = true; });
@@ -177,13 +181,13 @@ const advancedNames = {
 
 async function fillAdvanced(page, scenario) {
   const input = scenario.input;
-  await page.click(`input[name="period"][value="${scenario.period}"]`);
-  await page.click(`input[name="current_cost_method"][value="${input.currentCostMethod}"]`);
-  await page.click(`input[name="success_method"][value="${input.successMethod}"]`);
-  await page.click(`input[name="ai_cost_method"][value="${input.aiCostMethod}"]`);
+  await selectRadio(page, "period", scenario.period);
+  await selectRadio(page, "current_cost_method", input.currentCostMethod);
+  await selectRadio(page, "success_method", input.successMethod);
+  await selectRadio(page, "ai_cost_method", input.aiCostMethod);
   if (input.aiCostMethod === "builder") {
     await page.$eval("#review-builder", (node) => { node.open = true; });
-    await page.click(`input[name="review_method"][value="${input.aiCostBuilder.reviewMethod}"]`);
+    await selectRadio(page, "review_method", input.aiCostBuilder.reviewMethod);
   }
   const values = {};
   for (const key of ["currentOutcomes", "knownCurrentCost", "aiAttempts", "successRate", "pilotAttempts", "pilotAccepted", "knownAiCost"]) values[advancedNames[key]] = input[key];
@@ -193,6 +197,7 @@ async function fillAdvanced(page, scenario) {
 }
 
 async function scenarioResult(mode, scenario, file, width = 1440) {
+  console.log(`Running ${mode} browser scenario ${scenario.id} at ${width}px.`);
   const page = await browser.newPage();
   await page.setViewport(viewport(width));
   const errors = attachErrorTracking(page);
@@ -299,26 +304,26 @@ async function methodAndPeriodChecks() {
   const page = await browser.newPage();
   await page.setViewport(viewport(1440));
   await page.goto(urls.Advanced, { waitUntil: "networkidle0" });
-  await page.click('input[name="ai_cost_method"][value="builder"]');
+  await selectRadio(page, "ai_cost_method", "builder");
   await setValues(page, { technology_cost: 1000, implementation_cost: 1200, amortization_years: 3, known_review_cost: 300, other_ai_cost: 200, known_ai_cost: 999999 });
   const builderTotal = await page.$eval("[data-live-ai-total]", (node) => node.textContent.trim());
-  await page.click('input[name="ai_cost_method"][value="known"]');
+  await selectRadio(page, "ai_cost_method", "known");
   const knownTotal = await page.$eval("[data-live-ai-total]", (node) => node.textContent.trim());
-  await page.click('input[name="ai_cost_method"][value="builder"]');
+  await selectRadio(page, "ai_cost_method", "builder");
   const returnedTotal = await page.$eval("[data-live-ai-total]", (node) => node.textContent.trim());
   record("interaction", "Advanced AI method switching excludes inactive known total and preserves builder", builderTotal === "$1,900.00" && knownTotal === "$999,999.00" && returnedTotal === builderTotal, { builderTotal, knownTotal, returnedTotal });
   await page.$eval("#review-builder", (node) => { node.open = true; });
-  await page.click('input[name="review_method"][value="calculated"]');
+  await selectRadio(page, "review_method", "calculated");
   await setValues(page, { review_rate: 50, review_minutes: 12, review_hourly_cost: 100, ai_attempts: 1000, known_review_cost: 999999 });
   const calculatedReview = await page.$eval("[data-live-review]", (node) => node.textContent.trim());
-  await page.click('input[name="review_method"][value="known"]');
+  await selectRadio(page, "review_method", "known");
   const directReview = await page.$eval("[data-live-review]", (node) => node.textContent.trim());
   record("interaction", "Advanced review switching prevents double counting", calculatedReview === "$10,000.00" && directReview === "$999,999.00", { calculatedReview, directReview });
-  await page.click('input[name="period"][value="monthly"]');
+  await selectRadio(page, "period", "monthly");
   const monthly = await page.$eval("[data-live-implementation]", (node) => node.textContent.trim());
-  await page.click('input[name="period"][value="quarterly"]');
+  await selectRadio(page, "period", "quarterly");
   const quarterly = await page.$eval("[data-live-implementation]", (node) => node.textContent.trim());
-  await page.click('input[name="period"][value="annual"]');
+  await selectRadio(page, "period", "annual");
   const annual = await page.$eval("[data-live-implementation]", (node) => node.textContent.trim());
   record("formula-browser", "Advanced period change reallocates implementation after values are entered", monthly === "$33.33" && quarterly === "$100.00" && annual === "$400.00", { monthly, quarterly, annual });
   await page.close();
@@ -335,6 +340,8 @@ async function reducedMotionCheck(mode) {
   });
   await page.setViewport(viewport(1440));
   await page.goto(urls[mode], { waitUntil: "networkidle0" });
+  if (mode === "Quick") await fillQuick(page, quickScenarios.find(({ id }) => id === "Q01"));
+  else await fillAdvanced(page, advancedScenarios.find(({ id }) => id === "A01"));
   await page.click("button[type='submit']");
   await page.waitForSelector("[data-results]:not([hidden])");
   await page.click("[data-edit]");
@@ -377,7 +384,7 @@ async function privacyCheck() {
   await page.evaluate(() => { window.__privacyWrites.length = 0; });
   sentinelActive = true;
   const sentinel = "731947.23";
-  await setValues(page, { baseline_cost: sentinel });
+  await setValues(page, { baseline_verified: 100000, baseline_cost: sentinel, ai_attempts: 125000, verified_rate: 84, total_ai_cost: 600000 });
   await page.click("button[type='submit']");
   await pause(200);
   sentinelActive = false;

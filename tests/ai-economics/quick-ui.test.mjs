@@ -37,7 +37,8 @@ test("public calculator has no advanced-analysis form", () => {
 });
 
 test("results preserve unit economics and add decision metrics", () => {
-  for (const label of ["Current cost per accepted outcome", "AI cost per attempt", "AI cost per accepted outcome", "Expected failed attempts", "Cost allocated to failed attempts", "Break-even accepted-outcome rate", "Equivalent-output AI cost", "Selected-period savings or loss"]) assert.match(html, new RegExp(label));
+  const visibleText = html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+  for (const label of ["Current cost per accepted outcome", "AI cost per attempt", "AI cost per accepted outcome", "Expected failed or unusable attempts", "Cost allocated to failed attempts", "Break-even accepted AI-assisted rate", "AI cost for current accepted outcomes", "Selected-period savings or loss"]) assert.match(visibleText, new RegExp(label));
   assert.equal((html.match(/data-output="baseline-cost"/g) || []).length, 1);
   assert.equal((html.match(/data-output="failure-cost"/g) || []).length, 1);
 });

@@ -4,7 +4,10 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const files = (await readdir(root, { recursive: true })).filter((file) => file.endsWith(".html"));
+const files = (await readdir(root, { recursive: true })).filter((file) =>
+  file.endsWith(".html") &&
+  !/(^|\/)(?:\.codex-inputs?|\.staging-dist|reports|artifacts|node_modules)(?:\/|$)/.test(file)
+);
 const errors = [];
 let references = 0;
 for (const file of files) {

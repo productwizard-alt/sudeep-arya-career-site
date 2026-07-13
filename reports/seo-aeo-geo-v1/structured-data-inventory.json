@@ -64,9 +64,9 @@
   },
   {
     "page": "/engagements/",
-    "schemaType": "WebSite, Person, WebPage, Service, OfferCatalog, FAQPage, BreadcrumbList",
-    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/engagements/#webpage, https://sudeeparya.com/engagements/#service, https://sudeeparya.com/engagements/#offer-catalog, https://sudeeparya.com/engagements/#faq",
-    "primaryEntity": "https://sudeeparya.com/engagements/#service",
+    "schemaType": "WebSite, Person, WebPage, ItemList, FAQPage, BreadcrumbList",
+    "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/engagements/#webpage, https://sudeeparya.com/engagements/#formats, https://sudeeparya.com/engagements/#faq, https://sudeeparya.com/engagements/#breadcrumb",
+    "primaryEntity": "https://sudeeparya.com/#person",
     "validationStatus": "valid",
     "issues": [],
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
@@ -76,6 +76,15 @@
     "schemaType": "CollectionPage, ItemList",
     "@id": "https://sudeeparya.com/publications/#page, https://sudeeparya.com/publications/#list",
     "primaryEntity": "https://sudeeparya.com/publications/#list",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/publications/running-before-crawling/",
+    "schemaType": "Article, WebPage, BreadcrumbList",
+    "@id": "https://sudeeparya.com/publications/running-before-crawling/#article, https://sudeeparya.com/publications/running-before-crawling/#webpage, https://sudeeparya.com/publications/running-before-crawling/#breadcrumb",
+    "primaryEntity": "",
     "validationStatus": "valid",
     "issues": [],
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."

@@ -1,6 +1,7 @@
-/insights/ /404.html 410!
-/insights/running-before-crawling/ /404.html 410!
-/assets/whitepapers/sudeep-arya-running-before-crawling.pdf /404.html 410!
-/whitepapers/ /404.html 410!
-/whitepapers/running-before-crawling/ /404.html 410!
-/case-studies/running-before-crawling-whitepaper/ /404.html 410!
+/insights/ /publications/ 301!
+/insights/running-before-crawling/ /publications/running-before-crawling/ 301!
+/whitepapers/ /publications/ 301!
+/whitepapers/running-before-crawling/ /publications/running-before-crawling/ 301!
+/assets/whitepapers/sudeep-arya-running-before-crawling.pdf /publications/running-before-crawling/ 301!
+/downloads/running-before-crawling-executive-edition.pdf /publications/running-before-crawling/ 301!
+/case-studies/running-before-crawling-whitepaper/ /case-studies/ai-economics-decision-framework/ 301!

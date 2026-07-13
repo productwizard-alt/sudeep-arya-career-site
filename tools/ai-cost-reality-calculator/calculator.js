@@ -1,10 +1,15 @@
 import { calculatePilotRate, calculateQuickDecisionMetrics, periodLabel } from "./quick-decision-metrics.js";
+import { calculatorExample, unitTerms } from "./calculator-examples.js";
+import { createExampleDialog } from "./calculator-example-dialog.js";
+import { deriveUnitCostSeries, renderDerivedCurrency, renderUnitCostSeries } from "./unit-cost-reference.js";
 
 const form = document.querySelector("#ai-economics-form");
 const results = document.querySelector("[data-results]");
 const errorSummary = document.querySelector("[data-error-summary]");
 const output = (name) => document.querySelector(`[data-output="${name}"]`);
 const field = (name) => form.elements.namedItem(name);
+let activeExample = null;
+let currentReferenceAnnouncementTimer;
 
 const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
 const wholeCurrency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
@@ -13,6 +18,18 @@ const percentage = new Intl.NumberFormat("en-US", { style: "percent", maximumFra
 
 function formatMetric(metric, formatter, fallback = "Not calculable") {
   return metric?.status === "valid" && Number.isFinite(metric.value) ? formatter.format(metric.value) : fallback;
+}
+
+function renderUnitCostMetric(name, metric) {
+  const node = output(name);
+  if (metric?.status === "valid" && Number.isFinite(metric.value)) {
+    renderDerivedCurrency(node, metric.value, currency);
+    return;
+  }
+  node.classList.remove("derived-currency", "derived-currency--subunit");
+  node.removeAttribute("aria-label");
+  node.removeAttribute("data-exact-value");
+  node.textContent = "Not calculable";
 }
 
 function readInput() {
@@ -24,6 +41,105 @@ function readInput() {
     successRate: field("verified_rate").value,
     aiCost: field("total_ai_cost").value,
   };
+}
+
+function updateUnitCopy() {
+  const terms = unitTerms(field("outcome_label").value);
+  for (const node of document.querySelectorAll("[data-unit-singular]")) node.textContent = terms.singular;
+  for (const node of document.querySelectorAll("[data-unit-plural]")) node.textContent = terms.plural;
+}
+
+function updatePeriodCopy(period) {
+  const label = periodLabel(period).toLowerCase();
+  for (const node of document.querySelectorAll("[data-period-word]")) node.textContent = label;
+}
+
+function updateCurrentUnitReference() {
+  const reference = document.querySelector("[data-current-unit-reference]");
+  const announcement = document.querySelector("[data-current-unit-reference-announcement]");
+  const series = deriveUnitCostSeries(field("baseline_cost").value, field("baseline_verified").value);
+  clearTimeout(currentReferenceAnnouncementTimer);
+  if (!series || !renderUnitCostSeries(reference, series, currency)) {
+    reference.hidden = true;
+    announcement.textContent = "";
+    return;
+  }
+  reference.hidden = false;
+  const terms = unitTerms(field("outcome_label").value);
+  currentReferenceAnnouncementTimer = setTimeout(() => {
+    announcement.textContent = `Current process cost: ${currency.format(series.perOne)} per ${terms.singular}, ${currency.format(series.perHundred)} per 100 ${terms.plural}, and ${currency.format(series.perThousand)} per 1,000 ${terms.plural}.`;
+  }, 450);
+}
+
+function updateUnitCostComparison(result) {
+  const comparison = document.querySelector("[data-unit-cost-comparison]");
+  const current = result.currentCostPerSuccess?.status === "valid" ? deriveUnitCostSeries(result.currentCostPerSuccess.value, 1) : null;
+  const ai = result.aiCostPerSuccess?.status === "valid" ? deriveUnitCostSeries(result.aiCostPerSuccess.value, 1) : null;
+  if (!current || !ai) {
+    comparison.hidden = true;
+    return;
+  }
+  const currentRendered = renderUnitCostSeries(comparison.querySelector('[data-unit-cost-series="current"]'), current, currency);
+  const aiRendered = renderUnitCostSeries(comparison.querySelector('[data-unit-cost-series="ai"]'), ai, currency);
+  comparison.hidden = !(currentRendered && aiRendered);
+}
+
+function showExampleContext(example) {
+  const selected = example.quick;
+  const status = document.querySelector("[data-active-example]");
+  document.querySelector("[data-active-example-state]").textContent = "Illustrative example loaded";
+  document.querySelector("[data-active-example-name]").textContent = example.quickName;
+  document.querySelector("[data-active-example-period]").textContent = periodLabel(selected.period);
+  document.querySelector("[data-active-example-unit]").textContent = example.unitLabel;
+  status.hidden = false;
+  for (const button of document.querySelectorAll("[data-example]")) button.setAttribute("aria-pressed", String(button.dataset.example === example.id));
+}
+
+function loadExample(id) {
+  const example = calculatorExample(id);
+  if (!example) return;
+  const input = example.quick;
+  form.reset();
+  field("outcome_label").value = example.unitLabel;
+  document.querySelector(`input[name="period"][value="${input.period}"]`).checked = true;
+  field("baseline_verified").value = input.currentOutcomes;
+  field("baseline_cost").value = input.currentCost;
+  field("ai_attempts").value = input.aiAttempts;
+  field("verified_rate").value = input.successRate;
+  field("total_ai_cost").value = input.aiCost;
+  const pilotDetails = document.querySelector(".pilot-helper");
+  const pilotAttempts = document.querySelector("#quick-pilot-attempts");
+  const pilotAccepted = document.querySelector("#quick-pilot-accepted");
+  const pilotMessage = document.querySelector("[data-pilot-message]");
+  pilotAttempts.value = input.pilotAttempts ?? "";
+  pilotAccepted.value = input.pilotAccepted ?? "";
+  pilotDetails.open = input.acceptanceMode === "pilot";
+  pilotMessage.textContent = input.acceptanceMode === "pilot" ? `${input.successRate}% accepted AI-assisted rate loaded from this illustrative pilot.` : "";
+  activeExample = example;
+  results.hidden = true;
+  showErrors([]);
+  for (const control of form.querySelectorAll("[aria-invalid]")) control.setAttribute("aria-invalid", "false");
+  updateUnitCopy();
+  updateCurrentUnitReference();
+  updatePeriodCopy(input.period);
+  showExampleContext(example);
+}
+
+function clearExample() {
+  form.reset();
+  document.querySelector("#quick-pilot-attempts").value = "";
+  document.querySelector("#quick-pilot-accepted").value = "";
+  document.querySelector("[data-pilot-message]").textContent = "";
+  document.querySelector(".pilot-helper").open = false;
+  document.querySelector("[data-active-example]").hidden = true;
+  for (const button of document.querySelectorAll("[data-example]")) button.setAttribute("aria-pressed", "false");
+  for (const control of form.querySelectorAll("[aria-invalid]")) control.setAttribute("aria-invalid", "false");
+  activeExample = null;
+  results.hidden = true;
+  showErrors([]);
+  updateUnitCopy();
+  updateCurrentUnitReference();
+  updatePeriodCopy(field("period").value);
 }
 
 function validate(input) {
@@ -73,17 +189,18 @@ function render(result) {
   output("equivalent-cost").textContent = formatMetric(result.equivalentOutputAiCost, currency);
   output("entered-rate").textContent = formatMetric(result.enteredSuccessRate, percentage);
   output("break-even-rate").textContent = result.breakEvenRate.status === "not_achievable" ? "Not achievable under current assumptions" : formatMetric(result.breakEvenRate, percentage);
-  output("baseline-cost").textContent = formatMetric(result.currentCostPerSuccess, currency);
-  output("attempt-cost").textContent = formatMetric(result.aiCostPerAttempt, currency);
-  output("verified-cost").textContent = formatMetric(result.aiCostPerSuccess, currency);
+  renderUnitCostMetric("baseline-cost", result.currentCostPerSuccess);
+  renderUnitCostMetric("attempt-cost", result.aiCostPerAttempt);
+  renderUnitCostMetric("verified-cost", result.aiCostPerSuccess);
   output("accepted-outcomes").textContent = formatMetric(result.successfulAiOutcomes, number);
   output("failed-attempts").textContent = formatMetric(result.failedAttempts, number);
   output("failure-cost").textContent = formatMetric(result.annualFailureCost, currency);
-  output("visual-current-cost").textContent = formatMetric(result.currentCostPerSuccess, currency);
-  output("visual-ai-cost").textContent = formatMetric(result.aiCostPerSuccess, currency);
+  renderUnitCostMetric("visual-current-cost", result.currentCostPerSuccess);
+  renderUnitCostMetric("visual-ai-cost", result.aiCostPerSuccess);
   output("visual-break-even").textContent = result.breakEvenRate.status === "not_achievable" ? ">100%" : formatMetric(result.breakEvenRate, percentage);
   output("visual-entered").textContent = formatMetric(result.enteredSuccessRate, percentage);
-  output("result-footnote").textContent = `Quick Model 1.2.0 · ${selectedPeriod} inputs · Directional planning estimate.`;
+  output("result-footnote").textContent = `Quick Model 1.2.0 · ${selectedPeriod} inputs · ${activeExample ? `Illustrative ${activeExample.name.toLowerCase()} example · ` : ""}Directional planning estimate.`;
+  updateUnitCostComparison(result);
 
   const current = result.currentCostPerSuccess.value || 0;
   const ai = result.aiCostPerSuccess.status === "valid" ? result.aiCostPerSuccess.value : 0;
@@ -112,6 +229,17 @@ form.addEventListener("focusout", (event) => {
   if (event.target.matches("input[aria-invalid='true']")) validate(readInput());
 });
 
+form.addEventListener("input", (event) => {
+  if (event.target === field("outcome_label")) updateUnitCopy();
+  updateCurrentUnitReference();
+  if (activeExample && event.isTrusted) {
+    activeExample = null;
+    for (const button of document.querySelectorAll("[data-example]")) button.setAttribute("aria-pressed", "false");
+    document.querySelector("[data-active-example-state]").textContent = "Illustrative example modified";
+    document.querySelector("[data-active-example-name]").textContent += " · values changed";
+  }
+});
+
 document.querySelector("[data-edit]").addEventListener("click", () => {
   form.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   field("baseline_verified").focus({ preventScroll: true });
@@ -128,9 +256,14 @@ document.querySelector("[data-pilot-calculate]").addEventListener("click", () =>
   message.textContent = `${field("verified_rate").value}% accepted-outcome rate applied from this pilot sample.`;
 });
 
+createExampleDialog({ dialog: document.querySelector("[data-example-dialog]"), trigger: document.querySelector("[data-example-open]"), onSelect: loadExample });
+document.querySelector("[data-clear-example]").addEventListener("click", clearExample);
+
 for (const radio of document.querySelectorAll('input[name="period"]')) {
   radio.addEventListener("change", () => {
-    const label = periodLabel(radio.value).toLowerCase();
-    document.querySelectorAll("[data-period-word]").forEach((node) => { node.textContent = label; });
+    updatePeriodCopy(radio.value);
   });
 }
+
+updateUnitCopy();
+updateCurrentUnitReference();

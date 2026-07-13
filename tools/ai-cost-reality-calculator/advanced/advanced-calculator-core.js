@@ -17,8 +17,9 @@ export function calculateReviewCost({ aiAttempts, reviewRate, reviewMinutes, rev
 
 export function buildAiCost(input = {}, period = "annual", aiAttempts = 0) {
   const periodsPerYear = PERIODS_PER_YEAR[period];
-  const amortizationYears = number(input.amortizationYears) || 3;
-  const annualizedImplementation = number(input.implementationCost) / amortizationYears;
+  const implementationCost = number(input.implementationCost);
+  const amortizationYears = number(input.amortizationYears);
+  const annualizedImplementation = implementationCost > 0 && amortizationYears > 0 ? implementationCost / amortizationYears : 0;
   const allocatedImplementation = annualizedImplementation / periodsPerYear;
   const reviewCost = input.reviewMethod === "calculated"
     ? calculateReviewCost({ aiAttempts, reviewRate: input.reviewRate, reviewMinutes: input.reviewMinutes, reviewHourlyCost: input.reviewHourlyCost })
@@ -79,8 +80,10 @@ export function calculateAdvancedEstimate(input = {}) {
   let aiCost;
   if (aiCostMethod === "builder") {
     if (!present(input.aiCostBuilder?.technologyCost)) errors.push({ field: "advanced-technology-cost", message: "Enter model, platform, and software cost in the AI cost builder." });
-    const years = number(input.aiCostBuilder?.amortizationYears) || 3;
-    if (years < 1 || years > 10) errors.push({ field: "advanced-amortization-years", message: "Amortization period must be between 1 and 10 years." });
+    const implementationCost = number(input.aiCostBuilder?.implementationCost);
+    const years = number(input.aiCostBuilder?.amortizationYears);
+    if (implementationCost > 0 && !present(input.aiCostBuilder?.amortizationYears)) errors.push({ field: "advanced-amortization-years", message: "Enter a 1–10 year useful life for the implementation cost." });
+    if (present(input.aiCostBuilder?.amortizationYears) && (years < 1 || years > 10)) errors.push({ field: "advanced-amortization-years", message: "Amortization period must be between 1 and 10 years." });
     if (input.aiCostBuilder?.reviewMethod === "calculated" && number(input.aiCostBuilder?.reviewRate) > 100) errors.push({ field: "advanced-review-rate", message: "Review percentage cannot exceed 100%." });
     composition = buildAiCost(input.aiCostBuilder, period, number(input.aiAttempts));
     aiCost = composition.total;

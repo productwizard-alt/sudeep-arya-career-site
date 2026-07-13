@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1000" role="img" aria-labelledby="title description">
+  <title id="title">Commerce conversation system</title>
+  <desc id="description">An editorial microphone at the center of six connected commerce topics: marketplaces, DTC, retail media, AI operations, data, and leadership.</desc>
+  <rect width="1200" height="1000" fill="#071621"/>
+  <path d="M60 170H1140M60 500H1140M60 830H1140M220 60V940M600 60V940M980 60V940" fill="none" stroke="#e8dfcc" stroke-opacity=".08" stroke-width="2"/>
+  <circle cx="600" cy="500" r="326" fill="none" stroke="#b98961" stroke-opacity=".38" stroke-width="2"/>
+  <circle cx="600" cy="500" r="232" fill="#0d2431" stroke="#e8dfcc" stroke-opacity=".16" stroke-width="2"/>
+  <path d="M600 174V268M600 732V826M274 500H368M832 500H926M370 270L435 335M765 665L830 730M830 270L765 335M435 665L370 730" fill="none" stroke="#d4b18e" stroke-opacity=".7" stroke-width="3"/>
+  <g fill="#b66f52" stroke="#f4ead7" stroke-width="5">
+    <circle cx="600" cy="174" r="12"/><circle cx="600" cy="826" r="12"/><circle cx="274" cy="500" r="12"/><circle cx="926" cy="500" r="12"/>
+    <circle cx="370" cy="270" r="12"/><circle cx="830" cy="730" r="12"/>
+  </g>
+  <g fill="#071621" stroke="#d4b18e" stroke-width="5">
+    <rect x="500" y="318" width="200" height="304" rx="100"/>
+    <rect x="536" y="354" width="128" height="232" rx="64" fill="#b98961" stroke="#f1e7d3"/>
+    <path d="M456 482V520C456 600 520 664 600 664S744 600 744 520V482M600 664V754M520 754H680" fill="none" stroke="#f1e7d3" stroke-linecap="round" stroke-width="18"/>
+    <path d="M566 400H634M566 448H634M566 496H634M566 544H634" fill="none" stroke="#071621" stroke-linecap="round" stroke-width="10"/>
+  </g>
+  <g fill="#f3ead9" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" letter-spacing="1">
+    <text x="600" y="120" text-anchor="middle">MARKETPLACES</text>
+    <text x="600" y="902" text-anchor="middle">LEADERSHIP</text>
+    <text x="205" y="508" text-anchor="end">DTC</text>
+    <text x="995" y="508">DATA</text>
+    <text x="330" y="225" text-anchor="end">RETAIL MEDIA</text>
+    <text x="870" y="790">AI OPERATIONS</text>
+  </g>
+  <text x="600" y="948" fill="#b98961" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700" letter-spacing="5" text-anchor="middle">OPERATING QUESTIONS INTO USEFUL CONVERSATION</text>
+</svg>

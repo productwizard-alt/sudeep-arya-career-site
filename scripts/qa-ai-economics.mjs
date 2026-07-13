@@ -10,16 +10,16 @@ const outputDir = path.join(root, "reports/ai-economics-v2/screenshots");
 mkdirSync(outputDir, { recursive: true });
 const executablePath = path.join(root, ".netlify/plugins/node_modules/puppeteer/node_modules/puppeteer-core/.local-chromium/linux-1045629/chrome-linux/chrome");
 const browser = await puppeteer.launch({ executablePath, headless: true, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
-const base = "http://127.0.0.1:8080/tools/ai-cost-reality-calculator/";
+const base = `${process.env.QA_BASE_URL || "http://127.0.0.1:4173"}/tools/ai-cost-reality-calculator/`;
 const findings = [];
 const realCases = [
-  { id: "published-example", values: [100000, 1000000, 125000, 84, 600000], expected: ["$10.00", "$4.80", "$5.71", "20,000", "$96,000", "Lower cost per success under this estimate"] },
-  { id: "perfect-success", values: [100000, 1000000, 100000, 100, 600000], expected: ["$10.00", "$6.00", "$6.00", "0", "$0", "Lower cost per success under this estimate"] },
-  { id: "half-success-higher-cost", values: [100000, 1000000, 100000, 50, 750000], expected: ["$10.00", "$7.50", "$15.00", "50,000", "$375,000", "Higher cost per success under this estimate"] },
-  { id: "unit-cost-parity", values: [100000, 1000000, 100000, 60, 600000], expected: ["$10.00", "$6.00", "$10.00", "40,000", "$240,000", "Cost per success is approximately the same"] },
-  { id: "zero-success", values: [100000, 1000000, 100000, 0, 600000], expected: ["$10.00", "$6.00", "Not calculable", "100,000", "$600,000", "No successful AI outcomes under this estimate"] },
-  { id: "small-content-workflow", values: [2400, 186000, 3600, 72.5, 94500], expected: ["$77.50", "$26.25", "$36.21", "990", "$25,988", "Lower cost per success under this estimate"] },
-  { id: "zero-ai-cost", values: [100000, 1000000, 125000, 84, 0], expected: ["$10.00", "$0.00", "$0.00", "20,000", "$0", "Lower cost per success under this estimate"] },
+  { id: "published-example", values: [100000, 1000000, 125000, 84, 600000], expected: ["$10.00", "$4.80", "$5.71", "20,000", "$96,000.00", "Modeled savings"] },
+  { id: "perfect-success", values: [100000, 1000000, 100000, 100, 600000], expected: ["$10.00", "$6.00", "$6.00", "0", "$0.00", "Modeled savings"] },
+  { id: "half-success-higher-cost", values: [100000, 1000000, 100000, 50, 750000], expected: ["$10.00", "$7.50", "$15.00", "50,000", "$375,000.00", "Modeled loss"] },
+  { id: "unit-cost-parity", values: [100000, 1000000, 100000, 60, 600000], expected: ["$10.00", "$6.00", "$10.00", "40,000", "$240,000.00", "Approximately break-even"] },
+  { id: "zero-success", values: [100000, 1000000, 100000, 0, 600000], expected: ["$10.00", "$6.00", "Not calculable", "100,000", "$600,000.00", "More information required"] },
+  { id: "small-content-workflow", values: [2400, 186000, 3600, 72.5, 94500], expected: ["$77.50", "$26.25", "$36.21", "990", "$25,987.50", "Modeled savings"] },
+  { id: "zero-ai-cost", values: [100000, 1000000, 125000, 84, 0], expected: ["$10.00", "$0.00", "$0.00", "20,000", "$0.00", "Modeled savings"] },
 ];
 
 async function exercise(viewport, prefix) {
@@ -36,10 +36,12 @@ async function exercise(viewport, prefix) {
     helpButtons: document.querySelectorAll(".field-help").length,
   }));
   findings.push({ type: "initial", viewport: prefix, ...initial });
-  await page.click(".field-help");
-  findings.push({ type: "help", viewport: prefix, expanded: await page.$eval(".field-help", (node) => node.getAttribute("aria-expanded") === "true"), visible: await page.$eval(".field-tooltip", (node) => getComputedStyle(node).visibility === "visible") });
-  await page.click(".section-body h3");
+  await page.click(".field-help summary");
+  findings.push({ type: "help", viewport: prefix, expanded: await page.$eval(".field-help", (node) => node.open), visible: await page.$eval(".field-help p", (node) => getComputedStyle(node).display !== "none" && getComputedStyle(node).visibility === "visible") });
 
+  await page.evaluate((values) => {
+    ["baseline_verified", "baseline_cost", "ai_attempts", "verified_rate", "total_ai_cost"].forEach((name, index) => { document.querySelector(`[name="${name}"]`).value = values[index]; });
+  }, realCases[0].values);
   await page.click('button[type="submit"]');
   await page.waitForSelector('[data-results]:not([hidden])');
   await page.$eval("[data-results]", (node) => node.scrollIntoView({ block: "start" }));
@@ -55,12 +57,12 @@ async function exercise(viewport, prefix) {
       ["baseline_verified", "baseline_cost", "ai_attempts", "verified_rate", "total_ai_cost"].forEach((name, index) => { document.querySelector(`[name="${name}"]`).value = values[index]; });
     }, testCase.values);
     await page.click('button[type="submit"]');
-    const actual = await page.evaluate(() => ["baseline-cost", "attempt-cost", "verified-cost", "failed-attempts", "failure-cost", "status"].map((name) => document.querySelector(`[data-output="${name}"]`).textContent.trim()));
+    const actual = await page.evaluate(() => ["baseline-cost", "attempt-cost", "verified-cost", "failed-attempts", "failure-cost", "decision-signal"].map((name) => document.querySelector(`[data-output="${name}"]`).textContent.trim()));
     findings.push({ type: "calculation-case", viewport: prefix, id: testCase.id, passed: JSON.stringify(actual) === JSON.stringify(testCase.expected), actual, expected: testCase.expected });
   }
   await page.$eval('[name="verified_rate"]', (node) => { node.value = "101"; });
   await page.click('button[type="submit"]');
-  findings.push({ type: "browser-validation", viewport: prefix, passed: await page.$eval("[data-error-summary]", (node) => !node.hidden && node.textContent.includes("cannot exceed 100%")) });
+  findings.push({ type: "browser-validation", viewport: prefix, passed: await page.$eval("[data-error-summary]", (node) => !node.hidden && node.textContent.includes("0% to 100%")) });
   await page.close();
 }
 

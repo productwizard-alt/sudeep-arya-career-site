@@ -12,6 +12,28 @@
   let calendlyLoadPromise;
   extraCaseStudies.forEach((study) => study.setAttribute("data-case-extra", ""));
 
+  const analyticsBlockedRoutes = [
+    "/tools/ai-cost-reality-calculator/",
+    "/tools/content-operations-readiness/",
+  ];
+  const isProductionHost = ["sudeeparya.com", "www.sudeeparya.com"].includes(window.location.hostname);
+  const analyticsAllowed = isProductionHost && !analyticsBlockedRoutes.some((route) => window.location.pathname.startsWith(route));
+
+  if (analyticsAllowed) {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
+    window.gtag("js", new Date());
+    window.gtag("config", "G-C65RGRMMW1");
+    const analyticsScript = document.createElement("script");
+    analyticsScript.async = true;
+    analyticsScript.src = "https://www.googletagmanager.com/gtag/js?id=G-C65RGRMMW1";
+    document.head.appendChild(analyticsScript);
+  }
+
+  const locationTravelContent = () => `<div class="location-travel__layout"><div class="location-opportunity__intro"><p class="regional-eyebrow">Speaking, advisory &amp; travel</p><h3>Central New Jersey is the base. The right audience can be anywhere.</h3><p>Available for select panels, podcasts, trade-show programs, executive briefings, workshops, and advisory engagements across the Northeast, throughout the United States, and internationally.</p><p class="location-opportunity__support">Each engagement is considered based on the audience, subject matter, format, and scope, with travel planned around the needs of the program.</p></div><figure class="location-map-card location-map-card--regional"><figcaption><h4>Northeast access</h4><p>Convenient access to Washington, DC, Wilmington, Philadelphia, New York City, Bridgeport, and the broader Northeast event corridor.</p></figcaption><div class="location-map-card__visual"><div class="location-map-card__media"><img class="location-map-card__image" src="/assets/location/northeast-access.webp" width="2000" height="1400" loading="lazy" decoding="async" alt="Editorial corridor map showing Washington, DC, Wilmington, Philadelphia, Central New Jersey, New York City, and Bridgeport."></div></div></figure><figure class="location-map-card location-map-card--global"><figcaption><h4>U.S. and international engagements</h4><p>Available for select domestic and international programs when the audience, subject, and format are the right fit.</p></figcaption><div class="location-map-card__visual location-map-card__visual--global"><div class="location-map-card__media"><img class="location-map-card__image" src="/assets/location/global-engagements.webp" width="2200" height="1200" loading="lazy" decoding="async" alt="Global engagement map showing Central New Jersey as the base for select U.S. and international programs."></div><ul class="location-map-legend" aria-label="Map legend"><li><span class="location-map-legend__domestic" aria-hidden="true"></span>United States availability</li><li><span class="location-map-legend__international" aria-hidden="true"></span>Select international engagements</li></ul></div></figure></div>`;
+
+  const compactLocationOpportunity = (panelId) => `<div class="location-opportunity location-opportunity--compact" aria-label="Speaking, advisory, and travel"><div class="location-opportunity__summary"><p class="regional-eyebrow">Speaking, advisory &amp; travel</p><strong>Central New Jersey</strong><span>Northeast access. Select U.S. and international engagements.</span></div><button class="regional-toggle regional-toggle--footer" type="button" aria-expanded="false" aria-controls="${panelId}" data-regional-toggle data-closed-label="View Speaking, Advisory &amp; Travel" data-open-label="Hide Speaking, Advisory &amp; Travel">View Speaking, Advisory &amp; Travel</button><div class="location-opportunity__drawer location-opportunity__surface" id="${panelId}" data-regional-panel hidden>${locationTravelContent()}</div></div>`;
+
   document.querySelectorAll(".site-footer").forEach((footer, footerIndex) => {
     footer.classList.add("editorial-footer");
     let profile = footer.querySelector(".footer-profile");
@@ -21,54 +43,25 @@
       footer.prepend(profile);
     }
     if (!profile.querySelector(".footer-brand")) {
-      profile.insertAdjacentHTML("afterbegin", '<a class="brand footer-brand" href="/" aria-label="Sudeep Arya home"><span>SA</span><span class="footer-brand-copy"><strong>Sudeep Arya</strong><small>Commerce leadership across channels, platforms, data, and operations.</small></span></a>');
+      profile.insertAdjacentHTML("afterbegin", '<a class="brand footer-brand" href="/"><span>SA</span><span class="footer-brand-copy"><strong>Sudeep Arya</strong><small>Commerce leadership across channels, platforms, data, and operations.</small></span></a>');
     }
-    if (!profile.querySelector(".footer-regional, .home-availability")) {
-      const pathKey = (window.location.pathname.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "home").toLowerCase();
-      const panelId = `footer-location-travel-${pathKey}-${footerIndex + 1}`;
-      profile.insertAdjacentHTML("beforeend", `<div class="home-availability"><p class="regional-eyebrow">Location &amp; travel</p><strong>Central New Jersey</strong><span>Northeast corridor access · Travel available for the right opportunity</span><button class="regional-toggle regional-toggle--footer" type="button" aria-expanded="false" aria-controls="${panelId}" data-regional-toggle data-closed-label="View Location &amp; Travel Availability" data-open-label="Hide Location &amp; Travel Availability">View Location &amp; Travel Availability</button><div class="availability-system availability-system--compact home-availability__drawer" id="${panelId}" data-regional-panel hidden><section><p class="regional-eyebrow">Regional access</p><p>Available across the Northeast corridor depending on the role and schedule.</p><ol class="availability-route-list" aria-label="Northeast corridor locations"><li><span>DE</span>Wilmington</li><li><span>PA</span>Philadelphia</li><li><span>NJ</span>Trenton</li><li class="is-base"><span>NJ</span>Central New Jersey <small>Base</small></li><li><span>NJ</span>Newark</li><li><span>NY</span>New York City</li><li><span>CT</span>Bridgeport</li></ol><small>A stylized view of regional availability; not a literal transit route.</small></section><section class="availability-system__travel footer-travel"><div><p class="regional-eyebrow">Travel availability</p><h3>Beyond the Northeast</h3><p>Open to domestic and international travel when the opportunity and business need are the right fit.</p></div><div class="travel-arc" aria-hidden="true"><span class="travel-origin">Central NJ</span><span>U.S. travel</span><span>International</span></div><ul class="availability-system__mode-list" aria-label="Available work modes"><li>Remote</li><li>Hybrid</li><li>On-site</li><li>Domestic travel</li><li>International travel</li></ul></section></div></div>`);
-    }
+    const pathKey = (window.location.pathname.replace(/[^a-z0-9]+/gi, "-").replace(/^-|-$/g, "") || "home").toLowerCase();
+    const mount = profile.querySelector("[data-location-opportunity-mount]");
+    const panelId = mount?.dataset.panelId || `footer-location-opportunity-${pathKey}-${footerIndex + 1}`;
+    const existingAvailability = profile.querySelector(".footer-regional, .home-availability, .location-opportunity--compact");
+    if (mount) mount.outerHTML = compactLocationOpportunity(panelId);
+    else if (existingAvailability) existingAvailability.outerHTML = compactLocationOpportunity(panelId);
+    else profile.insertAdjacentHTML("beforeend", compactLocationOpportunity(panelId));
     let links = footer.querySelector(".footer-link-stack");
     if (!links) {
       links = document.createElement("div");
       links.className = "footer-link-stack";
       footer.append(links);
     }
-    links.innerHTML = '<nav class="footer-primary-nav" aria-label="Footer navigation"><a href="/resume/">Resume</a><a href="/case-studies/">Case Studies</a><a href="/tools/">Tools</a><a href="/skills/">Skills</a><a href="/engagements/">Speaking &amp; Media</a><a href="/audit/">Audit</a><a href="/contact/">Contact</a></nav><nav class="footer-action-nav" aria-label="Footer actions"><a href="https://calendly.com/zsudeepharya/new-meeting" target="_blank" rel="noopener">Book Free Audit</a><a href="https://www.linkedin.com/in/sudeep-arya/" target="_blank" rel="me noopener">LinkedIn</a></nav>';
+    links.innerHTML = '<nav class="footer-primary-nav" aria-label="Footer navigation"><a href="/resume/">Resume</a><a href="/case-studies/">Case Studies</a><a href="/publications/">Publications</a><a href="/tools/">Tools</a><a href="/skills/">Skills</a><a href="/engagements/">Speaking &amp; Media</a><a href="/audit/">Audit</a><a href="/contact/">Contact</a></nav><nav class="footer-action-nav" aria-label="Footer actions"><a href="https://calendly.com/zsudeepharya/new-meeting" target="_blank" rel="noopener">Book Free Audit</a><a href="https://www.linkedin.com/in/sudeep-arya/" target="_blank" rel="me noopener">LinkedIn</a></nav>';
   });
 
   regionalToggles = document.querySelectorAll("[data-regional-toggle]");
-
-  document.querySelectorAll(".footer-regional").forEach((footerAvailability) => {
-    footerAvailability.setAttribute("aria-label", "Location and travel availability");
-    const eyebrow = footerAvailability.querySelector(".footer-regional-summary .regional-eyebrow");
-    const summaryBody = footerAvailability.querySelector(".footer-regional-summary .regional-card-copy > p:last-child");
-    const toggle = footerAvailability.querySelector("[data-regional-toggle]");
-    const drawer = footerAvailability.querySelector("[data-regional-panel]");
-    if (eyebrow) eyebrow.textContent = "Location & Travel";
-    if (summaryBody) summaryBody.textContent = "Northeast corridor access · Travel available for the right opportunity";
-    if (toggle) {
-      toggle.dataset.closedLabel = "View Location & Travel Availability";
-      toggle.dataset.openLabel = "Hide Location & Travel Availability";
-      toggle.textContent = toggle.dataset.closedLabel;
-    }
-    if (drawer) {
-      drawer.classList.add("availability-system", "availability-system--compact");
-      const drawerEyebrow = drawer.querySelector(".regional-eyebrow");
-      const drawerTitle = drawer.querySelector(".regional-card-title");
-      if (drawerEyebrow) drawerEyebrow.textContent = "Location & Travel";
-      if (drawerTitle) drawerTitle.textContent = "Northeast corridor access";
-      const travel = document.createElement("section");
-      travel.className = "availability-system__travel footer-travel";
-      travel.innerHTML = '<div><p class="regional-eyebrow">Travel availability</p><h3>Beyond the Northeast</h3><p>Open to domestic and international travel when the opportunity and business need are the right fit.</p></div><div class="travel-arc" aria-hidden="true"><span class="travel-origin">Central NJ</span><span>U.S. travel</span><span>International</span></div><ul class="availability-system__mode-list" aria-label="Available work modes"><li>Remote</li><li>Hybrid</li><li>On-site</li><li>Domestic travel</li><li>International travel</li></ul>';
-      drawer.appendChild(travel);
-    }
-  });
-
-  document.querySelectorAll(".home-availability__drawer .availability-route-list").forEach((routeList) => {
-    if (routeList.previousElementSibling?.classList.contains("footer-corridor-visual")) return;
-    routeList.insertAdjacentHTML("beforebegin", '<div class="footer-corridor-visual"><svg class="footer-corridor-map" viewBox="0 0 620 190" role="img" aria-label="Northeast availability corridor from Wilmington to Bridgeport with Central New Jersey emphasized"><g class="footer-map-grid" aria-hidden="true"><path d="M44 35H582M44 85H582M44 135H582M104 22V160M208 22V160M312 22V160M416 22V160M520 22V160"/></g><path class="footer-route-shadow" d="M48 143 C100 108 155 130 225 115 C270 104 293 70 318 78 C358 90 380 122 410 110 C455 92 468 113 492 97 C532 72 551 77 580 52"/><path class="footer-route-line" d="M48 143 C100 108 155 130 225 115 C270 104 293 70 318 78 C358 90 380 122 410 110 C455 92 468 113 492 97 C532 72 551 77 580 52"/><g class="footer-map-stop endpoint"><circle cx="48" cy="143" r="7"/><text x="48" y="174">Wilmington</text></g><g class="footer-map-stop"><circle cx="135" cy="119" r="7"/><text x="135" y="94">Philadelphia</text></g><g class="footer-map-stop"><circle cx="225" cy="115" r="7"/><text x="225" y="148">Trenton</text></g><g class="footer-map-stop base"><circle cx="318" cy="78" r="11"/><text x="318" y="48">Central NJ</text></g><g class="footer-map-stop"><circle cx="410" cy="110" r="7"/><text x="410" y="145">Newark</text></g><g class="footer-map-stop"><circle cx="492" cy="97" r="7"/><text x="492" y="70">New York City</text></g><g class="footer-map-stop endpoint"><circle cx="580" cy="52" r="7"/><text x="558" y="27">Bridgeport</text></g></svg></div>');
-  });
 
   const trackEvent = (eventName, parameters = {}) => {
     if (typeof window.gtag !== "function" || !eventName) return;
