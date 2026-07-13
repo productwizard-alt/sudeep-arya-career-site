@@ -132,6 +132,10 @@ for (const [legacy, destination] of [
   expect(redirects.includes(`${legacy} ${destination} 301!`), `targeted legacy redirect is missing: ${legacy}`);
 }
 
+for (const retiredRoute of ["/insights/*", "/whitepapers/*"]) {
+  expect(redirects.includes(`${retiredRoute} /404.html 410!`), `retired-route 410 guard is missing: ${retiredRoute}`);
+}
+
 function walk(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     if ([".git", ".codex-input", ".codex-inputs", ".staging-dist", "reports", "artifacts", "node_modules", "source-assets"].includes(entry.name)) return [];

@@ -110,6 +110,12 @@ for (const legacyPdf of [
   }
 }
 
+for (const retiredRoute of ["/insights/*", "/whitepapers/*"]) {
+  if (!redirects.includes(`${retiredRoute} /404.html 410!`)) {
+    issues.push(`_redirects: missing retired-route 410 guard for ${retiredRoute}`);
+  }
+}
+
 if (issues.length) {
   console.error(`Staging output validation failed (${issues.length} issues):`);
   for (const issue of issues) console.error(`- ${issue}`);

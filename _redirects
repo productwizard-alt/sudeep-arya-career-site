@@ -1,7 +1,9 @@
 /insights/ /publications/ 301!
 /insights/running-before-crawling/ /publications/running-before-crawling/ 301!
+/insights/* /404.html 410!
 /whitepapers/ /publications/ 301!
 /whitepapers/running-before-crawling/ /publications/running-before-crawling/ 301!
+/whitepapers/* /404.html 410!
 /assets/whitepapers/sudeep-arya-running-before-crawling.pdf /publications/running-before-crawling/ 301!
 /downloads/running-before-crawling-executive-edition.pdf /publications/running-before-crawling/ 301!
 /case-studies/running-before-crawling-whitepaper/ /case-studies/ai-economics-decision-framework/ 301!
