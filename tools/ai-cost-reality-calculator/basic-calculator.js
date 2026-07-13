@@ -1,4 +1,4 @@
-const validNumber = (value) => Number.isFinite(Number(value)) && Number(value) >= 0;
+const validNumber = (value) => value !== "" && value !== null && value !== undefined && Number.isFinite(Number(value)) && Number(value) >= 0;
 const metric = (value, status = "valid", reason = "") => ({ status, value, reason });
 
 export function calculateBasicEstimate(input) {

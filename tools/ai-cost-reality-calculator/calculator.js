@@ -1,93 +1,136 @@
-import { FORMULA_VERSION } from "./calculator-core.js";
-import { calculateBasicEstimate } from "./basic-calculator.js";
-import { formatMetric } from "/assets/js/ai-economics/presenter.js";
+import { calculatePilotRate, calculateQuickDecisionMetrics, periodLabel } from "./quick-decision-metrics.js";
 
-const form = document.getElementById("ai-economics-form");
+const form = document.querySelector("#ai-economics-form");
+const results = document.querySelector("[data-results]");
 const errorSummary = document.querySelector("[data-error-summary]");
-const resultsSection = document.querySelector("[data-results]");
-const fields = ["baseline_verified", "baseline_cost", "ai_attempts", "verified_rate", "total_ai_cost"];
-const defaults = { baseline_verified: 100000, baseline_cost: 1000000, ai_attempts: 125000, verified_rate: 84, total_ai_cost: 600000 };
-const helpText = {
-  baseline_verified: "How many finished results met the required standard in a typical year? Example: 100,000 cases closed successfully—not cases started.",
-  baseline_cost: "What do you spend each year to produce those successful results? Include people, vendors, software, and operations. A best estimate is fine.",
-  ai_attempts: "How many times will the AI-assisted workflow run each year? Count retries, corrected work, and failed attempts too.",
-  verified_rate: "What percentage of AI attempts will become usable business results? Example: enter 80 if 8 out of 10 attempts should pass.",
-  total_ai_cost: "What will the AI-assisted process cost each year? Include model, platform, human review, corrections, and ongoing operations.",
-};
+const output = (name) => document.querySelector(`[data-output="${name}"]`);
+const field = (name) => form.elements.namedItem(name);
 
-function addNumericControl(name, container) {
-  const prefix = container.hasAttribute("data-money") ? '<span class="input-prefix">$</span>' : "";
-  const suffix = container.hasAttribute("data-percent") ? '<span class="input-suffix">%</span>' : "";
-  const label = container.querySelector("label");
-  const existingInput = container.querySelector("input");
-  const inputId = `quick-${name.replaceAll("_", "-")}`;
-  const tipId = `${inputId}-help`;
-  label.htmlFor = inputId;
-  const labelRow = document.createElement("div");
-  labelRow.className = "field-label-row";
-  label.before(labelRow);
-  labelRow.append(label);
-  labelRow.insertAdjacentHTML("beforeend", `<button class="field-help" type="button" aria-label="Help for ${label.textContent.trim()}" aria-describedby="${tipId}" aria-expanded="false">?</button><span class="field-tooltip" id="${tipId}" role="tooltip">${helpText[name]}</span>`);
-  if (!existingInput) container.insertAdjacentHTML("beforeend", `<div class="value-row"><div class="single-value">${prefix}<input id="${inputId}" name="${name}" type="text" inputmode="decimal" value="${defaults[name]}" required>${suffix}</div></div>`);
-  const input = container.querySelector("input");
-  if (input) {
-    input.type = "text";
-    input.inputMode = "decimal";
-    input.autocomplete = "off";
-  }
+const currency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 });
+const wholeCurrency = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+const number = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
+const percentage = new Intl.NumberFormat("en-US", { style: "percent", maximumFractionDigits: 1 });
+
+function formatMetric(metric, formatter, fallback = "Not calculable") {
+  return metric?.status === "valid" && Number.isFinite(metric.value) ? formatter.format(metric.value) : fallback;
 }
 
-document.querySelectorAll(".evidence-field").forEach((container) => addNumericControl(container.dataset.field, container));
+function readInput() {
+  return {
+    period: field("period").value,
+    currentOutcomes: field("baseline_verified").value,
+    currentCost: field("baseline_cost").value,
+    aiAttempts: field("ai_attempts").value,
+    successRate: field("verified_rate").value,
+    aiCost: field("total_ai_cost").value,
+  };
+}
 
-const formatEditableNumber = (input) => {
-  const cleaned = input.value.replace(/,/g, "").replace(/[^0-9.]/g, "");
-  const [integer = "", ...decimalParts] = cleaned.split(".");
-  const grouped = integer.replace(/^0+(?=\d)/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") || "0";
-  input.value = decimalParts.length ? `${grouped}.${decimalParts.join("")}` : grouped;
-};
+function validate(input) {
+  const errors = [];
+  const checks = [
+    ["baseline_verified", "Enter accepted current-process outcomes greater than zero.", (value) => value !== "" && Number(value) > 0],
+    ["baseline_cost", "Enter a current-process cost of zero or greater.", (value) => value !== "" && Number(value) >= 0],
+    ["ai_attempts", "Enter expected AI-assisted attempts greater than zero.", (value) => value !== "" && Number(value) > 0],
+    ["verified_rate", "Enter an accepted-outcome rate from 0% to 100%.", (value) => value !== "" && Number(value) >= 0 && Number(value) <= 100],
+    ["total_ai_cost", "Enter a total AI-assisted cost of zero or greater.", (value) => value !== "" && Number(value) >= 0],
+  ];
+  for (const [name, message, valid] of checks) {
+    const control = field(name);
+    const okay = Number.isFinite(Number(control.value)) && valid(control.value);
+    control.setAttribute("aria-invalid", String(!okay));
+    if (!okay) errors.push({ id: control.id, message });
+  }
+  return errors;
+}
 
-form.querySelectorAll(".evidence-field input").forEach((input) => {
-  formatEditableNumber(input);
-  input.addEventListener("input", () => formatEditableNumber(input));
-});
-
-document.addEventListener("click", (event) => {
-  const trigger = event.target.closest(".field-help");
-  document.querySelectorAll(".field-help[aria-expanded='true']").forEach((button) => {
-    if (button !== trigger) button.setAttribute("aria-expanded", "false");
-  });
-  if (trigger) trigger.setAttribute("aria-expanded", String(trigger.getAttribute("aria-expanded") !== "true"));
-});
-
-const value = (name) => (form.elements[name]?.value ?? "").replace(/,/g, "");
-const showErrors = (messages) => {
-  errorSummary.innerHTML = `<strong>Check the five inputs</strong><ul>${messages.map((message) => `<li>${message}</li>`).join("")}</ul>`;
+function showErrors(errors) {
+  if (!errors.length) {
+    errorSummary.hidden = true;
+    errorSummary.innerHTML = "";
+    return;
+  }
+  errorSummary.innerHTML = `<strong>Check ${errors.length === 1 ? "this input" : "these inputs"}</strong><ul>${errors.map(({ id, message }) => `<li><a href="#${id}">${message}</a></li>`).join("")}</ul>`;
   errorSummary.hidden = false;
   errorSummary.focus();
-};
+}
+
+function marginCopy(result) {
+  if (result.breakEvenRate.status === "not_achievable") return "The required accepted-outcome rate exceeds 100% under the current cost assumptions.";
+  if (result.breakEvenMargin.status !== "valid") return "Break-even cannot be calculated because the current cost per accepted outcome is zero.";
+  const points = Math.abs(result.breakEvenMargin.value * 100).toFixed(1);
+  if (Math.abs(result.breakEvenMargin.value) < 0.0005) return "Expected accepted-outcome rate is approximately equal to break-even.";
+  return `Expected accepted-outcome rate is ${points} percentage points ${result.breakEvenMargin.value > 0 ? "above" : "below"} break-even.`;
+}
 
 function render(result) {
-  const currency = { currency: "USD", digits: 2 };
-  document.querySelector('[data-output="baseline-cost"]').textContent = formatMetric(result.currentCostPerSuccess, currency);
-  document.querySelector('[data-output="attempt-cost"]').textContent = formatMetric(result.aiCostPerAttempt, currency);
-  document.querySelector('[data-output="verified-cost"]').textContent = formatMetric(result.aiCostPerSuccess, currency);
-  document.querySelector('[data-output="failed-attempts"]').textContent = formatMetric(result.failedAttempts, { style: "number", digits: 0 });
-  document.querySelector('[data-output="failure-cost"]').textContent = formatMetric(result.annualFailureCost, { currency: "USD", digits: 0 });
-  document.querySelector('[data-output="status"]').textContent = result.signal;
+  const selectedPeriod = result.periodLabel;
+  output("decision-period").textContent = `${selectedPeriod} analysis · annualized decision view`;
+  output("decision-signal").textContent = result.decisionSignal;
+  output("annual-savings").textContent = result.annualizedSavings.status === "valid" ? wholeCurrency.format(Math.abs(result.annualizedSavings.value)) : "More information required";
+  output("margin-copy").textContent = marginCopy(result);
+  output("period-savings").textContent = formatMetric(result.selectedPeriodSavings, currency);
+  output("equivalent-cost").textContent = formatMetric(result.equivalentOutputAiCost, currency);
+  output("entered-rate").textContent = formatMetric(result.enteredSuccessRate, percentage);
+  output("break-even-rate").textContent = result.breakEvenRate.status === "not_achievable" ? "Not achievable under current assumptions" : formatMetric(result.breakEvenRate, percentage);
+  output("baseline-cost").textContent = formatMetric(result.currentCostPerSuccess, currency);
+  output("attempt-cost").textContent = formatMetric(result.aiCostPerAttempt, currency);
+  output("verified-cost").textContent = formatMetric(result.aiCostPerSuccess, currency);
+  output("accepted-outcomes").textContent = formatMetric(result.successfulAiOutcomes, number);
+  output("failed-attempts").textContent = formatMetric(result.failedAttempts, number);
+  output("failure-cost").textContent = formatMetric(result.annualFailureCost, currency);
+  output("visual-current-cost").textContent = formatMetric(result.currentCostPerSuccess, currency);
+  output("visual-ai-cost").textContent = formatMetric(result.aiCostPerSuccess, currency);
+  output("visual-break-even").textContent = result.breakEvenRate.status === "not_achievable" ? ">100%" : formatMetric(result.breakEvenRate, percentage);
+  output("visual-entered").textContent = formatMetric(result.enteredSuccessRate, percentage);
+  output("result-footnote").textContent = `Quick Model 1.2.0 · ${selectedPeriod} inputs · Directional planning estimate.`;
+
+  const current = result.currentCostPerSuccess.value || 0;
+  const ai = result.aiCostPerSuccess.status === "valid" ? result.aiCostPerSuccess.value : 0;
+  const max = Math.max(current, ai, 1);
+  document.querySelector('[data-bar="current-cost"]').style.width = `${Math.max(3, current / max * 100)}%`;
+  document.querySelector('[data-bar="ai-cost"]').style.width = `${Math.max(3, ai / max * 100)}%`;
+  document.querySelector('[data-rate-marker="entered"]').style.left = `${Math.min(100, result.enteredSuccessRate.value * 100)}%`;
+  document.querySelector('[data-rate-marker="break-even"]').style.left = `${Math.min(100, Math.max(0, (result.breakEvenRate.value || 0) * 100))}%`;
+  results.dataset.signal = result.decisionSignal.toLowerCase().replaceAll(" ", "-");
+  results.hidden = false;
+  results.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
 }
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();
-  const result = calculateBasicEstimate({
-    annualOutcomes: value("baseline_verified"), currentAnnualCost: value("baseline_cost"), aiAttempts: value("ai_attempts"),
-    successRate: value("verified_rate"), annualAiCost: value("total_ai_cost"),
-  });
-  if (result.status !== "valid") { showErrors(result.errors); return; }
-  errorSummary.hidden = true;
+  const input = readInput();
+  const errors = validate(input);
+  showErrors(errors);
+  if (errors.length) { results.hidden = true; return; }
+  const result = calculateQuickDecisionMetrics(input);
+  if (result.status !== "valid") { showErrors(result.errors.map((message) => ({ id: "quick-error-summary", message }))); return; }
   render(result);
-  resultsSection.hidden = false;
-  resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
-document.querySelector("[data-edit]").addEventListener("click", () => document.querySelector(".inputs-section").scrollIntoView({ behavior: "smooth" }));
-document.querySelector(".result-footnote").textContent = `Formula ${FORMULA_VERSION} · Directional estimate for planning.`;
+form.addEventListener("focusout", (event) => {
+  if (event.target.matches("input[aria-invalid='true']")) validate(readInput());
+});
+
+document.querySelector("[data-edit]").addEventListener("click", () => {
+  form.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  field("baseline_verified").focus({ preventScroll: true });
+});
+
+document.querySelector("[data-pilot-calculate]").addEventListener("click", () => {
+  const attempts = document.querySelector("#quick-pilot-attempts");
+  const accepted = document.querySelector("#quick-pilot-accepted");
+  const message = document.querySelector("[data-pilot-message]");
+  const pilot = calculatePilotRate(attempts.value, accepted.value);
+  if (pilot.status !== "valid") { message.textContent = pilot.reason; return; }
+  field("verified_rate").value = Number(pilot.value.toFixed(2));
+  field("verified_rate").setAttribute("aria-invalid", "false");
+  message.textContent = `${field("verified_rate").value}% accepted-outcome rate applied from this pilot sample.`;
+});
+
+for (const radio of document.querySelectorAll('input[name="period"]')) {
+  radio.addEventListener("change", () => {
+    const label = periodLabel(radio.value).toLowerCase();
+    document.querySelectorAll("[data-period-word]").forEach((node) => { node.textContent = label; });
+  });
+}
