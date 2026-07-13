@@ -3,6 +3,24 @@ const path = require("node:path");
 
 const baseURL = "http://127.0.0.1:4173";
 const screenshotDir = path.resolve("reports/engagements-site-hardening-v1/screenshots");
+const analyticsExcludedRoutes = new Set([
+  "/tools/ai-cost-reality-calculator/",
+  "/tools/ai-cost-reality-calculator/advanced/",
+  "/tools/content-operations-readiness/",
+]);
+
+const interceptAnalytics = (target) => target.route(/googletagmanager|google-analytics|\/g\/collect/i, (route) =>
+  route.fulfill({ status: 200, contentType: "application/javascript", body: "" })
+);
+
+const expectGtmOnly = (requests) => {
+  expect(requests.length).toBeGreaterThan(0);
+  expect(requests.every((url) => url.includes("googletagmanager.com/gtm.js?id=GTM-N2MVP44C"))).toBe(true);
+};
+
+test.beforeEach(async ({ page }) => {
+  await interceptAnalytics(page);
+});
 
 const watchRuntime = (page) => {
   const errors = [];
@@ -70,7 +88,7 @@ test("desktop engagement journey and component states", async ({ page }) => {
   await expect(page.locator(".engagements-faq details").first()).toHaveAttribute("open", "");
   await page.locator(".engagements-faq").screenshot({ path: path.join(screenshotDir, "faq-disclosure-desktop.png") });
 
-  expect(runtime.analyticsRequests).toEqual([]);
+  expectGtmOnly(runtime.analyticsRequests);
   expect(runtime.errors).toEqual([]);
   expect(runtime.failedRequests).toEqual([]);
 });
@@ -105,13 +123,14 @@ test("mobile layout, disclosures, navigation, and height", async ({ page }) => {
   await page.locator(".engagements-formats").screenshot({ path: path.join(screenshotDir, "formats-mobile.png") });
   await page.locator(".site-footer").screenshot({ path: path.join(screenshotDir, "footer-mobile.png") });
 
-  expect(runtime.analyticsRequests).toEqual([]);
+  expectGtmOnly(runtime.analyticsRequests);
   expect(runtime.errors).toEqual([]);
   expect(runtime.failedRequests).toEqual([]);
 });
 
 test("progressive enhancement, reduced motion, and narrow reflow", async ({ browser }) => {
   const noScriptContext = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 390, height: 844 } });
+  await interceptAnalytics(noScriptContext);
   const noScriptPage = await noScriptContext.newPage();
   await noScriptPage.goto(`${baseURL}/engagements/`);
   await expect(noScriptPage.locator("[data-inquiry-panel]")).toBeVisible();
@@ -119,6 +138,7 @@ test("progressive enhancement, reduced motion, and narrow reflow", async ({ brow
   await noScriptContext.close();
 
   const reducedContext = await browser.newContext({ reducedMotion: "reduce", viewport: { width: 1440, height: 1000 } });
+  await interceptAnalytics(reducedContext);
   const reducedPage = await reducedContext.newPage();
   await reducedPage.goto(`${baseURL}/engagements/`);
   await expect(reducedPage.locator("[data-inquiry-panel]")).toBeHidden();
@@ -129,6 +149,7 @@ test("progressive enhancement, reduced motion, and narrow reflow", async ({ brow
   await reducedContext.close();
 
   const narrowContext = await browser.newContext({ viewport: { width: 320, height: 720 } });
+  await interceptAnalytics(narrowContext);
   const narrowPage = await narrowContext.newPage();
   await narrowPage.goto(`${baseURL}/engagements/`);
   expect(await narrowPage.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
@@ -148,7 +169,8 @@ test("priority regression routes load without browser errors or failed local req
     const runtime = watchRuntime(page);
     const response = await page.goto(`${baseURL}${route}`, { waitUntil: "networkidle" });
     expect(response?.status(), route).toBe(200);
-    expect(runtime.analyticsRequests, `${route} analytics`).toEqual([]);
+    if (analyticsExcludedRoutes.has(route)) expect(runtime.analyticsRequests, `${route} analytics`).toEqual([]);
+    else expectGtmOnly(runtime.analyticsRequests);
     expect(runtime.errors, `${route} console`).toEqual([]);
     expect(runtime.failedRequests, `${route} requests`).toEqual([]);
     const slug = route === "/" ? "home" : route.replace(/^\/|\/$/g, "").replaceAll("/", "-");

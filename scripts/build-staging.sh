@@ -15,6 +15,8 @@ output_dir="$repo_root/.staging-dist"
 rm -rf "$output_dir"
 mkdir -p "$output_dir"
 
+node scripts/validate-analytics.mjs
+
 # Publish only the tracked files needed by the static website. Deliberately omit
 # reports, source inputs, tests, caches, local Netlify state, and recovery data.
 publish_paths=(

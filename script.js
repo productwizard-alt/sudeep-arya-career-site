@@ -12,24 +12,6 @@
   let calendlyLoadPromise;
   extraCaseStudies.forEach((study) => study.setAttribute("data-case-extra", ""));
 
-  const analyticsBlockedRoutes = [
-    "/tools/ai-cost-reality-calculator/",
-    "/tools/content-operations-readiness/",
-  ];
-  const isProductionHost = ["sudeeparya.com", "www.sudeeparya.com"].includes(window.location.hostname);
-  const analyticsAllowed = isProductionHost && !analyticsBlockedRoutes.some((route) => window.location.pathname.startsWith(route));
-
-  if (analyticsAllowed) {
-    window.dataLayer = window.dataLayer || [];
-    window.gtag = window.gtag || function gtag() { window.dataLayer.push(arguments); };
-    window.gtag("js", new Date());
-    window.gtag("config", "G-C65RGRMMW1");
-    const analyticsScript = document.createElement("script");
-    analyticsScript.async = true;
-    analyticsScript.src = "https://www.googletagmanager.com/gtag/js?id=G-C65RGRMMW1";
-    document.head.appendChild(analyticsScript);
-  }
-
   const locationTravelContent = () => `<div class="location-travel__layout"><div class="location-opportunity__intro"><p class="regional-eyebrow">Speaking, advisory &amp; travel</p><h3>Central New Jersey is the base. The right audience can be anywhere.</h3><p>Available for select panels, podcasts, trade-show programs, executive briefings, workshops, and advisory engagements across the Northeast, throughout the United States, and internationally.</p><p class="location-opportunity__support">Each engagement is considered based on the audience, subject matter, format, and scope, with travel planned around the needs of the program.</p></div><figure class="location-map-card location-map-card--regional"><figcaption><h4>Northeast access</h4><p>Convenient access to Washington, DC, Wilmington, Philadelphia, New York City, Bridgeport, and the broader Northeast event corridor.</p></figcaption><div class="location-map-card__visual"><div class="location-map-card__media"><img class="location-map-card__image" src="/assets/location/northeast-access.webp" width="2000" height="1400" loading="lazy" decoding="async" alt="Editorial corridor map showing Washington, DC, Wilmington, Philadelphia, Central New Jersey, New York City, and Bridgeport."></div></div></figure><figure class="location-map-card location-map-card--global"><figcaption><h4>U.S. and international engagements</h4><p>Available for select domestic and international programs when the audience, subject, and format are the right fit.</p></figcaption><div class="location-map-card__visual location-map-card__visual--global"><div class="location-map-card__media"><img class="location-map-card__image" src="/assets/location/global-engagements.webp" width="2200" height="1200" loading="lazy" decoding="async" alt="Global engagement map showing Central New Jersey as the base for select U.S. and international programs."></div><ul class="location-map-legend" aria-label="Map legend"><li><span class="location-map-legend__domestic" aria-hidden="true"></span>United States availability</li><li><span class="location-map-legend__international" aria-hidden="true"></span>Select international engagements</li></ul></div></figure></div>`;
 
   const compactLocationOpportunity = (panelId) => `<div class="location-opportunity location-opportunity--compact" aria-label="Speaking, advisory, and travel"><div class="location-opportunity__summary"><p class="regional-eyebrow">Speaking, advisory &amp; travel</p><strong>Central New Jersey</strong><span>Northeast access. Select U.S. and international engagements.</span></div><button class="regional-toggle regional-toggle--footer" type="button" aria-expanded="false" aria-controls="${panelId}" data-regional-toggle data-closed-label="View Speaking, Advisory &amp; Travel" data-open-label="Hide Speaking, Advisory &amp; Travel">View Speaking, Advisory &amp; Travel</button><div class="location-opportunity__drawer location-opportunity__surface" id="${panelId}" data-regional-panel hidden>${locationTravelContent()}</div></div>`;
@@ -62,23 +44,6 @@
   });
 
   regionalToggles = document.querySelectorAll("[data-regional-toggle]");
-
-  const trackEvent = (eventName, parameters = {}) => {
-    if (typeof window.gtag !== "function" || !eventName) return;
-    window.gtag("event", eventName, Object.fromEntries(Object.entries(parameters).filter(([, value]) => value)));
-  };
-
-  document.querySelectorAll("[data-ga-event]").forEach((element) => {
-    element.addEventListener("click", () => {
-      trackEvent(element.dataset.gaEvent, {
-        case_study_slug: element.dataset.caseStudySlug,
-        asset_type: element.dataset.assetType,
-        cta_type: element.dataset.ctaType,
-        placement: element.dataset.placement,
-        destination: element.dataset.destination || element.getAttribute("href"),
-      });
-    });
-  });
 
   if (navToggle && navMenu) {
     const menuLinks = Array.from(navMenu.querySelectorAll("a"));

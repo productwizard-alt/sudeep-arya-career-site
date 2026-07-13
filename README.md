@@ -36,6 +36,16 @@ The script creates a timestamped ZIP in `artifacts/` and copies it to `/mnt/c/Us
 - Replace `resume/Sudeep-Arya-Amazon-DTC-Marketplace-AI-Commerce-Resume.pdf` with the final resume PDF using that exact filename.
 - Hard content rule: forbidden prior-employer terms from the project brief must not appear anywhere in this repository.
 
+## Analytics
+
+- Eligible production HTML uses Google Tag Manager container `GTM-N2MVP44C`; direct `gtag.js` loading and direct GA4 event dispatch are prohibited.
+- The native Google Tag in that container must use GA4 measurement ID `G-C65RGRMMW1`. Do not deploy GA4 through Custom HTML.
+- The quick and advanced AI Cost Reality Calculator pages and the Content Workflow Snapshot remain entirely analytics-free.
+- The permanent staging build strips GTM and validates the complete publish output for GTM, GA4, and analytics dispatch code.
+- Custom GTM events are not active in this release. Existing `data-ga-event` attributes are inert placeholders for a separately approved future migration.
+
+Run `node scripts/validate-analytics.mjs` before a production release. The permanent staging build runs the same source validator before creating analytics-free output.
+
 ## Structure
 
 - `/` - executive homepage
