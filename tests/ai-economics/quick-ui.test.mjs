@@ -8,7 +8,8 @@ const css = await readFile(new URL("../../tools/ai-cost-reality-calculator/calcu
 
 test("quick calculator has five required logical inputs", () => {
   assert.equal((html.match(/class="evidence-field"/g) || []).length, 5);
-  assert.match(html, /Enter your operating assumptions/);
+  assert.equal((html.match(/class="evidence-field"[^>]*>[\s\S]*?<input[^>]* required/g) || []).length, 5);
+  assert.match(html, /Five inputs\. One equivalent-output comparison\./);
 });
 
 test("quick calculator has no evidence or range dropdowns", () => {
@@ -17,14 +18,17 @@ test("quick calculator has no evidence or range dropdowns", () => {
 });
 
 test("every basic numeric input has accessible plain-language help", () => {
-  for (const name of ["baseline_verified", "baseline_cost", "ai_attempts", "verified_rate", "total_ai_cost"]) assert.match(js, new RegExp(`${name}: \\"`));
-  assert.match(js, /role="tooltip"/);
-  assert.match(js, /aria-expanded="false"/);
+  for (const name of ["baseline_verified", "baseline_cost", "ai_attempts", "verified_rate", "total_ai_cost"]) {
+    assert.match(html, new RegExp(`name="${name}"[^>]*aria-describedby="[^"]+"[^>]*required`));
+  }
+  assert.equal((html.match(/class="field-help"/g) || []).length, 5);
+  assert.match(html, /Where to get this number/);
+  assert.match(html, /How to estimate this/);
 });
 
 test("basic calculator has no use-case dropdown", () => {
   assert.doesNotMatch(html, /name="use_case_template"/);
-  assert.match(html, /Count only completed outcomes that meet the same business standard/);
+  assert.match(html, /same acceptance standard as the current process/);
 });
 
 test("public calculator has no advanced-analysis form", () => {
@@ -32,12 +36,13 @@ test("public calculator has no advanced-analysis form", () => {
   assert.doesNotMatch(html, /Token and model economics|Governance/);
 });
 
-test("results focus on success and failure cost", () => {
-  for (const label of ["Current cost per successful outcome", "AI cost per attempt", "AI cost per successful outcome", "Expected failed attempts", "Estimated cost allocated to failed attempts", "Directional signal"]) assert.match(html, new RegExp(label));
-  assert.equal((html.match(/<article(?:\s|>)/g) || []).length, 6);
+test("results preserve unit economics and add decision metrics", () => {
+  for (const label of ["Current cost per accepted outcome", "AI cost per attempt", "AI cost per accepted outcome", "Expected failed attempts", "Cost allocated to failed attempts", "Break-even accepted-outcome rate", "Equivalent-output AI cost", "Selected-period savings or loss"]) assert.match(html, new RegExp(label));
+  assert.equal((html.match(/data-output="baseline-cost"/g) || []).length, 1);
+  assert.equal((html.match(/data-output="failure-cost"/g) || []).length, 1);
 });
 
 test("mobile stylesheet contains a 390px-compatible single-column layout", () => {
-  assert.match(css, /@media\(max-width:520px\)/);
-  assert.match(css, /\.quick-grid,.primary-results,.detail-grid\{grid-template-columns:1fr\}/);
+  assert.match(css, /@media \(max-width:620px\)/);
+  assert.match(css, /\.quick-grid,\.quick-grid--ai,\.helper-grid \{ grid-template-columns:1fr;/);
 });
