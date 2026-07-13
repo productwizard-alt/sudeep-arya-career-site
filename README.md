@@ -42,7 +42,12 @@ The script creates a timestamped ZIP in `artifacts/` and copies it to `/mnt/c/Us
 - `/resume/` - crawlable HTML resume and resume download
 - `/case-studies/` - structured commerce case studies
 - `/case-studies/ai-economics-decision-framework/` - original AI economics research and product-design framework
+- `/case-studies/small-team-bigger-output/` - content-operations publication-system case study
+- `/publications/` - original research and decision-system collection
+- `/publications/small-team-bigger-output/` - interactive content-operations publication
+- `/tools/` - private browser-based decision-tools collection
 - `/tools/ai-cost-reality-calculator/` - private, browser-based AI TCO and verified-outcome calculator
+- `/tools/content-operations-readiness/` - private readiness assessment and approved-output economics planner
 - `/skills/` - recruiter and search keyword index
 - `/recruiters/` - quick recruiter brief
 - `/audit/` - free Digital Acceleration Audit landing page
@@ -50,3 +55,5 @@ The script creates a timestamped ZIP in `artifacts/` and copies it to `/mnt/c/Us
 - `/contact/` - contact form and scheduling paths
 
 The AI Cost Reality Calculator uses formula version `1.1.0`. It runs entirely in the browser, does not auto-save, and does not transmit entered financial values to analytics or another service.
+
+The Small Team Output Planner uses formula version `1.0.0`, readiness version `1.0.0`, and methodology `STBO-CONTENT-OPS-1.0`. It uses no analytics, browser storage, form submission, external AI service, or personalized result URL.

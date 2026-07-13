@@ -34,7 +34,7 @@
       links.className = "footer-link-stack";
       footer.append(links);
     }
-    links.innerHTML = '<nav class="footer-primary-nav" aria-label="Footer navigation"><a href="/resume/">Resume</a><a href="/case-studies/">Case Studies</a><a href="/tools/ai-cost-reality-calculator/">AI Cost Calculator</a><a href="/skills/">Skills</a><a href="/engagements/">Speaking &amp; Media</a><a href="/audit/">Audit</a><a href="/contact/">Contact</a></nav><nav class="footer-action-nav" aria-label="Footer actions"><a href="https://calendly.com/zsudeepharya/new-meeting" target="_blank" rel="noopener">Book Free Audit</a><a href="https://www.linkedin.com/in/sudeep-arya/" target="_blank" rel="me noopener">LinkedIn</a></nav>';
+    links.innerHTML = '<nav class="footer-primary-nav" aria-label="Footer navigation"><a href="/resume/">Resume</a><a href="/case-studies/">Case Studies</a><a href="/tools/">Tools</a><a href="/skills/">Skills</a><a href="/engagements/">Speaking &amp; Media</a><a href="/audit/">Audit</a><a href="/contact/">Contact</a></nav><nav class="footer-action-nav" aria-label="Footer actions"><a href="https://calendly.com/zsudeepharya/new-meeting" target="_blank" rel="noopener">Book Free Audit</a><a href="https://www.linkedin.com/in/sudeep-arya/" target="_blank" rel="me noopener">LinkedIn</a></nav>';
   });
 
   regionalToggles = document.querySelectorAll("[data-regional-toggle]");

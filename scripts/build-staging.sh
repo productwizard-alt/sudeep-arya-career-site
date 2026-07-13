@@ -28,6 +28,7 @@ publish_paths=(
   favicon.ico
   index.html
   llms.txt
+  publications
   recruiters
   resume/index.html
   resume/Sudeep-Arya-Amazon-DTC-Marketplace-AI-Commerce-Resume.pdf

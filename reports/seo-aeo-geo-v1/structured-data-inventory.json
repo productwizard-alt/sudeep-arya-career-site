@@ -45,6 +45,15 @@
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
   },
   {
+    "page": "/case-studies/small-team-bigger-output/",
+    "schemaType": "WebPage,Article,CreativeWork, BreadcrumbList",
+    "@id": "https://sudeeparya.com/case-studies/small-team-bigger-output/#article",
+    "primaryEntity": "",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
     "page": "/contact/",
     "schemaType": "WebSite, ContactPage, Person, BreadcrumbList",
     "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/contact/#webpage, https://sudeeparya.com/#person",
@@ -58,6 +67,24 @@
     "schemaType": "WebSite, Person, WebPage, Service, OfferCatalog, FAQPage, BreadcrumbList",
     "@id": "https://sudeeparya.com/#website, https://sudeeparya.com/#person, https://sudeeparya.com/engagements/#webpage, https://sudeeparya.com/engagements/#service, https://sudeeparya.com/engagements/#offer-catalog, https://sudeeparya.com/engagements/#faq",
     "primaryEntity": "https://sudeeparya.com/engagements/#service",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/publications/",
+    "schemaType": "CollectionPage, ItemList",
+    "@id": "https://sudeeparya.com/publications/#page, https://sudeeparya.com/publications/#list",
+    "primaryEntity": "https://sudeeparya.com/publications/#list",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/publications/small-team-bigger-output/",
+    "schemaType": "WebPage,Article,CreativeWork, Person, BreadcrumbList",
+    "@id": "https://sudeeparya.com/publications/small-team-bigger-output/#article, https://sudeeparya.com/#person",
+    "primaryEntity": "",
     "validationStatus": "valid",
     "issues": [],
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
@@ -90,10 +117,37 @@
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
   },
   {
+    "page": "/tools/",
+    "schemaType": "CollectionPage, ItemList",
+    "@id": "https://sudeeparya.com/tools/#page, https://sudeeparya.com/tools/#list",
+    "primaryEntity": "https://sudeeparya.com/tools/#list",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
     "page": "/tools/ai-cost-reality-calculator/",
-    "schemaType": "WebPage, WebApplication,SoftwareApplication, BreadcrumbList, FAQPage",
-    "@id": "https://sudeeparya.com/tools/ai-cost-reality-calculator/#webpage, https://sudeeparya.com/tools/ai-cost-reality-calculator/#app, https://sudeeparya.com/tools/ai-cost-reality-calculator/#breadcrumb, https://sudeeparya.com/tools/ai-cost-reality-calculator/#faq",
+    "schemaType": "WebPage, WebApplication, BreadcrumbList",
+    "@id": "https://sudeeparya.com/tools/ai-cost-reality-calculator/#webpage, https://sudeeparya.com/tools/ai-cost-reality-calculator/#app, https://sudeeparya.com/tools/ai-cost-reality-calculator/#breadcrumb",
     "primaryEntity": "https://sudeeparya.com/tools/ai-cost-reality-calculator/#app",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/tools/ai-cost-reality-calculator/advanced/",
+    "schemaType": "WebPage, WebApplication, BreadcrumbList",
+    "@id": "https://sudeeparya.com/tools/ai-cost-reality-calculator/advanced/#webpage, https://sudeeparya.com/tools/ai-cost-reality-calculator/advanced/#app, https://sudeeparya.com/tools/ai-cost-reality-calculator/advanced/#breadcrumb",
+    "primaryEntity": "https://sudeeparya.com/tools/ai-cost-reality-calculator/advanced/#app",
+    "validationStatus": "valid",
+    "issues": [],
+    "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."
+  },
+  {
+    "page": "/tools/content-operations-readiness/",
+    "schemaType": "WebPage, WebApplication, BreadcrumbList",
+    "@id": "https://sudeeparya.com/tools/content-operations-readiness/#page, https://sudeeparya.com/tools/content-operations-readiness/#app",
+    "primaryEntity": "https://sudeeparya.com/tools/content-operations-readiness/#app",
     "validationStatus": "valid",
     "issues": [],
     "changesMade": "Audited and normalized during SEO/AEO/GEO implementation."

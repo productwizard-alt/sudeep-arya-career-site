@@ -10,8 +10,13 @@ Important public pages:
 - https://sudeeparya.com/resume/ - Crawlable HTML resume and resume PDF link.
 - https://sudeeparya.com/case-studies/ - Ecommerce and marketplace case-study library.
 - https://sudeeparya.com/case-studies/ai-economics-decision-framework/ - Original research and product-design case study for transparent AI economics; it is not a client-results claim.
+- https://sudeeparya.com/case-studies/small-team-bigger-output/ - Case study of the research governance, interaction design, deterministic modeling, privacy, and static implementation behind Small Team, Bigger Output; no client result is claimed.
 - https://sudeeparya.com/case-studies/banfield-subscription-commerce/ - Public-safe subscription commerce and payment workflow case study.
+- https://sudeeparya.com/publications/ - Original publications and decision systems on AI and commerce operations.
+- https://sudeeparya.com/publications/small-team-bigger-output/ - Interactive executive publication on governed AI-assisted content operations, human approval, content-stack decisions, measurement, and a 90-day plan.
+- https://sudeeparya.com/tools/ - Private browser-based commerce and AI decision tools.
 - https://sudeeparya.com/tools/ai-cost-reality-calculator/ - Private browser-based calculator for current and AI-assisted cost per successful outcome. User-entered values stay in the browser.
+- https://sudeeparya.com/tools/content-operations-readiness/ - Private browser-based content readiness assessment and approved-output economics planner. Inputs and results are not transmitted or stored.
 - https://sudeeparya.com/skills/ - Commerce capability map across channels, platforms, analytics, media, and operations.
 - https://sudeeparya.com/recruiters/ - Recruiter and hiring manager brief.
 - https://sudeeparya.com/audit/ - Digital Acceleration Audit overview and booking path.
