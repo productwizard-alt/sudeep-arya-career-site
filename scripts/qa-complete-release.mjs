@@ -15,11 +15,6 @@ const routes = [
   "/resume/", "/skills/", "/thank-you/", "/tools/", "/tools/ai-cost-reality-calculator/",
   "/tools/ai-cost-reality-calculator/advanced/", "/tools/content-operations-readiness/",
 ];
-const analyticsExcludedRoutes = new Set([
-  "/tools/ai-cost-reality-calculator/",
-  "/tools/ai-cost-reality-calculator/advanced/",
-  "/tools/content-operations-readiness/",
-]);
 const viewports = [{ width: 1440, height: 1000 }, { width: 390, height: 844 }];
 const issues = [];
 let checks = 0;
@@ -32,21 +27,13 @@ for (const viewport of viewports) {
     const page = await browser.newPage();
     await page.setViewport(viewport);
     await page.setCacheEnabled(false);
-    await page.setRequestInterception(true);
     const runtimeErrors = [];
     const failedRequests = [];
     const analyticsRequests = [];
     page.on("pageerror", (error) => runtimeErrors.push(error.message));
     page.on("console", (message) => { if (message.type() === "error") runtimeErrors.push(message.text()); });
     page.on("requestfailed", (request) => failedRequests.push(`${request.method()} ${request.url()}`));
-    page.on("request", (request) => {
-      if (/googletagmanager|google-analytics|\/g\/collect/iu.test(request.url())) {
-        analyticsRequests.push(request.url());
-        void request.respond({ status: 200, contentType: "application/javascript", body: "" });
-      } else {
-        void request.continue();
-      }
-    });
+    page.on("request", (request) => { if (/googletagmanager|google-analytics|\/g\/collect/iu.test(request.url())) analyticsRequests.push(request.url()); });
     const response = await page.goto(`${base}${route}`, { waitUntil: "networkidle0" });
     await page.evaluate(async () => {
       const step = Math.max(500, window.innerHeight);
@@ -78,8 +65,6 @@ for (const viewport of viewports) {
         imageIssues,
         priorityIssues,
         publicationsLinks: document.querySelectorAll('.nav-menu a[href="/publications/"]').length,
-        gtmHeadScripts: [...document.scripts].filter((script) => script.textContent.includes("GTM-N2MVP44C") && script.textContent.includes("googletagmanager.com/gtm.js")).length,
-        gtmNoscriptBlocks: [...document.querySelectorAll("noscript")].filter((node) => node.textContent.includes("googletagmanager.com/ns.html?id=GTM-N2MVP44C")).length,
       };
     });
     const label = `${route} at ${viewport.width}px`;
@@ -93,16 +78,7 @@ for (const viewport of viewports) {
     check(state.publicationsLinks === 1, `${label}: Publications navigation count ${state.publicationsLinks}`);
     check(runtimeErrors.length === 0, `${label}: runtime errors ${runtimeErrors.join(" | ")}`);
     check(failedRequests.length === 0, `${label}: failed requests ${failedRequests.join(" | ")}`);
-    if (analyticsExcludedRoutes.has(route)) {
-      check(state.gtmHeadScripts === 0 && state.gtmNoscriptBlocks === 0, `${label}: excluded page contains GTM markup`);
-      check(analyticsRequests.length === 0, `${label}: excluded page made analytics requests ${analyticsRequests.join(" | ")}`);
-    } else {
-      const gtmRequests = analyticsRequests.filter((url) => url.includes("googletagmanager.com/gtm.js?id=GTM-N2MVP44C"));
-      const directGaRequests = analyticsRequests.filter((url) => /googletagmanager\.com\/gtag\/js|google-analytics|\/g\/collect/iu.test(url));
-      check(state.gtmHeadScripts === 1 && state.gtmNoscriptBlocks === 1, `${label}: expected one GTM head and one GTM noscript block`);
-      check(gtmRequests.length === 1, `${label}: expected one GTM bootstrap request, found ${gtmRequests.length}`);
-      check(directGaRequests.length === 0, `${label}: direct GA4 request on local QA ${directGaRequests.join(" | ")}`);
-    }
+    check(analyticsRequests.length === 0, `${label}: analytics request on local QA ${analyticsRequests.join(" | ")}`);
     await page.close();
   }
 }

@@ -238,11 +238,11 @@ for (const url of sitemapUrls) {
 const robots = readFileSync(path.join(root, "robots.txt"), "utf8");
 if (!robots.includes(`Sitemap: ${canonicalOrigin}/sitemap.xml`)) issues.push("robots.txt: sitemap reference missing or inconsistent");
 const siteScript = readFileSync(path.join(root, "script.js"), "utf8");
-if (/G-C65RGRMMW1|googletagmanager\.com\/gtag\/js|\bgtag\s*\(|window\.gtag/iu.test(siteScript)) {
-  issues.push("script.js: direct GA4 loading or dispatch code remains");
+if (!siteScript.includes("G-C65RGRMMW1") || !siteScript.includes("isProductionHost") || !siteScript.includes("analyticsBlockedRoutes")) {
+  issues.push("script.js: centralized production-only GA4 loader or calculator exclusions are missing");
 }
 if (pages.some((page) => /googletagmanager\.com\/gtag\/js|\bgtag\s*\(/iu.test(page.html))) {
-  issues.push("HTML contains a direct GA4 loader or gtag call");
+  issues.push("HTML contains inline analytics instead of using the centralized production-only loader");
 }
 
 mkdirSync(reportDir, { recursive: true });

@@ -15,17 +15,6 @@ Allow: /
 `;
 const requiredHeader = "X-Robots-Tag: noindex, nofollow, noarchive, nosnippet";
 const requiredMeta = '<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">';
-const forbiddenAnalyticsValues = [
-  "GTM-N2MVP44C",
-  "googletagmanager.com/gtm.js",
-  "googletagmanager.com/ns.html",
-  "googletagmanager.com/gtag/js",
-  "G-C65RGRMMW1",
-  "gtag('config'",
-  'gtag("config"',
-  "window.gtag",
-  "dataLayer.push",
-];
 const issues = [];
 
 async function filesIn(directory) {
@@ -44,14 +33,6 @@ async function filesIn(directory) {
 const files = await filesIn(outputDir);
 const htmlFiles = files.filter((file) => file.endsWith(".html"));
 const relativeFiles = new Set(files.map((file) => path.relative(outputDir, file).replaceAll(path.sep, "/")));
-
-for (const file of files) {
-  const relative = path.relative(outputDir, file).replaceAll(path.sep, "/");
-  const content = await readFile(file);
-  for (const value of forbiddenAnalyticsValues) {
-    if (content.includes(Buffer.from(value))) issues.push(`${relative}: forbidden staging analytics value ${value}`);
-  }
-}
 
 for (const required of [
   "publications/index.html",
@@ -87,7 +68,7 @@ for (const file of htmlFiles) {
   if (!/<link\b[^>]*\brel=["']canonical["'][^>]*\bhref=["']https:\/\/sudeeparya\.com\//iu.test(html)) {
     issues.push(`${relative}: production canonical URL missing`);
   }
-  if (/GTM-N2MVP44C|G-C65RGRMMW1|googletagmanager\.com|google-analytics\.com|analytics\.google\.com|\bgtag\s*\(|window\.gtag|\bdataLayer\.push\s*\(/iu.test(html)) {
+  if (/G-C65RGRMMW1|googletagmanager\.com|google-analytics\.com|analytics\.google\.com|\bgtag\s*\(/iu.test(html)) {
     issues.push(`${relative}: analytics code remains in generated HTML`);
   }
   if (/Flemington/iu.test(html)) issues.push(`${relative}: deprecated Flemington reference present`);

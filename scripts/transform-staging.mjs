@@ -56,12 +56,9 @@ async function htmlFiles(directory) {
 
 function removeAnalytics(html) {
   return html
-    .replace(/<!-- Google Tag Manager -->[\s\S]*?<!-- End Google Tag Manager -->\s*/gu, "")
-    .replace(/<!-- Google Tag Manager \(noscript\) -->[\s\S]*?<!-- End Google Tag Manager \(noscript\) -->\s*/gu, "")
-    .replace(/<noscript>\s*<iframe\b[^>]*\bsrc=(['"])[^'"]*googletagmanager\.com\/ns\.html[^'"]*\1[^>]*>\s*<\/iframe>\s*<\/noscript>/giu, "")
-    .replace(/<script\b[^>]*\bsrc=(['"])[^'"]*googletagmanager\.com\/(?:gtm\.js|gtag\/js)[^'"]*\1[^>]*>\s*<\/script>/giu, "")
+    .replace(/<script\b[^>]*\bsrc=(['"])[^'"]*googletagmanager\.com\/gtag\/js[^'"]*\1[^>]*>\s*<\/script>/giu, "")
     .replace(/<script\b(?![^>]*\bsrc=)[^>]*>[\s\S]*?<\/script>/giu, (script) =>
-      /GTM-N2MVP44C|googletagmanager\.com\/(?:gtm\.js|ns\.html|gtag\/js)|G-C65RGRMMW1|\bgtag\s*\(|window\.gtag|\bdataLayer\.push\s*\(/iu.test(script) ? "" : script
+      /G-C65RGRMMW1|\bgtag\s*\(|window\.gtag/iu.test(script) ? "" : script
     );
 }
 

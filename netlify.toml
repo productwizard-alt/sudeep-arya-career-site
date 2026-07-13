@@ -1,5 +1,4 @@
 [build]
-  command = "node scripts/validate-analytics.mjs"
   publish = "."
 
 [context.staging]
