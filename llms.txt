@@ -1,27 +1,33 @@
 # Sudeep Arya
 
-Canonical site: https://sudeeparya.com/
+> Senior ecommerce and digital commerce leadership across Amazon 1P and 3P, marketplaces, Shopify+ and DTC, retail media, analytics, commerce technology, AI-assisted operations, and operating-model transformation.
 
-Sudeep Arya is a senior ecommerce and digital commerce leader based in Central New Jersey. His public career site summarizes experience across Amazon 1P and 3P, marketplaces, Shopify+ and DTC, retail media, Amazon Marketing Cloud and DSP workflows, ecommerce analytics, commerce technology delivery, subscription commerce, B2B wholesale, and AI-assisted commerce workflows for consumer products and CPG businesses.
+Canonical site: [sudeeparya.com](https://sudeeparya.com/)
 
-Important public pages:
+## Original publications
 
-- https://sudeeparya.com/ - Career profile and executive summary.
-- https://sudeeparya.com/resume/ - Crawlable HTML resume and resume PDF link.
-- https://sudeeparya.com/case-studies/ - Ecommerce and marketplace case-study library.
-- https://sudeeparya.com/publications/ - Original publications and decision systems on AI economics and content operations.
-- https://sudeeparya.com/publications/running-before-crawling/ - Canonical HTML edition of Running Before Crawling, the AI-economics publication supported by the AI Cost Reality Calculator and AI Economics Decision Framework case study.
-- https://sudeeparya.com/publications/small-team-bigger-output/ - Canonical HTML edition of Small Team, Bigger Output, the content-operations publication supported by the Content Workflow Snapshot and its case study.
-- https://sudeeparya.com/case-studies/ai-economics-decision-framework/ - Original research and product-design case study for transparent AI economics; it is not a client-results claim.
-- https://sudeeparya.com/case-studies/small-team-bigger-output/ - Case study of the research governance, interaction design, deterministic modeling, privacy, and static implementation behind Small Team, Bigger Output; no client result is claimed.
-- https://sudeeparya.com/case-studies/banfield-subscription-commerce/ - Public-safe subscription commerce and payment workflow case study.
-- https://sudeeparya.com/tools/ - Private browser-based commerce and AI decision tools.
-- https://sudeeparya.com/tools/ai-cost-reality-calculator/ - Private browser-based calculator for current and AI-assisted cost per successful outcome. User-entered values stay in the browser.
-- https://sudeeparya.com/tools/content-operations-readiness/ - Private browser-based Content Workflow Snapshot for approved-output economics. Inputs and results are not transmitted or stored.
-- https://sudeeparya.com/skills/ - Commerce capability map across channels, platforms, analytics, media, and operations.
-- https://sudeeparya.com/recruiters/ - Recruiter and hiring manager brief.
-- https://sudeeparya.com/audit/ - Digital Acceleration Audit overview and booking path.
-- https://sudeeparya.com/engagements/ - Speaking, podcast, panel, webinar, interview, roundtable, workshop, and ecommerce media inquiries.
-- https://sudeeparya.com/contact/ - Contact form and scheduling paths.
+- [Publications hub](https://sudeeparya.com/publications/) - Original publications and decision systems on AI economics and content operations.
+- [Running Before Crawling](https://sudeeparya.com/publications/running-before-crawling/) - Canonical HTML edition of the AI-economics publication, supported by the AI Cost Reality Calculator and AI Economics Decision Framework case study.
+- [Small Team, Bigger Output](https://sudeeparya.com/publications/small-team-bigger-output/) - Canonical HTML edition of the content-operations publication, supported by the Content Workflow Snapshot and its case study.
 
-Private confirmation pages, form-success pages, and unpublished materials are excluded from this summary.
+## Supporting case studies and tools
+
+- [Case-studies hub](https://sudeeparya.com/case-studies/) - Ecommerce, marketplace, platform, analytics, and operating-model case-study library.
+- [AI Economics Decision Framework case study](https://sudeeparya.com/case-studies/ai-economics-decision-framework/) - Research and product-design case study for transparent AI economics; not a separate publication or client-results claim.
+- [Small Team, Bigger Output case study](https://sudeeparya.com/case-studies/small-team-bigger-output/) - Research governance, interaction design, deterministic modeling, privacy, and static implementation; no client result is claimed.
+- [Banfield subscription commerce case study](https://sudeeparya.com/case-studies/banfield-subscription-commerce/) - Public-safe subscription commerce and payment workflow case study.
+- [Tools hub](https://sudeeparya.com/tools/) - Private browser-based commerce and AI decision tools.
+- [AI Cost Reality Calculator](https://sudeeparya.com/tools/ai-cost-reality-calculator/) - Compares current and AI-assisted cost per successful outcome; user-entered values stay in the browser.
+- [Content Workflow Snapshot](https://sudeeparya.com/tools/content-operations-readiness/) - Models approved-output economics; inputs and results are not transmitted or stored.
+
+## Career and contact
+
+- [Executive profile](https://sudeeparya.com/) - Career profile and executive summary.
+- [Resume](https://sudeeparya.com/resume/) - Crawlable HTML career history, business outcomes, and leadership scope.
+- [Skills](https://sudeeparya.com/skills/) - Commerce capability map across channels, platforms, analytics, media, and operations.
+- [Recruiter brief](https://sudeeparya.com/recruiters/) - Role fit, leadership scope, location, and travel context for recruiters and hiring managers.
+- [Digital Acceleration Audit](https://sudeeparya.com/audit/) - Audit overview and booking path.
+- [Speaking and media engagements](https://sudeeparya.com/engagements/) - Podcast, panel, webinar, interview, roundtable, workshop, and media inquiries.
+- [Contact](https://sudeeparya.com/contact/) - Contact form and scheduling paths.
+
+Private confirmation pages, form-success pages, calculator inputs and results, and unpublished materials are excluded from this summary.

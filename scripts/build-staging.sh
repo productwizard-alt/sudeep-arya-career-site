@@ -36,6 +36,8 @@ publish_paths=(
   sitemap.xml
   skills
   styles.css
+  styles.home.min.css
+  styles.min.css
   thank-you
   tools
 )
