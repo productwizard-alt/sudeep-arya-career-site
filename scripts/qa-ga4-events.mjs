@@ -98,6 +98,7 @@ try {
     await locationToggle.click();
     const locationEvents = (await events(page, "content_expand")).filter((event) => event.parameters.content_type === "location_travel");
     assert(locationEvents.length === 1, "Location/travel expansion is deduplicated per page view");
+    assert((await events(page, "nav_select")).length === 2, "Location/travel disclosure does not emit a spurious nav_select");
 
     await stopElementAction(page, '.command-profile a[href*="linkedin.com"]');
     await page.locator('.command-profile a[href*="linkedin.com"]').click();
@@ -112,6 +113,7 @@ try {
     await page.locator(".nav-toggle").click();
     const menuEvents = (await events(page, "content_expand")).filter((event) => event.parameters.component_id === "mobile_navigation");
     assert(menuEvents.length === 2 && menuEvents[0].parameters.action_state === "open" && menuEvents[1].parameters.action_state === "close", "Mobile navigation open and close emit controlled content_expand states");
+    assert((await events(page, "nav_select")).length === 0, "Mobile navigation toggle does not emit a spurious nav_select");
     await page.close();
   }
 

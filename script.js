@@ -245,14 +245,14 @@
       };
     }
 
-    if (element.closest(".site-header")) {
+    if (element.matches("a[href]") && element.closest(".site-header")) {
       return {
         eventName: "nav_select",
         parameters: { nav_type: element.matches(".brand") ? "header_logo" : "header", destination_path: destinationPath, item_id: destinationPath || "home" },
       };
     }
 
-    if (element.closest(".site-footer")) {
+    if (element.matches("a[href]") && element.closest(".site-footer")) {
       return {
         eventName: "nav_select",
         parameters: {
