@@ -14,13 +14,18 @@ if (chapters.length && "IntersectionObserver" in window) {
   chapters.forEach((chapter) => observer.observe(chapter));
 }
 
-document.querySelectorAll("[data-framework]").forEach((framework) => {
+document.querySelectorAll("[data-framework]").forEach((framework, frameworkIndex) => {
   const detail = framework.querySelector("[data-framework-detail]");
-  framework.querySelectorAll("button[data-detail]").forEach((button) => {
+  framework.querySelectorAll("button[data-detail]").forEach((button, buttonIndex) => {
     button.addEventListener("click", () => {
       framework.querySelectorAll("button[data-detail]").forEach((candidate) => candidate.setAttribute("aria-pressed", String(candidate === button)));
       if (detail) detail.innerHTML = button.dataset.detail;
       if (live) live.textContent = `${framework.dataset.framework}: ${button.textContent.trim()} selected.`;
+      window.siteAnalytics?.trackEvent("select_content", {
+        content_type: "capability",
+        item_id: `framework_${frameworkIndex + 1}_option_${buttonIndex + 1}`,
+        placement: "publication_body",
+      });
     });
   });
 });

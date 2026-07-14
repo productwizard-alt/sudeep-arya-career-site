@@ -7333,7 +7333,9 @@ h1, h2 { font-family: Georgia, "Times New Roman", serif; font-weight: 500; lette
 .closing-layout > div { display:flex; flex-direction:column; align-items:flex-start; gap:.5rem; }
 .closing-layout .button.primary { background:var(--night); color:white; }
 .closing-layout .button.secondary { border-color:rgba(40,39,31,.4); color:#28271f; }
-.closing-layout .tertiary-link { color:#594736; margin-top:.3rem; }
+.closing-layout .tertiary-link { color:#53402e; margin-top:.3rem; }
+.closing-layout .tertiary-link:hover { color:#3f3023; text-decoration-thickness:2px; }
+.closing-layout .tertiary-link:focus-visible { outline:3px solid #53402e; outline-offset:4px; }
 
 /* Shared interior-page repolish */
 .page-hero, .image-hero, .skills-hero, .speaking-hero, .calculator-hero, .framework-case-hero, .whitepaper-library-hero, .case-detail-hero { min-height: 0 !important; height: auto !important; padding: 0 !important; background-color: var(--night); }

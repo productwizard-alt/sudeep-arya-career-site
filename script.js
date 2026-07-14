@@ -18,6 +18,101 @@
   ];
   const isProductionHost = ["sudeeparya.com", "www.sudeeparya.com"].includes(window.location.hostname);
   const analyticsAllowed = isProductionHost && !analyticsBlockedRoutes.some((route) => window.location.pathname.startsWith(route));
+  const approvedAnalyticsEvents = new Set([
+    "calendar_open",
+    "case_study_expand",
+    "content_expand",
+    "copy_action",
+    "cta_select",
+    "engagement_topic_select",
+    "generate_lead",
+    "lead_form_open",
+    "lead_form_submit_attempt",
+    "nav_select",
+    "print_request",
+    "publication_section_view",
+    "resume_download",
+    "select_content",
+    "share",
+  ]);
+  const approvedAnalyticsParameters = new Set([
+    "action_state",
+    "action_type",
+    "calendar_type",
+    "case_study_id",
+    "component_id",
+    "content_id",
+    "content_type",
+    "destination_path",
+    "file_id",
+    "form_type",
+    "item_id",
+    "lead_type",
+    "method",
+    "nav_type",
+    "placement",
+    "publication_id",
+    "section_id",
+    "section_order",
+    "source_page",
+    "topic_id",
+  ]);
+  const oncePerPageEvents = new Set();
+  const publicationSectionTimers = new Map();
+
+  const sanitizeIdentifier = (value) => String(value || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9_-]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 100);
+
+  const sanitizeDestinationPath = (value) => {
+    if (!value) return "";
+    try {
+      const url = new URL(value, window.location.origin);
+      if (url.origin !== window.location.origin) return "";
+      const safeHash = /^#[a-z0-9][a-z0-9-]{0,63}$/i.test(url.hash) ? url.hash : "";
+      return `${url.pathname}${safeHash}`.slice(0, 100);
+    } catch (error) {
+      return "";
+    }
+  };
+
+  const sanitizeAnalyticsParameters = (parameters = {}) => Object.fromEntries(
+    Object.entries(parameters).flatMap(([name, rawValue]) => {
+      if (!approvedAnalyticsParameters.has(name) || rawValue === undefined || rawValue === null || rawValue === "") return [];
+      const value = name === "destination_path" || name === "source_page"
+        ? sanitizeDestinationPath(rawValue)
+        : name === "section_order" && Number.isFinite(Number(rawValue))
+          ? Number(rawValue)
+          : sanitizeIdentifier(rawValue);
+      return value === "" ? [] : [[name, value]];
+    })
+  );
+
+  const trackEvent = (eventName, parameters = {}) => {
+    if (!analyticsAllowed || !approvedAnalyticsEvents.has(eventName) || typeof window.gtag !== "function") return false;
+    try {
+      window.gtag("event", eventName, sanitizeAnalyticsParameters(parameters));
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
+
+  const trackOnce = (deduplicationKey, eventName, parameters = {}) => {
+    const key = `${eventName}:${sanitizeIdentifier(deduplicationKey)}`;
+    if (oncePerPageEvents.has(key)) return false;
+    const sent = trackEvent(eventName, parameters);
+    if (sent) oncePerPageEvents.add(key);
+    return sent;
+  };
+
+  window.siteAnalytics = Object.freeze({
+    allowed: analyticsAllowed,
+    trackEvent,
+    trackOnce,
+  });
 
   if (analyticsAllowed) {
     window.dataLayer = window.dataLayer || [];
@@ -63,29 +158,262 @@
 
   regionalToggles = document.querySelectorAll("[data-regional-toggle]");
 
-  const trackEvent = (eventName, parameters = {}) => {
-    if (typeof window.gtag !== "function" || !eventName) return;
-    window.gtag("event", eventName, Object.fromEntries(Object.entries(parameters).filter(([, value]) => value)));
+  const contentDetailsFromHref = (href) => {
+    const destinationPath = sanitizeDestinationPath(href);
+    const match = destinationPath.match(/^\/(publications|case-studies|tools)\/(?:([^/#]+))?(?:#([a-z0-9-]+))?/i);
+    const itemId = match?.[2] || match?.[3];
+    if (!match || !itemId) return null;
+    return {
+      contentType: match[1] === "case-studies" ? "case_study" : match[1].slice(0, -1),
+      itemId: sanitizeIdentifier(itemId),
+      destinationPath,
+    };
   };
 
-  document.querySelectorAll("[data-ga-event]").forEach((element) => {
-    element.addEventListener("click", () => {
-      trackEvent(element.dataset.gaEvent, {
-        case_study_slug: element.dataset.caseStudySlug,
-        asset_type: element.dataset.assetType,
-        cta_type: element.dataset.ctaType,
-        placement: element.dataset.placement,
-        destination: element.dataset.destination || element.getAttribute("href"),
-      });
-    });
+  const interactionPlacement = (element) => {
+    const placements = [
+      [".executive-hero", "homepage_hero"],
+      [".research-showcase", "homepage_research"],
+      [".featured-work", "homepage_case_studies"],
+      [".capability-system", "capability_system"],
+      [".closing-section", "closing_cta"],
+      [".publication-ledger", "publication_collection"],
+      [".tool-index-card", "tool_collection"],
+      [".featured-publication-card", "case_study_feature"],
+      [".case-study-list", "case_study_index"],
+      [".paper-hero", "publication_hero"],
+      [".publication-hero", "publication_hero"],
+      [".paper-content", "publication_body"],
+      [".publication-content", "publication_body"],
+      [".resume-section", "resume_body"],
+      [".recruiter-brief-section", "recruiter_body"],
+      [".engagements-hero", "engagements_hero"],
+      [".engagement-inquiry-section", "engagement_form"],
+      [".contact-section", "contact_body"],
+    ];
+    return placements.find(([selector]) => element.closest(selector))?.[1] || "page_body";
+  };
+
+  const annotatedParameters = (element) => ({
+    action_state: element.dataset.actionState,
+    action_type: element.dataset.actionType,
+    calendar_type: element.dataset.calendarType,
+    case_study_id: element.dataset.caseStudyId,
+    component_id: element.dataset.componentId,
+    content_id: element.dataset.contentId,
+    content_type: element.dataset.contentType,
+    destination_path: element.dataset.destination || element.getAttribute("href"),
+    file_id: element.dataset.fileId,
+    form_type: element.dataset.formType,
+    item_id: element.dataset.itemId,
+    lead_type: element.dataset.leadType,
+    method: element.dataset.method,
+    nav_type: element.dataset.navType,
+    placement: element.dataset.placement,
+    publication_id: element.dataset.publicationId,
+    section_id: element.dataset.sectionId,
+    section_order: element.dataset.sectionOrder,
+    source_page: element.dataset.sourcePage,
+    topic_id: element.dataset.topicId,
   });
+
+  const getInteractionEvent = (element) => {
+    if (element.dataset.gaEvent) return { eventName: element.dataset.gaEvent, parameters: annotatedParameters(element) };
+
+    const href = element.getAttribute("href") || "";
+    const currentSourcePage = sanitizeDestinationPath(window.location.pathname);
+    const destinationPath = sanitizeDestinationPath(href);
+
+    if (href.startsWith("https://calendly.com/")) {
+      return {
+        eventName: "calendar_open",
+        parameters: {
+          calendar_type: href.includes("/30min") ? "recruiter" : "audit_consulting",
+          placement: element.closest(".site-footer") ? "footer" : interactionPlacement(element),
+          source_page: currentSourcePage,
+        },
+      };
+    }
+
+    if (/\/resume\/[^/]+\.pdf(?:$|[?#])/i.test(href)) {
+      return {
+        eventName: "resume_download",
+        parameters: {
+          placement: interactionPlacement(element),
+          file_id: "sudeep_arya_resume_pdf",
+        },
+      };
+    }
+
+    if (element.closest(".site-header")) {
+      return {
+        eventName: "nav_select",
+        parameters: { nav_type: element.matches(".brand") ? "header_logo" : "header", destination_path: destinationPath, item_id: destinationPath || "home" },
+      };
+    }
+
+    if (element.closest(".site-footer")) {
+      return {
+        eventName: "nav_select",
+        parameters: {
+          nav_type: element.matches(".footer-brand") ? "footer_logo" : "footer",
+          destination_path: destinationPath,
+          item_id: href.includes("linkedin.com") ? "linkedin" : destinationPath || "external",
+        },
+      };
+    }
+
+    if (element.closest(".breadcrumbs")) {
+      return { eventName: "nav_select", parameters: { nav_type: "breadcrumb", destination_path: destinationPath, item_id: destinationPath || "home" } };
+    }
+
+    if (element.matches("[data-copy-action]")) {
+      return {
+        eventName: element.dataset.shareMethod ? "share" : "copy_action",
+        parameters: {
+          method: element.dataset.shareMethod,
+          content_type: element.dataset.contentType,
+          content_id: element.dataset.contentId,
+          item_id: element.dataset.itemId,
+          action_type: element.dataset.actionType || "copy_link",
+        },
+      };
+    }
+
+    if (element.matches("[data-inquiry-toggle], [data-contact-focus]")) return null;
+
+    const content = contentDetailsFromHref(href);
+    const isContentSelection = content && (
+      element.closest(".research-card, .case-row, .publication-ledger-item, .tool-index-card, .featured-publication-card")
+      || (!element.classList.contains("button") && element.closest("main"))
+    );
+    if (isContentSelection) {
+      return {
+        eventName: "select_content",
+        parameters: {
+          content_type: content.contentType,
+          item_id: content.itemId,
+          placement: interactionPlacement(element),
+        },
+      };
+    }
+
+    if (href.startsWith("#") && href.length > 1) {
+      return {
+        eventName: "nav_select",
+        parameters: { nav_type: "in_page", destination_path: destinationPath, item_id: sanitizeIdentifier(href.slice(1)) },
+      };
+    }
+
+    if (element.matches(".button, [class*='-action'], [class*='cta']") || /linkedin\.com/i.test(href)) {
+      const actionType = /linkedin\.com/i.test(href) ? "linkedin" : content?.contentType || "page_cta";
+      return {
+        eventName: "cta_select",
+        parameters: {
+          action_type: actionType,
+          placement: interactionPlacement(element),
+          destination_path: destinationPath,
+          content_id: content?.itemId,
+        },
+      };
+    }
+
+    return null;
+  };
+
+  document.addEventListener("click", (event) => {
+    if (!analyticsAllowed || !(event.target instanceof Element)) return;
+    const element = event.target.closest("a, button");
+    if (!(element instanceof HTMLElement)) return;
+    const interaction = getInteractionEvent(element);
+    if (interaction) trackEvent(interaction.eventName, interaction.parameters);
+  }, true);
+
+  if (analyticsAllowed) {
+    document.querySelectorAll("details").forEach((detail, index) => {
+      detail.dataset.gaComponentId ||= detail.id || `details_${index + 1}`;
+    });
+    document.addEventListener("toggle", (event) => {
+      const detail = event.target;
+      if (!(detail instanceof HTMLDetailsElement) || !detail.open || detail.matches("[data-topic]")) return;
+      const componentId = detail.dataset.gaComponentId || detail.id;
+      trackOnce(`content_expand_${componentId}`, "content_expand", {
+        component_id: componentId,
+        content_type: detail.closest(".publication-content, .paper-content") ? "publication_detail" : "supporting_detail",
+        section_id: detail.closest("[id]")?.id,
+        action_state: "open",
+      });
+    }, true);
+
+    const publicationMatch = window.location.pathname.match(/^\/publications\/([^/]+)\//);
+    if (publicationMatch && "IntersectionObserver" in window) {
+      const publicationId = sanitizeIdentifier(publicationMatch[1]);
+      const sections = Array.from(document.querySelectorAll(
+        ".publication-content > .executive-brief, .publication-content > .publication-chapter, .publication-content > .publication-backmatter, .paper-content > h2[id]"
+      ));
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const section = entry.target;
+          const existingTimer = publicationSectionTimers.get(section);
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.5 && !existingTimer) {
+            const timer = window.setTimeout(() => {
+              const order = sections.indexOf(section) + 1;
+              trackOnce(`publication_section_${publicationId}_${section.id}`, "publication_section_view", {
+                publication_id: publicationId,
+                section_id: section.id,
+                section_order: order,
+              });
+              publicationSectionTimers.delete(section);
+            }, 1000);
+            publicationSectionTimers.set(section, timer);
+          } else if ((!entry.isIntersecting || entry.intersectionRatio < 0.5) && existingTimer) {
+            window.clearTimeout(existingTimer);
+            publicationSectionTimers.delete(section);
+          }
+        });
+      }, { threshold: [0, 0.5, 1] });
+      sections.forEach((section) => sectionObserver.observe(section));
+    }
+
+    const printableContent = window.location.pathname.match(/^\/(publications\/([^/]+)|resume)\/?/);
+    if (printableContent) {
+      window.addEventListener("beforeprint", () => {
+        const publicationId = printableContent[2] ? sanitizeIdentifier(printableContent[2]) : "resume";
+        trackOnce(`print_${publicationId}`, "print_request", {
+          content_type: printableContent[2] ? "publication" : "resume",
+          content_id: publicationId,
+        });
+      });
+    }
+
+    const successLead = {
+      "/contact/success/": "contact",
+      "/engagements/success/": "engagement",
+    }[window.location.pathname];
+    if (successLead) {
+      trackOnce(`lead_success_${successLead}`, "generate_lead", {
+        lead_type: successLead,
+        source_page: `/${successLead === "contact" ? "contact" : "engagements"}/`,
+        placement: "success_page",
+      });
+    }
+  }
 
   if (navToggle && navMenu) {
     const menuLinks = Array.from(navMenu.querySelectorAll("a"));
-    const closeMenu = (restoreFocus = false) => {
+    const closeMenu = (restoreFocus = false, recordInteraction = false) => {
+      const wasOpen = navMenu.classList.contains("open");
       navMenu.classList.remove("open");
       navToggle.setAttribute("aria-expanded", "false");
       document.body.classList.remove("nav-open");
+      if (wasOpen && recordInteraction) {
+        trackEvent("content_expand", {
+          component_id: "mobile_navigation",
+          content_type: "navigation",
+          section_id: "header",
+          action_state: "close",
+        });
+      }
       if (restoreFocus) navToggle.focus();
     };
 
@@ -93,12 +421,18 @@
       const isOpen = navMenu.classList.toggle("open");
       navToggle.setAttribute("aria-expanded", String(isOpen));
       document.body.classList.toggle("nav-open", isOpen);
+      trackEvent("content_expand", {
+        component_id: "mobile_navigation",
+        content_type: "navigation",
+        section_id: "header",
+        action_state: isOpen ? "open" : "close",
+      });
       if (isOpen && menuLinks[0]) menuLinks[0].focus();
     });
 
     navMenu.addEventListener("click", (event) => {
       if (event.target instanceof HTMLAnchorElement) {
-        closeMenu();
+        closeMenu(false, true);
       }
     });
 
@@ -106,7 +440,7 @@
       if (!navMenu.classList.contains("open")) return;
       if (event.key === "Escape") {
         event.preventDefault();
-        closeMenu(true);
+        closeMenu(true, true);
         return;
       }
       if (event.key !== "Tab" || !menuLinks.length) return;
@@ -195,10 +529,15 @@
     });
   });
 
-  const contactForm = document.querySelector(".contact-form");
+  const contactForm = document.querySelector(".contact-form:not(.engagement-form)");
   if (contactForm instanceof HTMLFormElement) {
     if (contactFocusButton) {
       contactFocusButton.addEventListener("click", () => {
+        trackOnce("contact_form_open", "lead_form_open", {
+          form_type: "contact",
+          source_page: window.location.pathname,
+          placement: "contact_methods",
+        });
         contactForm.scrollIntoView({ block: "start", behavior: "smooth" });
         const firstField = contactForm.querySelector("input:not([type='hidden']):not([name='bot-field']), textarea, select");
         if (firstField instanceof HTMLElement) {
@@ -206,6 +545,14 @@
         }
       });
     }
+
+    contactForm.addEventListener("submit", (event) => {
+      if (!contactForm.checkValidity() || event.defaultPrevented) return;
+      trackEvent("lead_form_submit_attempt", {
+        form_type: "contact",
+        source_page: window.location.pathname,
+      });
+    });
 
   }
 
@@ -223,6 +570,14 @@
         regionalToggle.setAttribute("aria-expanded", String(nextExpanded));
         regionalToggle.textContent = nextExpanded ? openLabel : closedLabel;
         regionalPanel.hidden = !nextExpanded;
+        if (nextExpanded) {
+          trackOnce(`regional_${regionalPanel.id}`, "content_expand", {
+            component_id: regionalPanel.id,
+            content_type: "location_travel",
+            section_id: regionalToggle.closest(".site-footer") ? "footer" : "page_body",
+            action_state: "open",
+          });
+        }
       });
       if (window.location.hash === `#${regionalPanel.id}`) {
         regionalToggle.setAttribute("aria-expanded", "true");
@@ -300,6 +655,12 @@
     toggle.addEventListener("click", () => {
       const isExpanded = toggle.getAttribute("aria-expanded") === "true";
       setExpanded(!isExpanded, isExpanded);
+      if (!isExpanded) {
+        trackOnce(`case_study_${studyId}`, "case_study_expand", {
+          case_study_id: studyId,
+          placement: "case_study_index",
+        });
+      }
     });
 
     caseDisclosureButtons.push({ study, toggle, drawer, setExpanded });
@@ -344,6 +705,14 @@
     caseMoreButton.addEventListener("click", () => {
       const isExpanded = caseMoreButton.getAttribute("aria-expanded") === "true";
       setCaseStudiesExpanded(!isExpanded);
+      if (!isExpanded) {
+        trackOnce("additional_case_studies", "content_expand", {
+          component_id: "additional_case_studies",
+          content_type: "case_study_collection",
+          section_id: "case_study_index",
+          action_state: "open",
+        });
+      }
       if (isExpanded) caseMoreButton.scrollIntoView({ block: "center" });
     });
 
@@ -419,7 +788,12 @@
         toggle.querySelector("span").textContent = expanded ? "Hide earlier experience" : "View earlier experience · 2014–2020";
         toggle.querySelector("i").textContent = expanded ? "–" : "+";
         drawer.hidden = !expanded;
-        if (expanded) trackEvent("resume_earlier_experience_expand", { section_id: drawer.id });
+        if (expanded) trackOnce("resume_earlier_experience", "content_expand", {
+          component_id: drawer.id,
+          content_type: "resume_experience",
+          section_id: drawer.id,
+          action_state: "open",
+        });
       });
     }
   }
@@ -457,7 +831,12 @@
         toggle.querySelector("span").textContent = expanded ? "Hide supporting capability detail" : "View applied context and problem areas";
         toggle.querySelector("i").textContent = expanded ? "–" : "+";
         drawer.hidden = !expanded;
-        if (expanded) trackEvent("skills_supporting_detail_expand", { section_id: drawer.id });
+        if (expanded) trackOnce("skills_supporting_detail", "content_expand", {
+          component_id: drawer.id,
+          content_type: "capability_detail",
+          section_id: drawer.id,
+          action_state: "open",
+        });
       });
     }
   }
@@ -486,7 +865,12 @@
         toggle.querySelector("span").textContent = expanded ? "Hide supporting search detail" : "View search terms and best-fit mandates";
         toggle.querySelector("i").textContent = expanded ? "–" : "+";
         drawer.hidden = !expanded;
-        if (expanded) trackEvent("recruiter_search_detail_expand", { section_id: drawer.id });
+        if (expanded) trackOnce("recruiter_search_detail", "content_expand", {
+          component_id: drawer.id,
+          content_type: "recruiter_detail",
+          section_id: drawer.id,
+          action_state: "open",
+        });
       });
     }
   }
@@ -513,7 +897,12 @@
         toggle.querySelector("span").textContent = expanded ? "Hide supporting case detail" : "Explore system map, role, and evidence";
         toggle.querySelector("i").textContent = expanded ? "–" : "+";
         drawer.hidden = !expanded;
-        if (expanded) trackEvent("case_support_detail_expand", { case_study_slug: document.body.dataset.caseStudy || "banfield-subscription-commerce" });
+        if (expanded) trackOnce("case_support_detail", "content_expand", {
+          component_id: drawer.id,
+          content_type: "case_study_detail",
+          section_id: document.body.dataset.caseStudy || "banfield_subscription_commerce",
+          action_state: "open",
+        });
       });
     }
   }

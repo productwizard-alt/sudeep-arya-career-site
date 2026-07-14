@@ -8,6 +8,13 @@
   let activeTopic = Math.max(0, topics.findIndex((topic) => topic.open));
   let topicButtons = [];
 
+  const trackTopicSelection = (topic, placement) => {
+    window.siteAnalytics?.trackEvent("engagement_topic_select", {
+      topic_id: topic?.dataset.topic,
+      placement,
+    });
+  };
+
   const setActiveTopic = (index, focusButton = false) => {
     if (!topics.length) return;
     activeTopic = Math.min(Math.max(index, 0), topics.length - 1);
@@ -38,7 +45,10 @@
       button.setAttribute("aria-controls", topic.id);
       button.setAttribute("aria-pressed", String(index === activeTopic));
       button.innerHTML = `<span>${number}</span><strong>${label}</strong>`;
-      button.addEventListener("click", () => setActiveTopic(index));
+      button.addEventListener("click", () => {
+        setActiveTopic(index);
+        trackTopicSelection(topic, "topic_selector");
+      });
       button.addEventListener("keydown", (event) => {
         const keys = ["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft", "Home", "End"];
         if (!keys.includes(event.key)) return;
@@ -59,6 +69,7 @@
         topics.forEach((otherTopic, otherIndex) => {
           if (otherIndex !== index) otherTopic.open = false;
         });
+        trackTopicSelection(topic, "topic_disclosure");
       });
     });
 
@@ -83,7 +94,8 @@
 
   const setInquiryOpen = (open, options = {}) => {
     if (!(panel instanceof HTMLElement)) return;
-    const { focus = false, updateHistory = false } = options;
+    const { focus = false, updateHistory = false, recordClose = false } = options;
+    const wasOpen = !panel.hidden;
     panel.hidden = !open;
     panel.classList.toggle("is-open", open);
     inquiryControls.forEach((control) => control.setAttribute("aria-expanded", String(open)));
@@ -100,6 +112,14 @@
       }
     } else {
       panel.classList.remove("is-opening");
+      if (wasOpen && recordClose) {
+        window.siteAnalytics?.trackEvent("content_expand", {
+          component_id: "engagement_inquiry_panel",
+          content_type: "lead_form",
+          section_id: "engagement_form",
+          action_state: "close",
+        });
+      }
     }
   };
 
@@ -109,12 +129,17 @@
     inquiryControls.forEach((control) => {
       control.addEventListener("click", (event) => {
         event.preventDefault();
+        window.siteAnalytics?.trackOnce("engagement_form_open", "lead_form_open", {
+          form_type: "engagement",
+          source_page: window.location.pathname,
+          placement: control.closest(".engagements-hero") ? "engagements_hero" : "engagement_cta",
+        });
         setInquiryOpen(true, { focus: true, updateHistory: true });
       });
     });
 
-    window.addEventListener("popstate", () => setInquiryOpen(inquiryHashIsOpen()));
-    window.addEventListener("hashchange", () => setInquiryOpen(inquiryHashIsOpen()));
+    window.addEventListener("popstate", () => setInquiryOpen(inquiryHashIsOpen(), { recordClose: true }));
+    window.addEventListener("hashchange", () => setInquiryOpen(inquiryHashIsOpen(), { recordClose: true }));
 
     const errorSummary = document.getElementById("engagement-form-errors");
     let validationFrame = 0;
@@ -197,6 +222,14 @@
         errorSummary.hidden = true;
         errorSummary.replaceChildren();
       }
+    });
+
+    inquiryForm.addEventListener("submit", (event) => {
+      if (!inquiryForm.checkValidity() || event.defaultPrevented) return;
+      window.siteAnalytics?.trackEvent("lead_form_submit_attempt", {
+        form_type: "engagement",
+        source_page: window.location.pathname,
+      });
     });
   }
 
