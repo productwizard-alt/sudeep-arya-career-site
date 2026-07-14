@@ -18,6 +18,7 @@ mkdir -p "$output_dir"
 # Publish only the tracked files needed by the static website. Deliberately omit
 # reports, source inputs, tests, caches, local Netlify state, and recovery data.
 publish_paths=(
+  36bcb98a24be4cc6937303e21fcf4bb2.txt
   404.html
   _redirects
   assets
